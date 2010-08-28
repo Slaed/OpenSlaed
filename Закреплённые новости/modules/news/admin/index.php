@@ -24,15 +24,16 @@ function news() {
 	$offset = ($num-1) * $conf['anum'];
 	$offset = intval($offset);
 	if ($_GET['status'] == 1) {
-		$status = "='0'";
+		$status = 0;
 		$field = "op=news&status=1&";
 		$refer = "&refer=1";
 	} else {
-		$status = "!='0'";
+		$status = 1;
 		$field = "op=news&";
 		$refer = "";
 	}
-	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, c.id, c.title, u.user_name, status FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status$status ORDER BY s.status DESC, s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
+	
+	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, c.id, c.title, u.user_name, status FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status".(($status==0)?"='0'":"!='0'")." ORDER BY s.status DESC, s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr><th>"._ID."</th><th>"._TITLE."</th><th>"._IP."</th><th>"._POSTEDBY."</th><th>"._FUNCTIONS."</th></tr>";
