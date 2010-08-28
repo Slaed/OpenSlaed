@@ -24,11 +24,11 @@ function news() {
 	$offset = ($num-1) * $conf['anum'];
 	$offset = intval($offset);
 	if ($_GET['status'] == 1) {
-		$status = 0;
+		$status = "0";
 		$field = "op=news&status=1&";
 		$refer = "&refer=1";
 	} else {
-		$status = 1;
+		$status = "1";
 		$field = "op=news&";
 		$refer = "";
 	}
