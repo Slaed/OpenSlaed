@@ -1,0 +1,117 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+{%HEAD%}
+<script language="JavaScript" type="text/javascript">
+date = new Date();
+a = date.getHours();
+if (a > 7 && a < 21) {
+	document.write("<link rel='stylesheet' href='templates/$ThemeSel/css/header_day.css' type='text/css'>");
+}
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+function bookmark() {
+	if (window.sidebar) {
+		window.sidebar.addPanel("$sitename", "$homeurl","");
+	} else if (document.all) {
+		window.external.AddFavorite("$homeurl", "$sitename");
+	}
+}
+// -->
+</script>
+</head>
+
+<body id="page_bg">
+<div id="pbg1"><div id="pbg2"><div id="pbg3"><div id="pbg4">
+<div class="wrapper">
+<div id="tophead">
+	<div class="toolbar">
+	<div class="searchform">
+		<form action="index.php?name=search" name="SeatchForm" method="post">
+		<input type="text" name="word" value="$harg[11]..." onblur="if(this.value=='') this.value='$harg[11]...';" onfocus="if(this.value=='$harg[11]...') this.value='';" class="inputstyle">
+		<a href="javascript:document.SeatchForm.submit();" class="btn">$harg[11]</a>
+		</form>
+	</div>
+		<span class="register">
+		$theuser
+		</span>
+	</div>
+</div>
+
+<!-- HEADER -->
+<div id="header"><div class="dleft"><div class="dright">
+	<!-- LOGOTYPE -->
+	<a href="$homeurl" title="$sitename" id="logotype" style="background-image: url(templates/$ThemeSel/images/$site_logo);" >
+	<img src="templates/$ThemeSel/images/spacer.png" border="0" width="450" height="111" alt="$sitename" />
+	</a>
+	<div id="banner">
+	{%BLOCKS banner%}
+	</div>
+</div></div></div>
+
+<!-- MENU -->
+<div id="menuhead"><div class="dleft"><div class="dright">
+	<a href="index.php" title="$harg[0]">$harg[0]</a>
+	<a href="index.php?name=account" title="$harg[3]">$harg[3]</a>
+	<a href="index.php?name=contact" title="$harg[9]">$harg[9]</a>
+	<a href="index.php?name=recommend" title="$harg[10]">$harg[10]</a>
+	<a href="index.php?name=search" title="$harg[11]">$harg[11]</a>
+	$startseite $harg[5]</a>
+	<a href="#" OnClick="javascript:bookmark();" title="$harg[4]">$harg[4]</a>
+</div></div></div>
+
+<div class="s-left"><div class="s-right">
+<div class="s-top"><div class="s-bottom">
+
+	<div id="container">
+		<div id="leftbox">{%BLOCKS left%}</div>
+		<div id="mainbox">
+			<div id="maincontent">
+			{%BLOCKS message%}
+			{%BLOCKS center%}
+			{%MODULE%}
+			{%BLOCKS down%}
+			</div>
+			<div id="rightbox">
+			{%BLOCKS right%}
+			</div>
+		</div>
+	</div>
+
+</div></div>
+</div></div>
+<div class="clr"></div>
+
+<div id="menufoot"><div class="dleft"><div class="dright">
+	<a href="index.php" title="$farg[0]"><b>$farg[0]</b></a>
+	<a href="index.php?name=news" title="$farg[1]"><b>$farg[1]</b></a>
+	<a href="index.php?name=account" title="$farg[3]"><b>$farg[3]</b></a>
+	<a href="index.php?name=contact" title="$farg[9]"><b>$farg[9]</b></a>
+	<a href="index.php?name=recommend" title="$farg[10]"><b>$farg[10]</b></a>
+</div></div></div>
+
+<!-- FOOTER -->
+<div id="footer"><div class="dleft"><div class="dright">
+	<div class="copyright">{%LICENSE%}<br>Design by <a href="http://www.centroarts.com" target="_blank" title="Centroarts">Centroarts</a> &copy; 2008 Creative Studio. All rights reserved.<br></div>
+	<div class="count">
+		{%BLOCKS foot%}
+		<span><!-- count 1 88x31px --></span>
+		<span><!-- count 2 88x31px --></span>
+		<span><!-- count 3 88x31px --></span>
+		<span><!-- count 4 88x31px --></span>
+	</div>
+</div></div></div>
+<!-- FOOTER END-->
+
+<div align="right">
+{%BLOCKS time%}
+{%BLOCKS variables%}
+{%BLOCKS query%}
+</div>
+<!-- WRAPPER END-->
+</div>
+
+<!-- PAGE BG1,BG2,BG3,BG4 & SUN END-->
+</div></div></div></div>
+</body></html>

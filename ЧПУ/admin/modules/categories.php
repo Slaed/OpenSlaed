@@ -3,7 +3,7 @@
 # Website: http://www.slaed.net
 
 if (!defined("ADMIN_FILE") || !is_admin_god()) die("Illegal File Access");
-if (file_exists("config/config_function.php")) include_once("config/config_function.php");
+
 function cat_navi() {
 	global $admin_file;
 	panel();
@@ -130,7 +130,6 @@ function cat_edit() {
 	."<form name=\"post\" action=\"".$admin_file.".php\" method=\"post\">"
 	."<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/show_image.js\"></script>"
 	."<div class=\"left\">"._TITLE.":</div><div class=\"center\"><input type=\"text\" name=\"title\" value=\"$title\" size=\"65\" class=\"admin\"></div>"
-	."<div class=\"left\">Update URL?</div><div class=\"center\">".radio_form($upd, "upd", 0)."</div>"
 	."<div class=\"left\">"._DESCRIPTION.":</div><div class=\"center\"><textarea name=\"description\" cols=\"65\" rows=\"5\" class=\"admin\">$description</textarea></div>"
 	."<div class=\"left\">"._MODUL.":</div><div class=\"center\">".cat_modul("modul", "admin", $modul)."</div>";
 	if ($conf['multilingual'] == 1) echo "<div class=\"left\">"._LANGUAGE.":</div><div class=\"center\"><select name=\"language\" class=\"admin\">".language($language)."</select></div>";
@@ -181,7 +180,7 @@ switch($op) {
 	$language = $_POST['language'];
 	$imgcat = str_replace("images/categories/", "", $imgcat);
 	$imgcat = (!$imgcat || $imgcat == "no.png") ? "" : $imgcat;
-	$db->sql_query("INSERT INTO ".$prefix."_categories VALUES (NULL, '$modul', '$title', '$description', '$imgcat', '$language', '0', '".url_uniq(array('url'=>$title, 'table'=>'_categories'),70)."')");
+	$db->sql_query("INSERT INTO ".$prefix."_categories VALUES (NULL, '$modul', '$title', '$description', '$imgcat', '$language', '0')");
 	Header("Location: ".$admin_file.".php?op=cat_show");
 	break;
 	
@@ -194,7 +193,7 @@ switch($op) {
 	$cid = $_POST['cid'];
 	$imgsubcat = str_replace("images/categories/", "", $imgsubcat);
 	$imgsubcat = (!$imgsubcat || $imgsubcat == "no.png") ? "" : $imgsubcat;
-	$db->sql_query("INSERT INTO ".$prefix."_categories VALUES (NULL, '$modul', '$title', '$description', '$imgsubcat', '$language', '$cid', '".url_uniq(array('url'=>$title, 'table'=>'_categories'),70)."')");
+	$db->sql_query("INSERT INTO ".$prefix."_categories VALUES (NULL, '$modul', '$title', '$description', '$imgsubcat', '$language', '$cid')");
 	Header("Location: ".$admin_file.".php?op=cat_show");
 	break;
 	
@@ -211,10 +210,7 @@ switch($op) {
 	$parentid = $_POST['parentid'];
 	$imgcat = str_replace("images/categories/", "", $imgcat);
 	$imgcat = (!$imgcat || $imgcat == "no.png") ? "" : $imgcat;
-	$upd = $_POST['upd'];
-	if ($upd==1) $url=", url='".url_uniq(array('url'=>$title, 'table'=>'_categories', 'where'=>'AND `id`!='.$id),70)."'";
-	else $url='';
-	$db->sql_query("UPDATE ".$prefix."_categories SET modul='$modul', title='$title', description='$description', img='$imgcat', language='$language', parentid='$parentid'$url WHERE id='".$id."'");
+	$db->sql_query("UPDATE ".$prefix."_categories SET modul='$modul', title='$title', description='$description', img='$imgcat', language='$language', parentid='$parentid' WHERE id='".$id."'");
 	Header("Location: ".$admin_file.".php?op=cat_show");
 	break;
 	
