@@ -3,6 +3,7 @@
 # Website: http://www.slaed.net
 
 if (!defined("ADMIN_FILE") || !is_admin_modul("files")) die("Illegal File Access");
+if (file_exists("config/config_function.php")) include_once("config/config_function.php");
 
 include("config/config_files.php");
 
@@ -39,16 +40,16 @@ function files() {
 		$field = "op=files&";
 		$refer = "";
 	}
-	$result = $db->sql_query("SELECT f.lid, f.name, f.title, f.date, f.ip_sender, c.id, c.title, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE status='".$status."' ORDER BY f.date DESC LIMIT ".$offset.", ".$conf['anum']."");
+	$result = $db->sql_query("SELECT f.lid, f.name, f.title, f.date, f.ip_sender, c.id, c.title, u.user_name, f.chpu FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE status='".$status."' ORDER BY f.date DESC LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr><th>"._ID."</th><th>"._TITLE."</th><th>"._IP."</th><th>"._POSTEDBY."</th><th>"._FUNCTIONS."</th></tr>";
-		while (list($id, $uname, $title, $date, $ip_sender, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($id, $uname, $title, $date, $ip_sender, $cid, $ctitle, $user_name, $fchpu) = $db->sql_fetchrow($result)) {
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			$ip_sender = ($ip_sender) ? $ip_sender : ""._NO."";
 			$ctitle = ($cid) ? $ctitle : ""._NO."";
 			$broc = ($status == 2) ? ad_broc("".$admin_file.".php?op=files_ignore&id=".$id."") : "";
-			$ad_view = ($status) ? ad_view(view_article("files", $id)) : "";
+			$ad_view = ($status) ? ad_view(view_article("files", $fchpu)) : "";
 			echo "<tr class=\"bgcolor1\"><td align=\"center\">".$id."</td>"
 			."<td class=\"help\" OnMouseOver=\"Tip('"._CATEGORY.": $ctitle<br />"._DATE.": $date')\">".$title."</td>"
 			."<td>".user_geo_ip($ip_sender, 4)."</td>"
@@ -84,6 +85,7 @@ function files_add() {
 		$postname = $_POST['postname'];
 		$email = $_POST['email'];
 		$homepage = (isset($_POST['homepage'])) ? $_POST['homepage'] : "http://";
+		$upd=$_POST['upd'];
 	}
 	head();
 	files_navi();
@@ -101,6 +103,7 @@ function files_add() {
 	open();
 	echo "<form name=\"post\" enctype=\"multipart/form-data\" action=\"".$admin_file.".php\" method=\"post\">"
 	."<div class=\"left\">"._TITLE.":</div><div class=\"center\"><input type=\"text\" name=\"title\" value=\"".$title."\" size=\"65\" class=\"admin\"></div>"
+	."<div class=\"left\">Update URL?</div><div class=\"center\">".radio_form($upd, "upd", 0)."</div>"
 	."<div class=\"left\">"._CATEGORY.":</div><div class=\"center\"><select name=\"cid\" class=\"admin\">".getcat("files", $cid)."</select></div>"
 	."<div class=\"left\">"._TEXT.":</div><div class=\"center\">".textarea("1", "description", $description, "files", "5")."</div>"
 	."<div class=\"left\">"._ENDTEXT.":</div><div class=\"center\">".textarea("2", "bodytext", $bodytext, "files", "15")."</div>"
@@ -139,6 +142,7 @@ function files_save() {
 	$postname = $_POST['postname'];
 	$email = text_filter($_POST['email']);
 	$homepage = url_filter($_POST['homepage']);
+	$upd = $_POST['upd'];
 	if (!$title) $stop = ""._CERROR."";
 	if (!$description) $stop = ""._CERROR1."";
 	if (!$postname) $stop = ""._CERROR3."";
@@ -163,10 +167,12 @@ function files_save() {
 					$url = "".$path."/".$filel[0]."";
 				}
 			}
-			$db->sql_query("UPDATE ".$prefix."_files SET cid='$cid', uid='$postid', name='$postname', title='$title', description='$description', bodytext='$bodytext', url='$url', date='$date', filesize='$filesize', version='$version', email='$email', homepage='$homepage', status='1' WHERE lid='$fid'");
+		if ($upd==1) $chpu=", chpu='".url_uniq(array('url'=>$title, 'table'=>'_files', 'where'=>'AND `lid`!='.$fid),70,'chpu')."'";
+		else $chpu='';
+			$db->sql_query("UPDATE ".$prefix."_files SET cid='$cid', uid='$postid', name='$postname', title='$title', description='$description', bodytext='$bodytext', url='$url', date='$date', filesize='$filesize', version='$version', email='$email', homepage='$homepage', status='1'$chpu WHERE lid='$fid'");
 		} else {
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_files (lid, cid, uid, name, title, description, bodytext, url, date, filesize, version, email, homepage, ip_sender, status) VALUES (NULL, '$cid', '$postid', '$postname', '$title', '$description', '$bodytext', '$url', '$date', '$filesize', '$version', '$email', '$homepage', '$ip', '1')");
+			$db->sql_query("INSERT INTO ".$prefix."_files (lid, cid, uid, name, title, description, bodytext, url, date, filesize, version, email, homepage, ip_sender, status, chpu) VALUES (NULL, '$cid', '$postid', '$postname', '$title', '$description', '$bodytext', '$url', '$date', '$filesize', '$version', '$email', '$homepage', '$ip', '1', '".url_uniq(array('url'=>$title, 'table'=>'_files'),70,'chpu')."')");
 		}
 		Header("Location: ".$admin_file.".php?op=files");
 	} else {

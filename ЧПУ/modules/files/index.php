@@ -30,7 +30,7 @@ function files() {
 	$filenum = intval($conff['num']);
 	$fbest = (isset($_GET['best'])) ? 1 : 0;
 	$fhits = (isset($_GET['hits'])) ? 1 : 0;
-	$fcat = (isset($_GET['cat'])) ? intval($_GET['cat']) : 0;
+	$fcat=0; if (isset($_GET['cat'])) {if (is_numeric($_GET['cat'])) $fcat=intval($_GET['cat']); else list($fcat) = $db->sql_fetchrow($db->sql_query("SELECT `id` FROM ".$prefix."_categories WHERE `url`='".preg_replace("/[^0-9a-z-]+/", "", $_GET['cat'])."'"));}
 	if ($fbest && $conff['rate']) {
 		$caton = 0;
 		$field = "best=1&";
@@ -47,7 +47,7 @@ function files() {
 		$pagetitle = "".$conf['defis']." "._FILES." ".$conf['defis']." $files_logo";
 	} elseif ($fcat) {
 		$caton = 1;
-		$field = "cat=$fcat&";
+		$field = "cat=".url_fun(array('url'=>$_GET['cat']))."&";
 		list($cat_title, $cat_description) = $db->sql_fetchrow($db->sql_query("SELECT title, description FROM ".$prefix."_categories WHERE id='$fcat'"));
 		$order = "WHERE cid='$fcat' AND date <= now() AND status!='0' ".$lang." ORDER BY date DESC";
 		$ordernum = "cid='$fcat' AND date <= now() AND status!='0'";
@@ -72,29 +72,29 @@ function files() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $filenum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT f.lid, f.cid, f.name, f.title, f.description, UNIX_TIMESTAMP(f.date) as formatted, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) ".$order." LIMIT $offset, $filenum");
+	$result = $db->sql_query("SELECT f.lid, f.cid, f.name, f.title, f.description, UNIX_TIMESTAMP(f.date) as formatted, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name, f.chpu, c.url FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) ".$order." LIMIT $offset, $filenum");
 	if ($db->sql_numrows($result) > 0) {
-		while (list($id, $fcid, $uname, $f_title, $description, $formatted, $votes, $totalvotes, $comment, $hits, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($id, $fcid, $uname, $f_title, $description, $formatted, $votes, $totalvotes, $comment, $hits, $cid, $ctitle, $cdescription, $cimg, $user_name, $fchpu, $curl) = $db->sql_fetchrow($result)) {
 			$fp_data = date(""._DATESTRING."", $formatted);
-			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$id\" title=\"$f_title\">$f_title</a> ".new_graphic($formatted)."";
-			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$id\" title=\"$f_title\">"._READMORE."</a>";
+			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu\" title=\"$f_title\">$f_title</a> ".new_graphic($formatted)."";
+			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu\" title=\"$f_title\">"._READMORE."</a>";
 			$post = ($user_name) ? " "._POSTEDBY.": ".user_info($user_name, 1)."" : (($uname) ? " "._POSTEDBY.": ".$uname."" : " "._POSTEDBY.": ".$confu['anonym']."");
 			$ndate = ($conff['date']) ? " "._DATE.": ".$fp_data."" : "";
 			$reads = ($conff['read']) ? " "._FILEHITS.": ".$hits."" : "";
 			if ($conff['comm']) {
 				if ($comment == 0) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$id#$id\" title=\"$f_title\">"._COMMENTS."</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu#$id\" title=\"$f_title\">"._COMMENTS."</a>";
 				} elseif ($comment == 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$id#$id\" title=\"$f_title\">"._COMMENT.": $comment</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu#$id\" title=\"$f_title\">"._COMMENT.": $comment</a>";
 				} elseif ($comment > 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$id#$id\" title=\"$f_title\">"._COMMENTS.": $comment</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu#$id\" title=\"$f_title\">"._COMMENTS.": $comment</a>";
 				}
 			}
 			$arating = " ".ajax_rating(0, $id, $conf['name'], $votes, $totalvotes)."";
-			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$id."")."";
+			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$fchpu."")."";
 			$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=files_add&id=".$id."")." ".ad_delete("".$admin_file.".php?op=files_delete&id=".$id."", $f_title)."" : "";
 			$cdescription = ($cdescription) ? $cdescription : $ctitle;
-			$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$cid\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
+			$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$curl\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
 			$link = "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"75%\" align=\"left\"><b>".$read."</b>".$post."".$ndate."".$reads."".$comm."</td><td>".$arating."</td><td align=\"right\">".$print."".$admin."</td></tr></table>";
 			basic($cid, $cimg, $ctitle, $id, $title, bb_decode($description, $conf['name']), $link, $read, $post, $ndate, $reads, $comm, $arating, $print, $admin, $size, $vers, $down, $broc, $email, $home);
 		}
@@ -120,7 +120,7 @@ function liste() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $listnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT f.lid, f.cid, f.name, f.title, f.date, c.id, c.title, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) ".$order." ".$lang." ORDER BY date DESC LIMIT $offset, $listnum");
+	$result = $db->sql_query("SELECT f.lid, f.cid, f.name, f.title, f.date, c.id, c.title, u.user_name, f.chpu, c.url FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) ".$order." ".$lang." ORDER BY date DESC LIMIT $offset, $listnum");
 	head();
 	menu(""._LIST."");
 	if ($db->sql_numrows($result) > 0) {
@@ -128,12 +128,12 @@ function liste() {
 		if ($conff['letter']) letter($conf['name']);
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
 		."<th>"._ID."</th><th>"._TITLE."</th><th>"._CATEGORY."</th><th>"._DATE."</th><th>"._POSTEDBY."</th></tr>";
-		while (list($id, $catid, $uname, $stitle, $time, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
-			$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$cid\" title=\"".$ctitle."\">".cutstr($ctitle, 10)."</a>";
+		while (list($id, $catid, $uname, $stitle, $time, $cid, $ctitle, $user_name, $fchpu, $curl) = $db->sql_fetchrow($result)) {
+			$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$curl\" title=\"".$ctitle."\">".cutstr($ctitle, 10)."</a>";
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			echo "<tr class=\"bgcolor1\">"
 			."<td align=\"center\">".$id."</td>"
-			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$id\" title=\"".$stitle."\">".cutstr($stitle, 35)."</a></td>"
+			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$fchpu\" title=\"".$stitle."\">".cutstr($stitle, 35)."</a></td>"
 			."<td align=\"center\">".$ctitle."</td>"
 			."<td align=\"center\">".format_time($time)."</td>"
 			."<td align=\"center\">".$post."</td></tr>";
@@ -150,10 +150,10 @@ function liste() {
 
 function printe() {
 	global $prefix, $db, $ThemeSel, $pagetitle, $conf, $confu;
-	$id = intval($_GET['id']);
-	$result = $db->sql_query("SELECT f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE lid='$id' AND date <= now() AND status!='0'");
+	$id = url_fun(array('url'=>$_GET['id']));
+	$result = $db->sql_query("SELECT f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name, c.url FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE ".url_fun(array('url'=>$id,'id'=>'lid','row'=>'chpu'),2)." AND date <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
-		list($cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		list($cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name, $curl) = $db->sql_fetchrow($result);
 		if (file_exists("templates/$ThemeSel/index.php")) {
 			include("templates/$ThemeSel/index.php");
 		} else {
@@ -161,7 +161,7 @@ function printe() {
 		}
 		$conf['defis'] = urldecode($conf['defis']);
 		$ftitle = (intval($ccid)) ? "$title ".$conf['defis']." $ctitle ".$conf['defis']." "._FILES." ".$conf['defis']." ".$conf['sitename']."" : "$title ".$conf['defis']." "._FILES." ".$conf['defis']." ".$conf['sitename']."";
-		$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$ccid\" title=\"".$ctitle."\">".cutstr($ctitle, 35)."</a>";
+		$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$curl\" title=\"".$ctitle."\">".cutstr($ctitle, 35)."</a>";
 		$ptitle = "".format_time($date)." - ".$title."";
 		$dtext = ($bodytext) ? "".bb_decode($description, $conf['name'])."<br /><br />".bb_decode($bodytext, $conf['name'])."" : bb_decode($description, $conf['name']);
 		$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
@@ -178,14 +178,14 @@ function printe() {
 
 function view() {
 	global $prefix, $db, $hometext, $pagetitle, $admin_file, $conf, $confu, $conff;
-	$id = intval($_GET['id']);
+	$id = url_fun(array('url'=>$_GET['id']));
 	$word = ($_GET['word']) ? text_filter($_GET['word']) : "";
-	$result = $db->sql_query("SELECT f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE lid='$id' AND date <= now() AND status!='0'");
+	$result = $db->sql_query("SELECT f.lid, f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name, f.chpu, c.url FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE ".url_fun(array('url'=>$id,'id'=>'lid','row'=>'chpu'),2)." AND date <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
-		list($cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		list($id, $cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name, $fchpu, $curl) = $db->sql_fetchrow($result);
 		$pagetitle = (intval($cid)) ? "".$conf['defis']." "._FILES." ".$conf['defis']." $ctitle ".$conf['defis']." $title" : "".$conf['defis']." "._FILES." ".$conf['defis']." $title";
 		$hometext = $description;
-		$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$ccid\" title=\"".$ctitle."\">".cutstr($ctitle, 15)."</a>";
+		$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$curl\" title=\"".$ctitle."\">".cutstr($ctitle, 15)."</a>";
 		head();
 		menu(""._FILES."");
 		$dtext = ($bodytext) ? "".$description."<br /><br />".$bodytext."" : $description;
@@ -203,13 +203,13 @@ function view() {
 			."</form>";
 		}
 		$arating = " ".ajax_rating(1, $id, $conf['name'], $votes, $totalvotes)."";
-		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$id."")."";
-		$broc = ($conff['broc'] == 1) ? " <a href=\"index.php?name=".$conf['name']."&op=broken&id=$id\" title=\""._BROCFILE."\"><img src=\"".img_find("all/warning")."\" border=\"0\" align=\"center\"></a>" : "";
+		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$fchpu."")."";
+		$broc = ($conff['broc'] == 1) ? " <a href=\"index.php?name=".$conf['name']."&op=broken&id=$fchpu\" title=\""._BROCFILE."\"><img src=\"".img_find("all/warning")."\" border=\"0\" align=\"center\"></a>" : "";
 		$email = ($a_email) ? " "._AUEMAIL.": ".anti_spam($a_email)."" : "";
 		$home = ($a_homepage) ? " "._FAUURL.": ".domain($a_homepage)."" : "";
 		$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=files_add&id=".$id."")." ".ad_delete("".$admin_file.".php?op=files_delete&id=".$id."", $title)."" : "";
 		$cdescription = ($cdescription) ? $cdescription : $ctitle;
-		$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$cid\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
+		$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$curl\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
 		$ctitle = " "._CATEGORY.": ".$ctitle."";
 		$link = "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"33%\">".$arating."</td><td width=\"33%\" align=\"center\">".$down."</td><td width=\"33%\" align=\"right\">".$print."".$broc."";
 		if (is_moder($conf['name']) && $a_email) $link .= " <a href=\"mailto:".$a_email."?subject=".$conf['sitename']."\" title=\""._AUEMAIL."\"><img src=\"".img_find("all/contact")."\" border=\"0\" align=\"center\"></a>";
@@ -230,11 +230,11 @@ function view() {
 function broken() {
 	global $prefix, $db, $pagetitle, $conf, $conff;
 	$pagetitle = "".$conf['defis']." "._FILES." ".$conf['defis']." "._BROCFILE."";
-	$id = intval($_GET['id']);
+	$id = url_fun(array('url'=>$_GET['id']));
 	if ($conff['broc'] == 1 && $id) {
 		head();
 		menu(""._BROCFILE."");
-		$db->sql_query("UPDATE ".$prefix."_files SET status='2' WHERE lid='$id'");
+		$db->sql_query("UPDATE ".$prefix."_files SET status='2' WHERE ".url_fun(array('url'=>$id,'id'=>'lid','row'=>'chpu'),2));
 		warning(""._BROCNOTE."", "?name=".$conf['name']."&op=view&id=$id", 5, 2);
 		foot();
 	} else {
@@ -331,7 +331,7 @@ function send() {
 			$postid = (is_user()) ? intval($user[0]) : "";
 			$postname = (!is_user()) ? $postname : "";
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_files (lid, cid, uid, name, title, description, bodytext, url, date, filesize, version, email, homepage, ip_sender, status) VALUES (NULL, '$cid', '$postid', '$postname', '$title', '$description', '$bodytext', '$url', now(), '$filesize', '$f_version', '$authormail', '$authorurl', '$ip', '0')");
+			$db->sql_query("INSERT INTO ".$prefix."_files (lid, cid, uid, name, title, description, bodytext, url, date, filesize, version, email, homepage, ip_sender, status, chpu) VALUES (NULL, '$cid', '$postid', '$postname', '$title', '$description', '$bodytext', '$url', now(), '$filesize', '$f_version', '$authormail', '$authorurl', '$ip', '0', '".url_uniq(array('url'=>$title, 'table'=>'_files'),70,'chpu')."')");
 			update_points(9);
 			head();
 			menu(_ADD);
@@ -347,10 +347,10 @@ function send() {
 
 function geturl() {
 	global $prefix, $db, $pagetitle, $conf, $conff;
-	$id = intval($_POST['id']);
+	$id = url_fun(array('url'=>$_POST['id']));
 	if (($id && is_user()) || ($id && $conff['down'] == "1")) {
-		$db->sql_query("UPDATE ".$prefix."_files SET hits=hits+1 WHERE lid=$id");
-		list($f_title, $url) = $db->sql_fetchrow($db->sql_query("SELECT title, url FROM ".$prefix."_files WHERE lid='$id'"));
+		$db->sql_query("UPDATE ".$prefix."_files SET hits=hits+1 WHERE ".url_fun(array('url'=>$id,'id'=>'lid','row'=>'chpu'),2));
+		list($f_title, $url) = $db->sql_fetchrow($db->sql_query("SELECT title, url FROM ".$prefix."_files WHERE ".url_fun(array('url'=>$id,'id'=>'lid','row'=>'chpu'),2)));
 		update_points(11);
 		if ($conff['stream'] == 2) {
 			$type = strtolower(end(explode(".", $url)));

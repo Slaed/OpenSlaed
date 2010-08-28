@@ -1443,73 +1443,72 @@ function new_graphic($data) {
 
 # Format categories
 function categories($mod, $tab, $sub, $desc, $id="") {
-	global $prefix, $db, $user, $conf, $currentlang;
-	if (!preg_match("/[^a-zA-Z0-9_]/", $mod)) {
-		$id = (intval($id)) ? $id : 0;
-		if ($id) {
-			$where = "WHERE modul='$mod' AND parentid = '$id'";
-		} elseif ($id && $conf['multilingual']) {
-			$where = "WHERE modul='$mod' AND parentid = '$id' AND (language='$currentlang' OR language='')";
-		} elseif ($conf['multilingual']) {
-			$where = "WHERE modul='$mod' AND (language='$currentlang' OR language='')";
-		} else {
-			$where = "WHERE modul='$mod'";
-		}
-		$tdwidth = intval(100/$tab);
-		$cat_num = 0;
-		$result = $db->sql_query("SELECT id, title, description, img, parentid FROM ".$prefix."_categories ".$where." ORDER BY title");
-		while (list($cid, $title, $description, $img, $parentid) = $db->sql_fetchrow($result)) {
-			$massiv[] = array($cid, $title, $description, $img, $parentid);
-			$cat_num++;
-		}
-		if ($massiv) {
-			$a = 0;
-			foreach ($massiv as $val) {
-				if ($val[4] == $id) {
-					if ($a == 0) {
-						$catid = $val[0];
-						$a++;
-					} else {
-						$catid .= ",".$val[0];
-					}
-					if ($val[3]) {
-						$description = ($desc) ? "<br><i>".$val[2]."</i>" : "";
-						$ccontent .= "<td valign=\"top\" width=\"".$tdwidth."%\"><table width=\"100%\" border=\"0\"><tr><td><a href=\"index.php?name=$mod&cat=$val[0]\" title=\"$val[1]\"><img src=\"images/categories/".$val[3]."\" border=\"0\" title=\"".$val[1]."\"></a></td><td width=\"100%\"><a href=\"index.php?name=$mod&cat=$val[0]\" title=\"$val[1]\"><b>$val[1]</b></a>".$description."</td></tr>";
-					} else {
-						$description = ($desc) ? "<tr><td colspan=\"2\"><i>".$val[2]."</i></td></tr>" : "";
-						$ccontent .= "<td valign=\"top\" width=\"".$tdwidth."%\"><table width=\"100%\" border=\"0\"><tr><td><a href=\"index.php?name=$mod&cat=$val[0]\" title=\"$val[1]\"><img src=\"".img_find("all/".strtolower($mod)."")."\" border=\"0\" title=\"".$val[1]."\"></a></td><td width=\"100%\"><a href=\"index.php?name=$mod&cat=$val[0]\" title=\"$val[1]\"><b>$val[1]</b></a></td></tr>".$description."";
-					}
-					foreach ($massiv as $val2) {
-						if ($val[0] == $val2[4]) {
-							$catid .= ",".$val2[0];
-							if ($sub == 1) $ccontent .= "<tr><td colspan=\"2\"><img border=\"0\" src=\"".img_find("misc/navi")."\" title=\"$val2[1]\"> <a href=\"index.php?name=$mod&cat=$val2[0]\" title=\"$val2[1]\">$val2[1]</a></td></tr>";
-						}
-					}
-					$ccontent .= "</table></td>";
-					if ($cont == ($tab - 1)) {
-						$ccontent .= "</tr><tr>";
-						$cont = 0;
-					} else {
-						$cont++;
-					}
-				}
-			}
-		}
-		if ($ccontent) {
-			if ($mod == "files") {
-				list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(lid) FROM ".$prefix."_files WHERE cid IN ($catid) AND date <= now() AND status!='0'"));
-				$in = _INF;
-			} elseif ($mod == "news") {
-				list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(sid) FROM ".$prefix."_stories WHERE catid IN ($catid) AND time <= now() AND status!='0'"));
-				$in = _INN;
-			}
-			open();
-			echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\"><tr>".$ccontent."</td></tr></table><hr><center>"._ALLIN.": <b>".$pages_num."</b> ".$in." <b>".$cat_num."</b> "._ALLINC."</center>";
-			close();
-		}
-	}
+        global $prefix, $db, $user, $conf, $currentlang;
+        if (!preg_match("/[^a-zA-Z0-9_]/", $mod)) {
+                $id = (intval($id)) ? $id : 0;
+                if ($id) {
+                        $where = "WHERE modul='$mod' AND parentid = '$id'";
+                } elseif ($id && $conf['multilingual']) {
+                        $where = "WHERE modul='$mod' AND parentid = '$id' AND (language='$currentlang' OR language='')";
+                } elseif ($conf['multilingual']) {
+                        $where = "WHERE modul='$mod' AND (language='$currentlang' OR language='')";
+                } else {
+                        $where = "WHERE modul='$mod'";
+                }
+                $tdwidth = intval(100/$tab);
+                $cat_num = 0;
+                $result = $db->sql_query("SELECT id, title, description, img, parentid, url FROM ".$prefix."_categories ".$where." ORDER BY title");
+                while (list($cid, $title, $description, $img, $parentid, $url) = $db->sql_fetchrow($result)) {
+                        $massiv[] = array($cid, $title, $description, $img, $parentid, $url);
+                        $cat_num++;
+                }
+                if ($massiv) {
+                        $a = 0;
+                        foreach ($massiv as $val) {
+                                if ($val[4] == $id) {
+                                        if ($a == 0) {
+                                                $catid = $val[0];
+                                                $a++;
+                                        } else {
+                                                $catid .= ",".$val[0];
+                                        }
+                                        if ($val[3]) {
+                                                $description = ($desc) ? "<br><i>".$val[2]."</i>" : "";
+                                                $ccontent .= "<td valign=\"top\" width=\"".$tdwidth."%\"><table width=\"100%\" border=\"0\"><tr><td><a href=\"index.php?name=$mod&cat=$val[5]\" title=\"$val[1]\"><img src=\"images/categories/".$val[3]."\" border=\"0\" title=\"".$val[1]."\"></a></td><td width=\"100%\"><a href=\"index.php?name=$mod&cat=$val[5]\" title=\"$val[1]\"><b>$val[1]</b></a>".$description."</td></tr>";
+                                        } else {
+                                                $description = ($desc) ? "<tr><td colspan=\"2\"><i>".$val[2]."</i></td></tr>" : "";
+                                                $ccontent .= "<td valign=\"top\" width=\"".$tdwidth."%\"><table width=\"100%\" border=\"0\"><tr><td><a href=\"index.php?name=$mod&cat=$val[5]\" title=\"$val[1]\"><img src=\"".img_find("all/".strtolower($mod)."")."\" border=\"0\" title=\"".$val[1]."\"></a></td><td width=\"100%\"><a href=\"index.php?name=$mod&cat=$val[5]\" title=\"$val[1]\"><b>$val[1]</b></a></td></tr>".$description."";
+                                        }
+                                        foreach ($massiv as $val2) {
+                                                if ($val[0] == $val2[4]) {
+                                                        $catid .= ",".$val2[0];
+                                                        if ($sub == 1) $ccontent .= "<tr><td colspan=\"2\"><img border=\"0\" src=\"".img_find("misc/navi")."\" title=\"$val2[1]\"> <a href=\"index.php?name=$mod&cat=$val2[5]\" title=\"$val2[1]\">$val2[1]</a></td></tr>";
+                                                }
+                                        }
+                                        $ccontent .= "</table></td>";
+                                        if ($cont == ($tab - 1)) {
+                                                $ccontent .= "</tr><tr>";
+                                                $cont = 0;
+                                        } else {
+                                                $cont++;
+                                        }
+                                }
+                        }
+                }
+                if ($ccontent) {
+                        if ($mod == "files") {
+                                list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(lid) FROM ".$prefix."_files WHERE cid IN ($catid) AND date <= now() AND status!='0'"));
+                                $in = _INF;
+                        } elseif ($mod == "news") {
+                                list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(sid) FROM ".$prefix."_stories WHERE catid IN ($catid) AND time <= now() AND status!='0'"));
+                                $in = _INN;
+                        }
+                        open();
+                        echo "<table border=\"0\" cellspacing=\"0\" cellpadding=\"10\" align=\"center\"><tr>".$ccontent."</td></tr></table><hr><center>"._ALLIN.": <b>".$pages_num."</b> ".$in." <b>".$cat_num."</b> "._ALLINC."</center>";
+                        close();
+                }
+        }
 }
-
 # Format categories select
 function getcat($mod, $id="") {
 	global $prefix, $db;

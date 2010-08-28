@@ -30,7 +30,7 @@ function news() {
 	$newnum = (isset($user[3]) && $user[3] <= intval($confn['newnum']) && $confu['news'] == 1) ? intval($user[3]) : intval($confn['newnum']);
 	$sbest = (isset($_GET['best'])) ? 1 : 0;
 	$shits = (isset($_GET['hits'])) ? 1 : 0;
-	$scat = (isset($_GET['cat'])) ? intval($_GET['cat']) : 0;
+	$scat=0; if (isset($_GET['cat'])) {if (is_numeric($_GET['cat'])) $scat=intval($_GET['cat']); else list($scat) = $db->sql_fetchrow($db->sql_query("SELECT `id` FROM ".$prefix."_categories WHERE `url`='".preg_replace("/[^0-9a-z-]+/", "", $_GET['cat'])."'"));}
 	if ($sbest && $confn['newrate']) {
 		$caton = 0;
 		$field = "best=1&";
@@ -47,7 +47,7 @@ function news() {
 		$pagetitle = "".$conf['defis']." "._NEWS." ".$conf['defis']." $news_logo";
 	} elseif ($scat) {
 		$caton = 1;
-		$field = "cat=$scat&";
+		$field = "cat=".url_fun(array('url'=>$_GET['cat']))."&";
 		list($cat_title, $cat_description) = $db->sql_fetchrow($db->sql_query("SELECT title, description FROM ".$prefix."_categories WHERE id='$scat'"));
 		$order = "WHERE catid='$scat' AND time <= now() AND status!='0' ".$lang." ORDER BY time DESC";
 		$ordernum = "catid='$scat' AND time <= now() AND status!='0'";
@@ -72,31 +72,31 @@ function news() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $newnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
+	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.comments, s.counter, s.acomm, s.score, s.ratings, s.url, c.id, c.title, c.description, c.img, c.url, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
 	if ($db->sql_numrows($result) > 0) {
-		while (list($sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $surl, $cid, $ctitle, $cdescription, $cimg, $curl, $user_name) = $db->sql_fetchrow($result)) {
 			$time = date(""._DATESTRING."", $formatted);
-			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">".$stitle."</a> ".new_graphic($formatted)."";
-			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">"._READMORE."</a>";
+			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$surl\" title=\"$stitle\">".$stitle."</a> ".new_graphic($formatted)."";
+			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$surl\" title=\"$stitle\">"._READMORE."</a>";
 			$post = ($user_name) ? " "._POSTEDBY.": ".user_info($user_name, 1)."" : (($uname) ? " "._POSTEDBY.": ".$uname."" : " "._POSTEDBY.": ".$confu['anonym']."");
 			$ndate = ($confn['newdate']) ? " "._DATE.": ".$time."" : "";
 			$reads = ($confn['newread']) ? " "._READS.": ".$counter."" : "";
 			if (!$acomm) {
 				if ($comments == 0) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENTS."</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$surl#$sid\" title=\"$stitle\">"._COMMENTS."</a>";
 				} elseif ($comments == 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENT.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$surl#$sid\" title=\"$stitle\">"._COMMENT.": $comments</a>";
 				} elseif ($comments > 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENTS.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$surl#$sid\" title=\"$stitle\">"._COMMENTS.": $comments</a>";
 				}
 			} else {
 				$comm = "";
 			}
 			$arating = " ".ajax_rating(0, $sid, $conf['name'], $ratings, $score)."";
-			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$sid."")."";
+			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$surl."")."";
 			$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."", $stitle)."" : "";
 			$cdescription = ($cdescription) ? $cdescription : $ctitle;
-			$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$cid\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
+			$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$curl\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
 			$link = "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"75%\" align=\"left\"><b>".$read."</b>".$post."".$ndate."".$reads."".$comm."</td><td>".$arating."</td><td align=\"right\">".$print."".$admin."</td></tr></table>";
 			basic($cid, $cimg, $ctitle, $sid, $title, bb_decode($hometext, $conf['name']), $link, $read, $post, $ndate, $reads, $comm, $arating, $print, $admin);
 		}
@@ -122,7 +122,7 @@ function liste() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $newlistnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." ".$lang." ORDER BY time DESC LIMIT $offset, $newlistnum");
+	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, s.url, c.id, c.title, c.url, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." ".$lang." ORDER BY time DESC LIMIT $offset, $newlistnum");
 	head();
 	menu(""._LIST."");
 	if ($db->sql_numrows($result) > 0) {
@@ -130,12 +130,12 @@ function liste() {
 		if ($confn['newletter']) letter($conf['name']);
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
 		."<th>"._ID."</th><th>"._TITLE."</th><th>"._CATEGORY."</th><th>"._DATE."</th><th>"._POSTEDBY."</th></tr>";
-		while (list($sid, $catid, $uname, $stitle, $time, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
-			$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$cid\" title=\"".$ctitle."\">".cutstr($ctitle, 10)."</a>";
+		while (list($sid, $catid, $uname, $stitle, $time, $surl, $cid, $ctitle, $curl, $user_name) = $db->sql_fetchrow($result)) {
+			$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$curl\" title=\"".$ctitle."\">".cutstr($ctitle, 10)."</a>";
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			echo "<tr class=\"bgcolor1\">"
 			."<td align=\"center\">".$sid."</td>"
-			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"".$stitle."\">".cutstr($stitle, 35)."</a></td>"
+			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$surl\" title=\"".$stitle."\">".cutstr($stitle, 35)."</a></td>"
 			."<td align=\"center\">".$ctitle."</td>"
 			."<td align=\"center\">".format_time($time)."</td>"
 			."<td align=\"center\">".$post."</td></tr>";
@@ -152,10 +152,10 @@ function liste() {
 
 function printe() {
 	global $prefix, $db, $ThemeSel, $pagetitle, $conf, $confn;
-	$id = intval($_GET['id']);
-	$result = $db->sql_query("SELECT title, time, hometext, bodytext FROM ".$prefix."_stories WHERE sid='$id' AND time <= now() AND status!='0'");
+	$id = url_fun(array('url'=>$_GET['id']));
+	$result = $db->sql_query("SELECT title, time, hometext, bodytext FROM ".$prefix."_stories WHERE ".url_fun(array('url'=>$id,'id'=>'sid','row'=>'url'),2)." AND time <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
-		$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 WHERE sid='$id'");
+		$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 WHERE ".url_fun(array('url'=>$id,'id'=>'sid','row'=>'url'),2));
 		list($stitle, $date, $hometext, $bodytext) = $db->sql_fetchrow($result);
 		if (file_exists("templates/$ThemeSel/index.php")) {
 			include("templates/$ThemeSel/index.php");
@@ -175,13 +175,13 @@ function printe() {
 
 function view() {
 	global $prefix, $db, $admin_file, $conf, $confu, $confn, $pagetitle, $hometext, $bodytext;
-	$id = intval($_GET['id']);
+	$id = url_fun(array('url'=>$_GET['id']));
 	$pag = intval($_GET['pag']);
 	$word = ($_GET['word']) ? text_filter($_GET['word']) : "";
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.comments, s.counter, s.acomm, s.score, s.ratings, s.associated, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE sid = '$id' AND time <= now() AND status!='0'");
+	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.comments, s.counter, s.acomm, s.score, s.ratings, s.associated, s.url, c.id, c.title, c.description, c.img, c.url, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE ".url_fun(array('url'=>$id,'id'=>'sid','row'=>'s.url'),2)." AND time <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
-		$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 WHERE sid='$id'");
-		list($sid, $catid, $uname, $title, $time, $hometext, $bodytext, $field, $comments, $counter, $acomm, $score, $ratings, $associated, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 WHERE ".url_fun(array('url'=>$id,'id'=>'sid','row'=>'url'),2));
+		list($sid, $catid, $uname, $title, $time, $hometext, $bodytext, $field, $comments, $counter, $acomm, $score, $ratings, $associated, $surl, $cid, $ctitle, $cdescription, $cimg, $curl, $user_name) = $db->sql_fetchrow($result);
 		$pagetitle = (intval($catid)) ? "".$conf['defis']." "._NEWS." ".$conf['defis']." $ctitle ".$conf['defis']." $title" : "".$conf['defis']." "._NEWS." ".$conf['defis']." $title";
 		head();
 		menu(""._NEWS."");
@@ -198,10 +198,10 @@ function view() {
 		$ndate = ($confn['newdate']) ? " "._DATE.": ".format_time($time)."" : "";
 		$reads = ($confn['newread']) ? " "._READS.": ".$counter."" : "";
 		$arating = " ".ajax_rating(1, $sid, $conf['name'], $ratings, $score)."";
-		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$sid."")."";
+		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$surl."")."";
 		$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."", $title)."" : "";
 		$cdescription = ($cdescription) ? $cdescription : $ctitle;
-		$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$cid\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
+		$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$curl\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
 		$link = "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"75%\" align=\"left\">".$post."".$ndate."".$reads."</td><td>".$arating."</td><td align=\"right\">".$print."".$admin."</td></tr></table>";
 		basic($cid, $cimg, $ctitle, $sid, search_color($title, $word), search_color(bb_decode($conpag[$arrayelement], $conf['name']), $word), $link, $read, $post, $ndate, $reads, $comm, $arating, $print, $admin);
 		num_pages($conf['name'], 1, $pageno, 1, "op=view&id=".$id."&");
@@ -209,13 +209,13 @@ function view() {
 			if ($associated[strlen($associated)-1] == "-") $associated = substr($associated, 0, -1);
 			$asso = str_replace("-", ",", $associated);
 			$limit = intval($confn['newasocnum']);
-			$result = $db->sql_query("SELECT sid, title, time FROM ".$prefix."_stories WHERE catid IN (".$asso.") AND sid!='$sid' AND time <= now() AND status!='0' ORDER BY time DESC LIMIT 0, ".$limit."");
+			$result = $db->sql_query("SELECT sid, title, time, url FROM ".$prefix."_stories WHERE catid IN (".$asso.") AND sid!='$sid' AND time <= now() AND status!='0' ORDER BY time DESC LIMIT 0, ".$limit."");
 			if ($db->sql_numrows($result) > 0) {
 				open();
 				echo "<h2 style=\"margin: 0 0 5px 0;\">"._ASSTORY."</h2>"
 				."<table border=\"0\" cellspacing=\"0\" cellpadding=\"2\">";
-				while(list($s_sid, $title, $time) = $db->sql_fetchrow($result)) {
-					echo "<tr><td><a href=\"index.php?name=".$conf['name']."&op=view&id=$s_sid\" title=\"$title\"><img src=\"".img_find("all/news")."\" border=\"0\"></a></td><td>".format_time($time)." - <a href=\"index.php?name=".$conf['name']."&op=view&id=$s_sid\" title=\"$title\">$title</a></td></tr>";
+				while(list($s_sid, $title, $time, $url) = $db->sql_fetchrow($result)) {
+					echo "<tr><td><a href=\"index.php?name=".$conf['name']."&op=view&id=$url\" title=\"$title\"><img src=\"".img_find("all/news")."\" border=\"0\"></a></td><td>".format_time($time)." - <a href=\"index.php?name=".$conf['name']."&op=view&id=$url\" title=\"$title\">$title</a></td></tr>";
 				}
 				echo "</table>";
 				close();
@@ -289,7 +289,7 @@ function send() {
 			$postid = (is_user()) ? intval($user[0]) : "";
 			$postname = (!is_user()) ? $postname : "";
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status) VALUES (NULL, '$catid', '$postid', '$postname', '$subject', now(), '$hometext', '$bodytext', '$field', '0', '0', '0', '0', '0', '0', '0', '$ip', '0')");
+			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status, url) VALUES (NULL, '$catid', '$postid', '$postname', '$subject', now(), '$hometext', '$bodytext', '$field', '0', '0', '0', '0', '0', '0', '0', '$ip', '0', '".url_uniq(array('url'=>$subject, 'table'=>'_stories'),70)."')");
 			update_points(31);
 			head();
 			menu(""._ADD."");

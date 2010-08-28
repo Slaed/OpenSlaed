@@ -3,7 +3,7 @@
 # Website: http://www.slaed.net
 
 if (!defined("ADMIN_FILE") || !is_admin_modul("news")) die("Illegal File Access");
-
+if (file_exists("config/config_function.php")) include_once("config/config_function.php");
 function news_navi() {
 	global $admin_file;
 	panel();
@@ -32,14 +32,14 @@ function news() {
 		$field = "op=news&";
 		$refer = "";
 	}
-	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status='".$status."' ORDER BY s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
+	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, s.url, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status='".$status."' ORDER BY s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr><th>"._ID."</th><th>"._TITLE."</th><th>"._IP."</th><th>"._POSTEDBY."</th><th>"._FUNCTIONS."</th></tr>";
-		while (list($sid, $uname, $title, $time, $ip_sender, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($sid, $uname, $title, $time, $ip_sender, $surl, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
 			$ctitle = ($cid) ? $ctitle : ""._NO."";
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
-			$ad_view = ($status) ? ad_view(view_article("news", $sid)) : "";
+			$ad_view = ($status) ? ad_view(view_article("news", $surl)) : "";
 			echo "<tr class=\"bgcolor1\"><td align=\"center\">".$sid."</td>"
 			."<td class=\"help\" OnMouseOver=\"Tip('"._CATEGORY.": $ctitle<br />"._DATE.": $time')\">".$title."</td>"
 			."<td>".user_geo_ip($ip_sender, 4)."</td>"
@@ -74,6 +74,7 @@ function news_add() {
 		$field = fields_save($_POST['field']);
 		$ihome = $_POST['ihome'];
 		$acomm = $_POST['acomm'];
+		$upd=$_POST['upd'];
 	}
 	head();
 	news_navi();
@@ -84,6 +85,7 @@ function news_add() {
 	echo "<form name=\"post\" action=\"".$admin_file.".php\" method=\"post\">"
 	."<div class=\"left\">"._POSTEDBY.":</div><div class=\"center\">".get_user_search("postname", $postname, "25", "65", "400")."</div>"
 	."<div class=\"left\">"._TITLE.":</div><div class=\"center\"><input type=\"text\" name=\"subject\" value=\"".$subject."\" maxlength=\"80\" size=\"65\" class=\"admin\"></div>"
+	."<div class=\"left\">Update URL?</div><div class=\"center\">".radio_form($upd, "upd", 0)."</div>"
 	."<div class=\"left\">"._CATEGORY.":</div><div class=\"center\"><select name=\"cat\" class=\"admin\">".getcat("news", $cat)."</select></div>"
 	."<div class=\"left\">"._ASSOTOPIC.":</div><div class=\"center\"><table border=\"0\" cellpadding=\"1\" cellspacing=\"0\" class=\"admin\"><tr>";
 	$result2 = $db->sql_query("SELECT id, title FROM ".$prefix."_categories WHERE modul='news' ORDER BY parentid, title");
@@ -126,6 +128,7 @@ function news_save() {
 	$field = fields_save($_POST['field']);
 	$ihome = $_POST['ihome'];
 	$acomm = $_POST['acomm'];
+	$upd = $_POST['upd'];
 	$time = save_datetime();
 	if (!$subject) $stop = ""._CERROR."";
 	if (!$hometext) $stop = ""._CERROR1."";
@@ -134,10 +137,12 @@ function news_save() {
 		$postid = (is_user_id($postname)) ? is_user_id($postname) : "";
 		$postname = (!is_user_id($postname)) ? text_filter(substr($postname, 0, 25)) : "";
 		if ($sid) {
-			$db->sql_query("UPDATE ".$prefix."_stories SET catid='$cat', uid='$postid', name='$postname', title='$subject', time='$time', hometext='$hometext', bodytext='$bodytext', field='$field', ihome='$ihome', acomm='$acomm', associated='$associated', status='1' WHERE sid='$sid'");
+		if ($upd==1) $url=", url='".url_uniq(array('url'=>$subject, 'table'=>'_stories', 'where'=>'AND `sid`!='.$sid),70)."'";
+		else $url='';
+			$db->sql_query("UPDATE ".$prefix."_stories SET catid='$cat', uid='$postid', name='$postname', title='$subject', time='$time', hometext='$hometext', bodytext='$bodytext', field='$field', ihome='$ihome', acomm='$acomm', associated='$associated', status='1'$url WHERE sid='$sid'");
 		} else {
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status) VALUES (NULL, '$cat', '$postid', '$postname', '$subject', '$time', '$hometext', '$bodytext', '$field', '0', '0', '$ihome', '$acomm', '0', '0', '$associated', '$ip', '1')");
+			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status, url) VALUES (NULL, '$cat', '$postid', '$postname', '$subject', '$time', '$hometext', '$bodytext', '$field', '0', '0', '$ihome', '$acomm', '0', '0', '$associated', '$ip', '1', '".url_uniq(array('url'=>$subject, 'table'=>'_stories'),70)."')");
 		}
 		Header("Location: ".$admin_file.".php?op=news");
 	} else {

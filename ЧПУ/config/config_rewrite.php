@@ -4,6 +4,21 @@
 
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+$out[] = "\\1/\\3/\\5.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?op=(printe|broken)&(amp;)?id=([0-9A-z-]+)'";
+$out[] = "\\1/\\4/\\6-\\8.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?op=view&(amp;)?id=([0-9A-z-]+)&(amp;)?pag=(\d+)&(amp;)?num=(\d+)'";
+$out[] = "\\1/\\4/\\6-\\7.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?op=view&(amp;)?id=([0-9A-z-]+)&(amp;)?(word|num)=([%&;/:|\s\-\'{}().&_a-zA-Zа-яА-Я0-9+=-]*)'";
+$out[] = "\\1/\\4.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?op=view&(amp;)?id=([0-9A-z-]+)'";
+$out[] = "\\1/\\3/cat-word-\\5.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?cat=([0-9A-z-]+)&(amp;)?word=([%&;/:|\s\-\'{}().&_a-zA-Zа-яА-Я0-9+=-]*)'";
+$out[] = "\\1/\\3/page-\\5.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?cat=([0-9A-z-]+)&(amp;)?num=(\d+)'";
+$out[] = "\\1/\\3/";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?cat=([0-9A-z-]+)'";
+
 $out[] = "rss-\\1-\\3-num-\\5.html";
 $in[] = "'(?<!/)rss.php\?name=([a-zA-Z0-9_]*)&(amp;)?cat=([0-9]*)&(amp;)?num=([0-9]*)'";
 $out[] = "rss-\\1-\\3.html";

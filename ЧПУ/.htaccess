@@ -21,6 +21,14 @@ ErrorDocument 503												http://www.slaed.net/faq-cat-39.html
 RewriteEngine On
 RewriteBase /
 
+RewriteRule ^(news|files)/(printe|broken)/([0-9A-z-]+).html$          index.php?name=$1&op=$2&id=$3 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+)/(\d+)-(\d+).html$              index.php?name=$1&op=view&id=$2&pag=$3&num=$4 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+)/(word|num)-(.*).html$          index.php?name=$1&op=view&id=$2&$3=$4 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+).html$                          index.php?name=$1&op=view&id=$2 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+)/cat-word-(.*).html$      index.php?name=$1&cat=$2&word=$3 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+)/page-(\d+).html$          index.php?name=$1&cat=$2&num=$3 [NC]
+RewriteRule ^(news|files)/([0-9A-z-]+)/$                        index.php?name=$1&cat=$2 [NC]
+
 # Index
 RewriteRule ^index.html											index.php [NC]
 

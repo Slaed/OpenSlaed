@@ -1,0 +1,3 @@
+ALTER TABLE `{pref}_stories` ADD `url` VARCHAR( 100 ) NOT NULL , ADD INDEX ( url );
+ALTER TABLE `{pref}_categories` ADD `url` VARCHAR( 100 ) NOT NULL , ADD INDEX ( url );
+ALTER TABLE `{pref}_files` ADD `chpu` VARCHAR( 100 ) NOT NULL , ADD INDEX ( chpu );
