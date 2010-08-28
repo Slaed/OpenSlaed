@@ -49,13 +49,13 @@ function news() {
 		$caton = 1;
 		$field = "cat=$scat&";
 		list($cat_title, $cat_description) = $db->sql_fetchrow($db->sql_query("SELECT title, description FROM ".$prefix."_categories WHERE id='$scat'"));
-		$order = "WHERE catid='$scat' AND time <= now() AND status!='0' ".$lang." ORDER BY time DESC";
+		$order = "WHERE catid='$scat' AND time <= now() AND status!='0' ".$lang." ORDER BY status DESC, time DESC";
 		$ordernum = "catid='$scat' AND time <= now() AND status!='0'";
 		$pagetitle = "".$conf['defis']." "._NEWS." ".$conf['defis']." $cat_title";
 	} else {
 		$caton = 1;
 		$field = "";
-		$order = (!$home) ? "WHERE time <= now() AND status!='0' ".$lang." ORDER BY time DESC" : "WHERE ihome='0' AND time <= now() AND status!='0' ".$lang." ORDER BY time DESC";
+		$order = (!$home) ? "WHERE time <= now() AND status!='0' ".$lang." ORDER BY status DESC, time DESC" : "WHERE ihome='0' AND time <= now() AND status!='0' ".$lang." ORDER BY status DESC, time DESC";
 		$ordernum = (!$home) ? "time <= now() AND status!='0'" : "ihome='0' AND time <= now() AND status!='0'";
 		$news_logo = ""._NEWS."";
 		$pagetitle = "".$conf['defis']." $news_logo";

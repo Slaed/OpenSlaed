@@ -24,27 +24,28 @@ function news() {
 	$offset = ($num-1) * $conf['anum'];
 	$offset = intval($offset);
 	if ($_GET['status'] == 1) {
-		$status = "0";
+		$status = "='0'";
 		$field = "op=news&status=1&";
 		$refer = "&refer=1";
 	} else {
-		$status = "1";
+		$status = "!='0'";
 		$field = "op=news&";
 		$refer = "";
 	}
-	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status='".$status."' ORDER BY s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
+	$result = $db->sql_query("SELECT s.sid, s.name, s.title, s.time, s.ip_sender, c.id, c.title, u.user_name, status FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE status$status ORDER BY s.status DESC, s.time DESC LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr><th>"._ID."</th><th>"._TITLE."</th><th>"._IP."</th><th>"._POSTEDBY."</th><th>"._FUNCTIONS."</th></tr>";
-		while (list($sid, $uname, $title, $time, $ip_sender, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($sid, $uname, $title, $time, $ip_sender, $cid, $ctitle, $user_name, $sstatus) = $db->sql_fetchrow($result)) {
 			$ctitle = ($cid) ? $ctitle : ""._NO."";
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			$ad_view = ($status) ? ad_view(view_article("news", $sid)) : "";
+			$pin = ($sstatus==5)?'<a href="'.$admin_file.'.php?op=news_pin&pin=0&id='.$sid.'"><img src="images/all/pin-del.png" border="0" alt="Unpin news" title="Unpin news" align="center"></a>':'<a href="'.$admin_file.'.php?op=news_pin&pin=1&id='.$sid.'"><img src="images/all/pin-add.png" border="0" alt="Pin news" title="Pin news" align="center"></a>';
 			echo "<tr class=\"bgcolor1\"><td align=\"center\">".$sid."</td>"
 			."<td class=\"help\" OnMouseOver=\"Tip('"._CATEGORY.": $ctitle<br />"._DATE.": $time')\">".$title."</td>"
 			."<td>".user_geo_ip($ip_sender, 4)."</td>"
 			."<td align=\"center\">".$post."</td>"
-			."<td align=\"center\">".$ad_view." ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."".$refer."", $title)."</td></tr>";
+			."<td align=\"center\">".$ad_view." ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."".$refer."", $title)." $pin</td></tr>";
 		}
 		echo "</table>";
 		close();
@@ -218,6 +219,11 @@ switch($op) {
 	
 	case "news_conf_save":
 	news_conf_save();
+	break;
+	
+	case "news_pin":
+	$db->sql_query("UPDATE `".$prefix."_stories` SET `status`='".((intval($_GET['pin'])==1)?5:1)."' WHERE `sid`=".intval($_GET['id']));
+	Header("Location: ".$admin_file.".php?op=news");
 	break;
 }
 ?>
