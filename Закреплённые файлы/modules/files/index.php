@@ -49,13 +49,13 @@ function files() {
 		$caton = 1;
 		$field = "cat=$fcat&";
 		list($cat_title, $cat_description) = $db->sql_fetchrow($db->sql_query("SELECT title, description FROM ".$prefix."_categories WHERE id='$fcat'"));
-		$order = "WHERE cid='$fcat' AND date <= now() AND status!='0' ".$lang." ORDER BY date DESC";
+		$order = "WHERE cid='$fcat' AND date <= now() AND status!='0' ".$lang." ORDER BY `pin` DESC, date DESC";
 		$ordernum = "cid='$fcat' AND date <= now() AND status!='0'";
 		$pagetitle = "".$conf['defis']." "._FILES." ".$conf['defis']." $cat_title";
 	} else {
 		$caton = 1;
 		$field = "";
-		$order = "WHERE date <= now() AND status!='0' ".$lang." ORDER BY date DESC";
+		$order = "WHERE date <= now() AND status!='0' ".$lang." ORDER BY `pin` DESC, date DESC";
 		$ordernum = "date <= now() AND status!='0'";
 		$files_logo = ""._FILES."";
 		$pagetitle = "".$conf['defis']." $files_logo";

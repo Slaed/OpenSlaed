@@ -39,21 +39,22 @@ function files() {
 		$field = "op=files&";
 		$refer = "";
 	}
-	$result = $db->sql_query("SELECT f.lid, f.name, f.title, f.date, f.ip_sender, c.id, c.title, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE status='".$status."' ORDER BY f.date DESC LIMIT ".$offset.", ".$conf['anum']."");
+	$result = $db->sql_query("SELECT f.lid, f.name, f.title, f.date, f.ip_sender, f.pin, c.id, c.title, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE status='".$status."' ORDER BY f.pin DESC, f.date DESC LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr><th>"._ID."</th><th>"._TITLE."</th><th>"._IP."</th><th>"._POSTEDBY."</th><th>"._FUNCTIONS."</th></tr>";
-		while (list($id, $uname, $title, $date, $ip_sender, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($id, $uname, $title, $date, $ip_sender, $pin, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			$ip_sender = ($ip_sender) ? $ip_sender : ""._NO."";
 			$ctitle = ($cid) ? $ctitle : ""._NO."";
 			$broc = ($status == 2) ? ad_broc("".$admin_file.".php?op=files_ignore&id=".$id."") : "";
 			$ad_view = ($status) ? ad_view(view_article("files", $id)) : "";
+			$pin = ($pin==1)?'<a href="'.$admin_file.'.php?op=files_pin&pin=0&id='.$id.'"><img src="images/all/pin-del.png" border="0" alt="Unpin file" title="Unpin file" align="center"></a>':'<a href="'.$admin_file.'.php?op=files_pin&pin=1&id='.$id.'"><img src="images/all/pin-add.png" border="0" alt="Pin file" title="Pin file" align="center"></a>';
 			echo "<tr class=\"bgcolor1\"><td align=\"center\">".$id."</td>"
 			."<td class=\"help\" OnMouseOver=\"Tip('"._CATEGORY.": $ctitle<br />"._DATE.": $date')\">".$title."</td>"
 			."<td>".user_geo_ip($ip_sender, 4)."</td>"
 			."<td align=\"center\">".$post."</td>"
-			."<td align=\"center\">".$ad_view." ".ad_edit("".$admin_file.".php?op=files_add&id=".$id."")." ".ad_delete("".$admin_file.".php?op=files_delete&id=".$id."".$refer."", $title)." ".$broc."</td></tr>";
+			."<td align=\"center\">".$ad_view." ".ad_edit("".$admin_file.".php?op=files_add&id=".$id."")." ".ad_delete("".$admin_file.".php?op=files_delete&id=".$id."".$refer."", $title)." ".$broc." $pin</td></tr>";
 		}
 		echo "</table>";
 		close();
@@ -281,5 +282,10 @@ switch ($op) {
 	case "files_save_conf":
 	files_save_conf();
 	break;
+	
+	case "files_pin": 
+ 	$db->sql_query("UPDATE `".$prefix."_files` SET `pin`='".((intval($_GET['pin'])==1)?1:0)."' WHERE `lid`=".intval($_GET['id'])); 
+ 	Header("Location: ".$admin_file.".php?op=files"); 
+ 	break;
 }
 ?>
