@@ -16,5 +16,6 @@ $confs['mail'] = "1";
 $confs['write_h'] = "1";
 $confs['write_w'] = "0";
 $confs['block'] = "0";
+$confs['mysql_error'] = "1";
 
 ?>

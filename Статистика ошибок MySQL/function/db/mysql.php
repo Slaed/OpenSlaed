@@ -37,7 +37,7 @@ class sql_db {
 		unset($this->query_result);
 		if ($query != "") {
 			$st = array_sum(explode(" ", microtime()));
-			$this->query_result = @mysql_query($query, $this->db_connect_id);
+			$this->query_result = @mysql_query($query, $this->db_connect_id) OR mysql_elog(@mysql_error($this->db_connect_id), @mysql_errno($this->db_connect_id), $query);
 			$total_tdb = round(array_sum(explode(" ", microtime())) - $st, 5);
 			$this->total_time_db += $total_tdb;
 			$this->time_query .= "".$total_tdb > 0.01."" ? "<font color=\"red\"><b>".$total_tdb."</b></font> "._SEC.". - [".$query."]<br><br>" : "<font color=\"green\"><b>".$total_tdb."</b></font> "._SEC.". - [".$query."]<br><br>";

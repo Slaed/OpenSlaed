@@ -27,12 +27,13 @@ function security_show() {
 	$i = 0;
 	$handle = opendir("config/logs");
 	while ($file = readdir($handle)) {
-		if (preg_match("#hack\.txt|warn\.txt|error\.txt|error_site\.txt#", $file, $matches)) {
+		if (preg_match("#hack\.txt|warn\.txt|error\.txt|error_site\.txt|mysql\.txt#", $file, $matches)) {
 			$name = str_replace(".txt", "", $matches[0]);
 			if ($matches[0] == "hack.txt") $title = ""._SECURITY_STAT_HACK."";
 			if ($matches[0] == "warn.txt") $title = ""._SECURITY_STAT_WARN."";
 			if ($matches[0] == "error.txt") $title = ""._SECURITY_STAT_ERROR_D."";
 			if ($matches[0] == "error_site.txt") $title = ""._SECURITY_STAT_ERROR_S."";
+			if ($matches[0] == "mysql.txt") $title = "MySQL Errors";
 			$content .= "<tr class=\"bgcolor1\">"
 			."<td align=\"center\">".$title."</td>"
 			."<td align=\"center\">".files_size(filesize("config/logs/".$file.""))."</td>"
@@ -272,6 +273,7 @@ function security_conf() {
 	."<div class=\"left\">"._SECURITY_HACK_STAT."</div><div class=\"center\">".radio_form($confs['write_h'], "write_h")."</div>"
 	."<div class=\"left\">"._SECURITY_WARN_STAT."</div><div class=\"center\">".radio_form($confs['write_w'], "write_w")."</div>"
 	."<div class=\"left\">"._SECURITY_WARN_BLOCK."</div><div class=\"center\">".radio_form($confs['block'], "block")."</div>"
+	."<div class=\"left\">Writing MySQL Errors</div><div class=\"center\">".radio_form($confs['mysql_error'], "mysql_error")."</div>"
 	."<div class=\"button\"><input type='hidden' name='op' value='security_conf_save'><input type='submit' value='"._SAVECHANGES."' class=\"fbutton\"></div></form>";
 	close();
 	foot();
@@ -295,7 +297,8 @@ function security_conf_save() {
 	."\$confs['mail'] = \"".$_POST['mail']."\";\n"
 	."\$confs['write_h'] = \"".$_POST['write_h']."\";\n"
 	."\$confs['write_w'] = \"".$_POST['write_w']."\";\n"
-	."\$confs['block'] = \"".$_POST['block']."\";\n";
+	."\$confs['block'] = \"".$_POST['block']."\";\n"
+	."\$confs['mysql_error'] = \"".$_POST['mysql_error']."\";\n";
 	save_conf("config/config_security.php", $content);
 	Header("Location: ".$admin_file.".php?op=security_conf");
 }
@@ -314,6 +317,8 @@ switch($op) {
 		stream("config/logs/error.txt", "".date ("d.m.Y")."_error.txt");
 	} elseif ($_GET['error_site']) {
 		stream("config/logs/error_site.txt", "".date ("d.m.Y")."_error_site.txt");
+	} elseif ($_GET['mysql']) {
+    stream("config/logs/mysql.txt", "".date ("d.m.Y")."_mysql.txt");
 	} else {
 		Header("Location: ".$admin_file.".php?op=security_show");
 	}
@@ -328,6 +333,8 @@ switch($op) {
 		unlink("config/logs/error.txt");
 	} elseif ($_GET['error_site']) {
 		unlink("config/logs/error_site.txt");
+	} elseif ($_GET['mysql']) {
+		unlink("config/logs/mysql.txt");
 	}
 	Header("Location: ".$admin_file.".php?op=security_show");
 	break;
