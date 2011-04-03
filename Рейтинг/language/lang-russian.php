@@ -1,7 +1,15 @@
 <?php
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
-
+define("_NEW_RATE_1","Плюсов: ");
+define("_NEW_RATE_2"," Минусов: ");
+define("_NEW_RATE_3","Увеличить рейтинг");
+define("_NEW_RATE_4","Уменьшить рейтинг");
+define("_NEW_RATE_5","Вы уже голосовали, Ваш голос не принят!");
+define("_NEW_RATE_6","Голосование в данном модуле отключено!");
+define("_NEW_RATE_7","Спасибо, Ваш голос принят!");
+define("_NEW_RATE_8","Мы учли Ваш голос!");
+define("_NEW_RATE_9","Изменить рейтинг на +/- 1?");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");
