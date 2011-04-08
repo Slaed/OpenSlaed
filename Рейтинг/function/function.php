@@ -468,7 +468,7 @@ function ajax_rating($typ, $id, $mod, $rat, $scor) {
 	include("config/config_ratings.php");
 	$con = explode("|", $confra[strtolower($mod)]);
 	if (($con[1] && $id && $mod) || ($rat && $scor)) {
-if ($con[3]==1) $content="<div class='rate' id='rate".$id."'>".new_vote_graphic(array('total'=>$scor,'votes'=>$rat,'bodytext'=>$con[2],'isbody'=>$typ,'mod'=>$mod,'id'=>$id))."</div>";
+if ($con[3]==1) $content="<div class='rate' id='rate".$id."'>".new_vote_graphic(array('total'=>$scor,'votes'=>$rat,'bodytext'=>$con[2],'isbody'=>$typ,'mod'=>$mod,'id'=>$id,'useronly'=>$con[4]))."</div>";
 else $content = (($con[1] && $typ) || ($con[1] && !$con[2] && !$typ)) ? "<script type=\"text/javascript\">ajax('ajax.php?go=1&op=rating&mod=".$mod."&id=$id', 'rate".$id."');</script><div class=\"rate\" id=\"rate".$id."\"></div>" : "<div class=\"rate\">".vote_graphic($rat, $scor)."</div>";
 		return $content;
 	}

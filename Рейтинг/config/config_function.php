@@ -12,7 +12,7 @@ $out['type']='mn';
 $out['type']='pl';
 $out['sum']='+'.$out['sum'];
 } else $out['type']='nt';
-if (!$a['bodytext'] || $a['bodytext'] && $a['isbody']) {
+if ((!$a['bodytext'] || $a['bodytext'] && $a['isbody']) && ($a['useronly']==0 || $a['useronly']==1 && is_user())) {
 $check=new_rating(array($a['mod'],$a['id']),'check',$b);
 if ($check==0) $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."'>".$out['sum']."<span class='new_rating_yes' title='"._NEW_RATE_8."'>&nbsp;</span></span>";
 elseif ($check==1) $content="<span class='rating_nt ".$out['type']."' title='"._NEW_RATE_6."'>".$out['sum']."</span>";
@@ -47,7 +47,7 @@ return $out;
 }
 if ($b=='check') {
 $d=new_rating(array($mod,$id),'select',$f);
-if (!$con[1]) return 1;
+if (!$con[1] || $con[4]==1 && !is_user()) return 1;
 elseif ($cookies == $id || in_array($id,$d[$mod])) return 0;
 else return 2;
 }

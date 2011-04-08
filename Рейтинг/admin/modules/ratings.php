@@ -22,6 +22,7 @@ function ratings() {
 			."<div class=\"left\">"._VOTING_TIME.":</div><div class=\"center\"><input type=\"text\" name=\"time[]\" value='".intval($con[0] / 86400)."' maxlength=\"25\" size=\"45\" class=\"admin\"></div>"
 			."<div class=\"left\">"._C_21."</div><div class=\"center\">".radio_form($con[1], "".$i."in")."</div>"
 			."<div class=\"left\">"._NEW_RATE_9."</div><div class=\"center\">".radio_form($con[3], "".$i."type")."</div>"
+			."<div class=\"left\">"._NEW_RATE_10."</div><div class=\"center\">".radio_form($con[4], $i."useronly")."</div>"
 			."<div class=\"left\">"._C_22."</div><div class=\"center\">".radio_form($con[2], "".$i."view")."</div>";
 			$i++;
 		}
@@ -42,7 +43,7 @@ function ratings_save_conf() {
 	foreach ($mods as $val) {
 		if ($val != "") {
 			$xtime = (!intval($_POST['time'][$i])) ? 2592000 : $_POST['time'][$i] * 86400;
-			$content .= "\$confra['$val'] = \"".$xtime."|".$_POST[''.$i.'in']."|".$_POST[''.$i.'view']."|".$_POST[$i.'type']."\";\n";
+			$content .= "\$confra['$val'] = \"".$xtime."|".$_POST[''.$i.'in']."|".$_POST[''.$i.'view']."|".$_POST[$i.'type']."|".$_POST[$i.'useronly']."\";\n";
 			$i++;
 		}
 	}
