@@ -9,7 +9,7 @@ if (!intval($_FILES['Filedata']['size']) && !stristr(getenv("HTTP_REFERER"), $ho
 $go = (isset($_GET['go'])) ? intval($_GET['go']) : 0;
 $op = (isset($_GET['op'])) ? $_GET['op'] : 0;
 $mod = (isset($_GET['mod'])) ? strtolower($_GET['mod']) : 0;
-if ($op=='newrate' && $mod) {new_rating(array($mod,intval($_GET['id'])),'update');die();}
+if ($go == 0 && $op=='newrate' && $mod) {new_rating(array($mod,intval($_GET['id'])),'update');die();}
 if ($go == 1) {
 	get_lang();
 	$ThemeSel = get_theme();
