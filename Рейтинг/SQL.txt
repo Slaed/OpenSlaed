@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS `{pref}_whoiswho` (
+  `id` int(11) NOT NULL auto_increment,
+  `iid` int(11) NOT NULL,
+  `module` varchar(50) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `vote` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `iid` (`iid`),
+  KEY `module` (`module`)
+) ENGINE=MyISAM ;
