@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `{pref}_whoiswho` (
   `date` datetime NOT NULL,
   `ip` varchar(100) NOT NULL,
   `vote` tinyint(1) NOT NULL,
+  `comment` varchar(100) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `iid` (`iid`),
   KEY `module` (`module`)
