@@ -57,7 +57,8 @@ $e=new_rating(array($mod,$id),'check',$f);
 if ($e==2) {
 setcookie(substr($mod, 0, 2)."-".$id, $id, time() + intval($con[0]));
 $db->sql_query("INSERT INTO ".$prefix."_rating VALUES (NULL, '$id', '$mod', '".time()."', '$uid', '$ip')");
-$db->sql_query("INSERT INTO ".$prefix."_whoiswho VALUES (NULL, '$id', '$mod', '$uid', now(), '$ip', '".(($rating==1)?1:-1)."')");
+$comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='')?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):'';
+$db->sql_query("INSERT INTO ".$prefix."_whoiswho VALUES (NULL, '$id', '$mod', '$uid', now(), '$ip', '".(($rating==1)?1:-1)."', '$comment')");
 $m=$db->sql_numrows($db->sql_query("SELECT `id` FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."'"));
 if ($m>$n) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$n));
 $up=($rating==1)?5:0;
@@ -77,16 +78,16 @@ function new_ratings_date($date, $is_time=false, $type='rus') {if (is_integer($d
 function new_whoiswho ($a) {
 global $db,$prefix;
 $i=2;
-$result=$db->sql_query("SELECT v.date,v.ip,v.vote,u.user_name,v.uid FROM `".$prefix."_whoiswho` AS v LEFT JOIN `".$prefix."_users` AS u ON (v.uid=u.user_id) WHERE `iid`='".$a['id']."' AND `module`='".$a['mod']."' ORDER BY `date` DESC LIMIT 0, 10");
-while(list($date,$ip,$vote,$name,$uid) = $db->sql_fetchrow($result)) {
+$result=$db->sql_query("SELECT v.comment,v.date,v.ip,v.vote,u.user_name,v.uid FROM `".$prefix."_whoiswho` AS v LEFT JOIN `".$prefix."_users` AS u ON (v.uid=u.user_id) WHERE `iid`='".$a['id']."' AND `module`='".$a['mod']."' ORDER BY `date` DESC LIMIT 0, 10");
+while(list($comment,$date,$ip,$vote,$name,$uid) = $db->sql_fetchrow($result)) {
 if ($uid==0) $name='<span title="'._NEW_RATE_16.': '.implode('.',explode('.',$ip,-2)).'.xx.xx" style="color:#FF5000;font-weight:bold;">'.implode('.',explode('.',$ip,-2)).'.xx.xx</span>';
 else $name='<a href="index.php?name=account&op=info&uname='.urlencode($name).'" title="'._NEW_RATE_17.'">'.$name.'</a>';
-$out .='<tr'.(($i%2)?' class="odd"':'').'><td>'.$name.'</td><td>'.new_ratings_date($date,1,'rus').'</td><td style="font-weight:bold;color:'.((intval($vote)>0)?'green':'red').';">'.((intval($vote)>0)?'+'.$vote:$vote).'</td></tr>';
+$out .='<tr'.(($i%2)?' class="odd"':'').'><td>'.$name.'</td><th scope="row" class="column1">'.$comment.'</th><td>'.new_ratings_date($date,1,'rus').'</td><td style="font-weight:bold;color:'.((intval($vote)>0)?'green':'red').';">'.((intval($vote)>0)?'+'.$vote:$vote).'</td></tr>';
 $i++;
 }
 header('Content-type: text/html; charset=utf-8');
 if (!$out) echo '<br /><table class="whoiswho_rating" summary="'._NEW_RATE_11.'"><caption>'._NEW_RATE_12.'</caption></table>';
-else echo '<br /><table class="whoiswho_rating" summary="'._NEW_RATE_11.'"><caption>'._NEW_RATE_11.'</caption><thead><tr class="odd"><th class="col" abbr="'._NEW_RATE_13.'">'._NEW_RATE_13.'</th><th scope="col" abbr="'._NEW_RATE_14.'">'._NEW_RATE_14.'</th><th scope="col" abbr="'._NEW_RATE_15.'">'._NEW_RATE_15.'</th></tr></thead><tbody>'.$out.'</tbody></table>';
+else echo '<br /><table class="whoiswho_rating" summary="'._NEW_RATE_11.'"><caption>'._NEW_RATE_11.'</caption><thead><tr class="odd"><th class="col" abbr="'._NEW_RATE_13.'">'._NEW_RATE_13.'</th><th scope="col" abbr="'._NEW_RATE_21.'">'._NEW_RATE_21.'</th><th scope="col" abbr="'._NEW_RATE_14.'">'._NEW_RATE_14.'</th><th scope="col" abbr="'._NEW_RATE_15.'">'._NEW_RATE_15.'</th></tr></thead><tbody>'.$out.'</tbody></table>';
 }
 
 ?>
