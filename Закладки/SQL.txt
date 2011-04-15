@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS `{pref}_myfavorite` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `url` varchar(100) NOT NULL,
+  `iid` int(11) NOT NULL,
+  `mod` varchar(50) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `uid` (`uid`),
+  KEY `iid` (`iid`),
+  KEY `mod` (`mod`)
+) ENGINE=MyISAM;

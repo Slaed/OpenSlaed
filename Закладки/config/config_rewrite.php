@@ -18,6 +18,8 @@ $out[] = "rss-\\1.html";
 $in[] = "'(?<!/)rss.php\?name=([a-zA-Z0-9_]*)'";
 $out[] = "rss.html";
 $in[] = "'(?<!/)rss.php'";
+$out[] = "account-favorites.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=account_favorite'";
 
 $massiv = array("account", "contact", "content", "files", "news", "recommend", "rss_info", "search", "top_users", "voting");
 foreach ($massiv as $val) {

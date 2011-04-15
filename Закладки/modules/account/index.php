@@ -623,6 +623,22 @@ function savepass() {
 	}
 }
 
+function account_favorite () {
+global $db,$prefix,$fav,$user,$conf,$pagetitle;
+$pagetitle = $conf['defis']." "._NEW_FAV_13;
+if (is_user()) {
+head();
+title(_NEW_FAV_13);
+navi('0');
+open();
+echo '<div id="result_favorite">';
+echo favorite_view();
+echo '</div>';
+close();
+foot();
+} else edithome();
+}
+
 switch($op) {
 	default:
 	account();
@@ -678,6 +694,10 @@ switch($op) {
 	
 	case "savepass":
 	savepass();
+	break;
+	
+	case "account_favorite":
+	account_favorite();
 	break;
 }
 ?>

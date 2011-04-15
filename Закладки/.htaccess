@@ -33,6 +33,7 @@ RewriteRule ^rss-([a-zA-Z0-9_]+)-([0-9]*).html$						rss.php?name=$1&cat=$2 [NC]
 RewriteRule ^rss-([a-zA-Z0-9_]+).html$								rss.php?name=$1 [NC]
 RewriteRule ^rss.html$												rss.php [NC]
 
+RewriteRule ^account-favorites.html$							index.php?name=account&op=account_favorite [NC]
 RewriteRule ^([a-zA-Z0-9_]+)-edithome.html$							index.php?name=$1&op=edithome [NC]
 RewriteRule ^([a-zA-Z0-9_]+)-logout.html$							index.php?name=$1&op=logout [NC]
 RewriteRule ^([a-zA-Z0-9_]+)-newuser.html$							index.php?name=$1&op=newuser [NC]

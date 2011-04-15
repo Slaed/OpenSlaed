@@ -22,6 +22,7 @@ function navi($id) {
 	}
 	$massiv[] = "<a href=\"index.php?name=account&op=edithome\"><img src=\"images/account/preferences.png\" border=\"0\" alt=\""._CHANGE."\" title=\""._CHANGE."\"></a><br><a href=\"index.php?name=account&op=edithome\">"._CHANGE."</a>";
 	$massiv[] = "<a href=\"index.php?name=account&op=logout\"><img src=\"images/account/exit.png\" border=\"0\" alt=\""._LOGOUT."\" title=\""._LOGOUT."\"></a><br><a href=\"index.php?name=account&op=logout\">"._LOGOUT."</a>";
+	$massiv[] = "<a href=\"index.php?name=account&op=account_favorite\"><img src=\"images/favorite/favorites.png\" border=\"0\" alt=\""._NEW_FAV_13."\" title=\""._NEW_FAV_13."\"></a><br><a href=\"index.php?name=account&op=account_favorite\">"._NEW_FAV_13."</a>";
 	$content = "";
 	foreach ($massiv as $val) {
 		$content .= "<td width=\"10%\" align=\"center\">".$val."</td>";

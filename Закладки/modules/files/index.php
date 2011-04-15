@@ -91,6 +91,7 @@ function files() {
 				}
 			}
 			$arating = " ".ajax_rating(0, $id, $conf['name'], $votes, $totalvotes)."";
+			$arating .= " <div class='rate' id='".$conf['name']."-".$id."' title='$f_title' rel='".rtrim($conf['homeurl'],'/')."/index.php?name=".$conf['name']."&op=view&id=$id'>".favorite_check(array('id'=>$id,'mod'=>$conf['name'],'title'=>$f_title,'url'=>'index.php?name='.$conf['name'].'&op=view&id='.$id),1,1)."</div>";
 			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$id."")."";
 			$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=files_add&id=".$id."")." ".ad_delete("".$admin_file.".php?op=files_delete&id=".$id."", $f_title)."" : "";
 			$cdescription = ($cdescription) ? $cdescription : $ctitle;
@@ -203,6 +204,7 @@ function view() {
 			."</form>";
 		}
 		$arating = " ".ajax_rating(1, $id, $conf['name'], $votes, $totalvotes)."";
+		$arating .= " <div class='rate' id='".$conf['name']."-".$cid."' title='$title' rel='".rtrim($conf['homeurl'],'/')."/index.php?name=".$conf['name']."&op=view&id=$cid'>".favorite_check(array('id'=>$cid,'mod'=>$conf['name'],'title'=>$title,'url'=>'index.php?name='.$conf['name'].'&op=view&id='.$cid))."</div>";
 		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$id."")."";
 		$broc = ($conff['broc'] == 1) ? " <a href=\"index.php?name=".$conf['name']."&op=broken&id=$id\" title=\""._BROCFILE."\"><img src=\"".img_find("all/warning")."\" border=\"0\" align=\"center\"></a>" : "";
 		$email = ($a_email) ? " "._AUEMAIL.": ".anti_spam($a_email)."" : "";
