@@ -1,0 +1,67 @@
+# Copyright © 2005 - 2008 SLAED
+# Website: http://www.slaed.net
+
+# Default charset
+AddDefaultCharset UTF-8
+
+# Errors
+ErrorDocument 400												http://www.slaed.net/faq-cat-39.html
+ErrorDocument 401												http://www.slaed.net/faq-cat-39.html
+ErrorDocument 403												http://www.slaed.net/faq-cat-39.html
+ErrorDocument 404												http://www.slaed.net/faq-cat-39.html
+ErrorDocument 500												http://www.slaed.net/faq-cat-39.html
+ErrorDocument 503												http://www.slaed.net/faq-cat-39.html
+
+# Security
+# php_flag register_globals off
+# php_flag safe_mode on
+# php_flag magic_quotes_gpc on
+
+# Mod rewrite on
+RewriteEngine On
+RewriteBase /
+
+# Index
+RewriteRule ^index.html											index.php [NC]
+
+# All standart moduls and RSS
+RewriteRule ^rss-num-([0-9]*).html$								rss.php?num=$1 [NC]
+RewriteRule ^rss-([a-zA-Z0-9_]+)-num-([0-9]*).html$					rss.php?name=$1&num=$2 [NC]
+RewriteRule ^rss-([a-zA-Z0-9_]+)-id-([0-9]*).html$					rss.php?name=$1&id=$2 [NC]
+RewriteRule ^rss-([a-zA-Z0-9_]+)-([0-9]*)-num-([0-9]*).html$			rss.php?name=$1&cat=$2&num=$3 [NC]
+RewriteRule ^rss-([a-zA-Z0-9_]+)-([0-9]*).html$						rss.php?name=$1&cat=$2 [NC]
+RewriteRule ^rss-([a-zA-Z0-9_]+).html$								rss.php?name=$1 [NC]
+RewriteRule ^rss.html$												rss.php [NC]
+
+RewriteRule ^([a-zA-Z0-9_]+)-edithome.html$							index.php?name=$1&op=edithome [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-logout.html$							index.php?name=$1&op=logout [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-newuser.html$							index.php?name=$1&op=newuser [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-passlost.html$							index.php?name=$1&op=passlost [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-info-(.*).html$							index.php?name=$1&op=info&uname=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-avatar-(.*)-(.*).html$					index.php?name=$1&op=saveavatar&category=$2&avatar=$3 [NC]
+
+RewriteRule ^([a-zA-Z0-9_]+)-print-([0-9]*).html$					index.php?name=$1&op=printe&id=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-view-([0-9]*)-([0-9]*)-([0-9]*).html$	index.php?name=$1&op=view&id=$2&pag=$3&num=$4 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-view-([0-9]*)-([0-9]*).html$			index.php?name=$1&op=view&id=$2&num=$3 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-view-([0-9]*)-word-(.*).html$			index.php?name=$1&op=view&id=$2&word=$3 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-view-([0-9]*).html$					index.php?name=$1&op=view&id=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-broken-([0-9]*).html$					index.php?name=$1&op=broken&id=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-let-(.*)-([0-9]*).html$					index.php?name=$1&op=liste&let=$2&num=$3 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-let-(.*).html$							index.php?name=$1&op=liste&let=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-list-([0-9]*).html$						index.php?name=$1&op=liste&num=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-list.html$								index.php?name=$1&op=liste [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-add.html$								index.php?name=$1&op=add [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-new-([0-9]*).html$						index.php?name=$1&new=1&num=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-new.html$								index.php?name=$1&new=1 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-best-([0-9]*).html$						index.php?name=$1&best=1&num=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-best.html$								index.php?name=$1&best=1 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-hits-([0-9]*).html$						index.php?name=$1&hits=1&num=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-hits.html$								index.php?name=$1&hits=1 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-cat-([0-9]*)-word-(.*).html$				index.php?name=$1&cat=$2&word=$3 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-cat-([0-9]*)-([0-9]*).html$				index.php?name=$1&cat=$2&num=$3 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-cat-([0-9]*).html$						index.php?name=$1&cat=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-word-(.*).html$						index.php?name=$1&word=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-([0-9]*).html$							index.php?name=$1&num=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-([a-zA-Z0-9_]+)-word-(.*)-([0-9]*).html$	index.php?name=$1&mod=$2&word=$3&num=$4 [NC]
+RewriteRule ^([a-zA-Z0-9_]+)-([a-zA-Z0-9_]+).html$					index.php?name=$1&mod=$2 [NC]
+RewriteRule ^([a-zA-Z0-9_]+).html									index.php?name=$1 [NC]
