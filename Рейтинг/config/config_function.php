@@ -77,6 +77,8 @@ function new_ratings_date($date, $is_time=false, $type='rus') {if (is_integer($d
 
 function new_whoiswho ($a) {
 global $db,$prefix;
+include("config/config_ratings.php");
+if ($nnewrate['useronly']==1 && !is_user()) {echo '<br /><table class="whoiswho_rating"><caption>'._NEW_RATE_23.'</caption></table>'; exit();}
 $i=2;
 $result=$db->sql_query("SELECT v.comment,v.date,v.ip,v.vote,u.user_name,v.uid FROM `".$prefix."_whoiswho` AS v LEFT JOIN `".$prefix."_users` AS u ON (v.uid=u.user_id) WHERE `iid`='".$a['id']."' AND `module`='".$a['mod']."' ORDER BY `date` DESC LIMIT 0, 10");
 while(list($comment,$date,$ip,$vote,$name,$uid) = $db->sql_fetchrow($result)) {

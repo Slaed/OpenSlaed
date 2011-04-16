@@ -15,6 +15,7 @@ function ratings() {
 	$mods = array("account", "files", "news");
 	$lang = array(_ACCOUNT, _FILES, _NEWS);
 	$i = 0;
+	$content="<div class=\"left\">"._NEW_RATE_22."</div><div class=\"center\">".radio_form($nnewrate['useronly'], "useronly")."</div>";
 	foreach ($mods as $val) {
 		if ($val != "") {
 			$con = explode("|", $confra[$val]);
@@ -40,6 +41,7 @@ function ratings_save_conf() {
 	$content = "\$confra = array();\n";
 	$mods = array("account", "files", "news");
 	$i = 0;
+	$content = "\$nnewrate['useronly'] = ".intval($_POST['useronly']).";\n";
 	foreach ($mods as $val) {
 		if ($val != "") {
 			$xtime = (!intval($_POST['time'][$i])) ? 2592000 : $_POST['time'][$i] * 86400;
