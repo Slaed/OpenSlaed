@@ -93,7 +93,7 @@ function news() {
 				$comm = "";
 			}
 			$arating = " ".ajax_rating(0, $sid, $conf['name'], $ratings, $score)."";
-			$arating .= " <div class='rate' id='".$conf['name']."-".$sid."' title='$stitle' rel='".rtrim($conf['homeurl'],'/')."/index.php?name=".$conf['name']."&op=view&id=$sid'>".favorite_check(array('id'=>$sid,'mod'=>$conf['name'],'title'=>$stitle,'url'=>'index.php?name='.$conf['name'].'&op=view&id='.$sid),1,1)."</div>";
+      $arating .= favorite_see ($conf['name'],$sid,$stitle,"index.php?name=".$conf['name']."&op=view&id=$sid",1);
 			$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$sid."")."";
 			$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."", $stitle)."" : "";
 			$cdescription = ($cdescription) ? $cdescription : $ctitle;
@@ -199,7 +199,7 @@ function view() {
 		$ndate = ($confn['newdate']) ? " "._DATE.": ".format_time($time)."" : "";
 		$reads = ($confn['newread']) ? " "._READS.": ".$counter."" : "";
 		$arating = " ".ajax_rating(1, $sid, $conf['name'], $ratings, $score)."";
-		$arating .= " <div class='rate' id='".$conf['name']."-".$sid."' title='$title' rel='".rtrim($conf['homeurl'],'/')."/index.php?name=".$conf['name']."&op=view&id=$sid'>".favorite_check(array('id'=>$sid,'mod'=>$conf['name'],'title'=>$title,'url'=>'index.php?name='.$conf['name'].'&op=view&id='.$sid))."</div>";
+		$arating .= favorite_see ($conf['name'],$sid,$title,"index.php?name=".$conf['name']."&op=view&id=$sid",0);
 		$print = " ".ad_print("index.php?name=".$conf['name']."&op=printe&id=".$sid."")."";
 		$admin = (is_moder($conf['name'])) ? " ".ad_edit("".$admin_file.".php?op=news_add&id=".$sid."")." ".ad_delete("".$admin_file.".php?op=news_delete&id=".$sid."", $title)."" : "";
 		$cdescription = ($cdescription) ? $cdescription : $ctitle;
