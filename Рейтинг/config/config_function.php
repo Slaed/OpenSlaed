@@ -77,6 +77,7 @@ function new_ratings_date($date, $is_time=false, $type='rus') {if (is_integer($d
 
 function new_whoiswho ($a) {
 global $db,$prefix;
+header('Content-type: text/html; charset=utf-8');
 include("config/config_ratings.php");
 if ($nnewrate['useronly']==1 && !is_user()) {echo '<br /><table class="whoiswho_rating"><caption>'._NEW_RATE_23.'</caption></table>'; exit();}
 $i=2;
@@ -87,7 +88,6 @@ else $name='<a href="index.php?name=account&op=info&uname='.urlencode($name).'" 
 $out .='<tr'.(($i%2)?' class="odd"':'').'><td>'.$name.'</td><th scope="row" class="column1">'.$comment.'</th><td>'.new_ratings_date($date,1,'rus').'</td><td style="font-weight:bold;color:'.((intval($vote)>0)?'green':'red').';">'.((intval($vote)>0)?'+'.$vote:$vote).'</td></tr>';
 $i++;
 }
-header('Content-type: text/html; charset=utf-8');
 if (!$out) echo '<br /><table class="whoiswho_rating" summary="'._NEW_RATE_11.'"><caption>'._NEW_RATE_12.'</caption></table>';
 else echo '<br /><table class="whoiswho_rating" summary="'._NEW_RATE_11.'"><caption>'._NEW_RATE_11.'</caption><thead><tr class="odd"><th class="col" abbr="'._NEW_RATE_13.'">'._NEW_RATE_13.'</th><th scope="col" abbr="'._NEW_RATE_21.'">'._NEW_RATE_21.'</th><th scope="col" abbr="'._NEW_RATE_14.'">'._NEW_RATE_14.'</th><th scope="col" abbr="'._NEW_RATE_15.'">'._NEW_RATE_15.'</th></tr></thead><tbody>'.$out.'</tbody></table>';
 }
