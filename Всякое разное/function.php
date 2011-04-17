@@ -152,12 +152,14 @@ function textarea($id, $name, $var, $mod, $rows) {
 				<span id=\"spanButtonPlaceholder\"></span>
 				<input id=\"btnUpload\" type=\"button\" value=\""._UPLOAD."\" class=\"fbutton\">
 				<input id=\"btnCancel\" type=\"button\" value=\""._CANALLUP."\" disabled=\"disabled\" class=\"fbutton\">
+				<input type=\"button\" value=\"NEW\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" class=\"fbutton\">
 				<input type=\"button\" value=\""._UPDATE."\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" class=\"fbutton\"></p><br></div>
 				<noscript>Were sorry. SWFUpload could not load. You must have JavaScript enabled to enjoy SWFUpload.</noscript>
 				<div id=\"divLoadingContent\" style=\"display: none;\">SWFUpload is loading. Please wait a moment...</div>
 				<div id=\"divLongLoading\" style=\"display: none;\">SWFUpload is taking a long time to load or the load has failed. Please make sure that the Flash Plugin is enabled and that a working version of the Adobe Flash Player is installed.</div>
 				<div id=\"divAlternateContent\" style=\"display: none;\">Were sorry.  SWFUpload could not load.  You may need to install or upgrade Flash Player. Visit the <a href=\"http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash\" target=\"_blank\">Adobe website</a> to get the Flash Player.</div>";
 			} else {
+				$code .= "<input type=\"button\" value=\"NEW\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" style=\"margin-top: 5px; margin-right:5px;\" class=\"fbutton\">";
 				$code .= "<input type=\"button\" value=\""._UPDATE."\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" style=\"margin-top: 5px;\" class=\"fbutton\">";
 			}
 			$code .= "<div id=\"repf".$id."\" style=\"margin: 5px;\"></div></div><script type=\"text/javascript\">var editu = new SwitchCont('af".$id."', '2');</script>";
@@ -287,13 +289,13 @@ function num_ajax() {
 		$content = "";
 		if ($num > 1) {
 			$prevpage = $num - 1;
-			$content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$prevpage."', '".$typ."', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$prevpage."', '".$typ."', '".$mod."', ''); return false;\" title=\"&lt;&lt;\">&lt;&lt;</a> ";
+			$content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$prevpage."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$prevpage."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" title=\"&lt;&lt;\">&lt;&lt;</a> ";
 		}
 		for ($i = 1; $i < $pnum[1]+1; $i++) {
 			if ($i == $num) {
 				$content .= "<span title=\"$i\">$i</span>";
 			} else {
-				if ((($i > ($num - $mnum)) && ($i < ($num + $mnum))) OR ($i == $pnum[1]) || ($i == 1)) $content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', ''); return false;\" title=\"$i\">$i</a>";
+				if ((($i > ($num - $mnum)) && ($i < ($num + $mnum))) OR ($i == $pnum[1]) || ($i == 1)) $content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" title=\"$i\">$i</a>";
 			}
 			if ($i < $pnum[1]) {
 				if (($i > ($num - $nnum)) && ($i < ($num + $mnum))) $content .= " ";
@@ -303,7 +305,7 @@ function num_ajax() {
 		}
 		if ($num < $pnum[1]) {
 			$nextpage = $num + 1;
-			$content .= " <a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$nextpage."', '".$typ."', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$nextpage."', '".$typ."', '".$mod."', ''); return false;\" title=\"&gt;&gt;\">&gt;&gt;</a>";
+			$content .= " <a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$nextpage."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$nextpage."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" title=\"&gt;&gt;\">&gt;&gt;</a>";
 		}
 		ob_start();
 		pagenum(_OVERALL, $pnum[0], _ON, $pnum[1], _PAGE_S, $pnum[2], _PERPAGE, $content);
@@ -337,7 +339,7 @@ function show_files() {
 		}
 		$dh = opendir($path);
 		while ($entry = readdir($dh)) {
-			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) $files[] = array(filemtime($path.$entry), $entry);
+			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}
 		}
 		closedir($dh);
 		if ($files) {
@@ -382,7 +384,7 @@ function show_files() {
 		}
 		$dh = opendir($path);
 		while ($entry = readdir($dh)) {
-			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) $files[] = array(filemtime($path.$entry), $entry);
+			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}
 		}
 		closedir($dh);
 		if ($files) {
