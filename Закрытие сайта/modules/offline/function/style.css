@@ -45,7 +45,7 @@ h3 { font-size: 14px; color: #828282; }
 .space29 { height: 29px; }
 .space30 { height: 30px; }
 .container { width: 868px; height: auto; margin: 0 auto; }
-.logo { width: 868px; height: 78px; background: url(./images/offline/logo.png); background-repeat: no-repeat; background-position: center center; }
+.logo { width: 868px; height: 78px; background: url(/images/offline/logo.png); background-repeat: no-repeat; background-position: center center; }
 .header { width: 868px; height: 69px; background-repeat: no-repeat; }
 .header.hd { background: url(/images/offline/header.png); }
 .content { width: 820px; height: auto; background: url(/images/offline/content.png); background-repeat: repeat-y; padding: 13px 24px 4px 24px; text-align: center; overflow: hidden; }
