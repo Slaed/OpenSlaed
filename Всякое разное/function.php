@@ -150,15 +150,17 @@ function textarea($id, $name, $var, $mod, $rows) {
 				<span id=\"spanButtonPlaceholder\"></span>
 				<input id=\"btnUpload\" type=\"button\" value=\""._UPLOAD."\" class=\"fbutton\">
 				<input id=\"btnCancel\" type=\"button\" value=\""._CANALLUP."\" disabled=\"disabled\" class=\"fbutton\">
+				<input type=\"button\" value=\"NEW\" class=\"fbutton\" OnClick=\"ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id&text=1', 'f".$id."');\">
 				<input type=\"button\" value=\""._UPDATE."\" class=\"fbutton\" OnClick=\"ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id', 'f".$id."');\"></p><br></div>
 				<noscript>Were sorry. SWFUpload could not load. You must have JavaScript enabled to enjoy SWFUpload.</noscript>
 				<div id=\"divLoadingContent\" style=\"display: none;\">SWFUpload is loading. Please wait a moment...</div>
 				<div id=\"divLongLoading\" style=\"display: none;\">SWFUpload is taking a long time to load or the load has failed. Please make sure that the Flash Plugin is enabled and that a working version of the Adobe Flash Player is installed.</div>
 				<div id=\"divAlternateContent\" style=\"display: none;\">Were sorry.  SWFUpload could not load.  You may need to install or upgrade Flash Player. Visit the <a href=\"http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash\" target=\"_blank\">Adobe website</a> to get the Flash Player.</div>";
 			} else {
+				$code .= "<input type=\"button\" value=\"NEW\" style=\"margin: 5px 5px 0 5px;\" class=\"fbutton\" OnClick=\"ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id&text=1', 'f".$id."');\">";
 				$code .= "<input type=\"button\" value=\""._UPDATE."\" style=\"margin: 5px 0 0 0;\" class=\"fbutton\" OnClick=\"ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id', 'f".$id."');\">";
 			}
-			$code .= "<script type=\"text/javascript\">ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id', 'f".$id."');</script><div id=\"f".$id."\"></div></div><script language=\"JavaScript\" type=\"text/javascript\">var editu = new SwitchCont('af".$id."', '2');</script>";
+			$code .= "<script type=\"text/javascript\">ajax('ajax.php?go=3&op=show_files&mod=$mod&id=$id&text=1', 'f".$id."');</script><div id=\"f".$id."\"></div></div><script language=\"JavaScript\" type=\"text/javascript\">var editu = new SwitchCont('af".$id."', '2');</script>";
 		}
 	} elseif (defined("ADMIN_FILE") && $conf['redaktor'] == 2) {
 		if (!preg_match("#blocks|configure|editor|groups|rss_conf|security|template|style#i", $_GET['op'])) {
@@ -247,9 +249,7 @@ function show_files() {
 		if ($file && $dir) unlink($path.$file);
 		$dh = opendir($path);
 		while ($entry = readdir($dh)) {
-			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {
-				$files[] = array(filemtime($path.$entry), $entry);
-			}
+      if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}
 		}
 		closedir($dh);
 		if ($files) {
@@ -286,9 +286,7 @@ function show_files() {
 		if (is_moder($dir) && $file && $dir) unlink($path.$file);
 		$dh = opendir($path);
 		while ($entry = readdir($dh)) {
-			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {
-				$files[] = array(filemtime($path.$entry), $entry);
-			}
+			if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}
 		}
 		closedir($dh);
 		if ($files) {
@@ -329,13 +327,13 @@ function num_ajax($numstories, $numpages, $storynum, $module_link="") {
 		$content = "<div align=\"center\" class=\"pagelink\"><h4>"._OVERALL." $numstories "._ON." $numpages "._PAGE_S." $storynum "._PERPAGE."</h4>";
 		if ($num > 1) {
 			$prevpage = $num - 1;
-			$content .= "<span OnClick=\"ajax('ajax.php?".$module_link."num=$prevpage', 'f".$id."');\" title=\"&lt;&lt;\">&lt;&lt;</span> ";
+			$content .= "<span OnClick=\"ajax('ajax.php?".$module_link."num=$prevpage&text=".intval($_GET['text'])."', 'f".$id."');\" title=\"&lt;&lt;\">&lt;&lt;</span> ";
 		}
 		for ($i = 1; $i < $numpages+1; $i++) {
 			if ($i == $num) {
 				$content .= "<span title=\"$i\">$i</span>";
 			} else {
-				if ((($i > ($num - 8)) && ($i < ($num + 8))) OR ($i == $numpages) || ($i == 1)) $content .= "<span OnClick=\"ajax('ajax.php?".$module_link."num=$i', 'f".$id."');\" title=\"$i\">$i</span>";
+				if ((($i > ($num - 8)) && ($i < ($num + 8))) OR ($i == $numpages) || ($i == 1)) $content .= "<span OnClick=\"ajax('ajax.php?".$module_link."num=$i&text=".intval($_GET['text'])."', 'f".$id."');\" title=\"$i\">$i</span>";
 			}
 			if ($i < $numpages) {
 				if (($i > ($num - 9)) && ($i < ($num + 8))) $content .= " ";
@@ -345,7 +343,7 @@ function num_ajax($numstories, $numpages, $storynum, $module_link="") {
 		}
 		if ($num < $numpages) {
 			$nextpage = $num + 1;
-			$content .= " <span OnClick=\"ajax('ajax.php?".$module_link."num=$nextpage', 'f".$id."');\" title=\"&gt;&gt;\">&gt;&gt;</span>";
+			$content .= " <span OnClick=\"ajax('ajax.php?".$module_link."num=$nextpage&text=".intval($_GET['text'])."', 'f".$id."');\" title=\"&gt;&gt;\">&gt;&gt;</span>";
 		}
 		$content .= "</div>";
 		return $content;
