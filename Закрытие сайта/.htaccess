@@ -23,6 +23,7 @@ RewriteBase /
 
 # Index
 RewriteRule ^index.html											index.php [NC]
+RewriteRule ^offline.html											index.php?name=offline [NC]
 
 # All standart moduls and RSS
 RewriteRule ^rss-num-([0-9]*).html$								rss.php?num=$1 [NC]
