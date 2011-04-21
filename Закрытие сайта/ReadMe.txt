@@ -4,7 +4,7 @@
 
 Установка
 
-1. Скачиваем архив: http://trac.assembla.com/slaed/changeset?format=zip&new=46&old=42&new_path=%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&old_path=%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0
+1. Скачиваем архив: http://trac.assembla.com/slaed/changeset?format=zip&new=47&old=42&new_path=%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&old_path=%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0
 2. Если никаких изменений в систему не вносили - копируем содержимое архива в корень сайта, соблюдая вложенность и переходим к п.3, иначе вносим изменения в следующие файлы:
 
 .htaccess
@@ -12,7 +12,7 @@ function/function.php
 config/config_rewrite.php
 config/config_function.php
 
-Изменения смотрим здесь: http://trac.assembla.com/slaed/changeset?old_path=%2F%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&old=42&new_path=%2F%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&new=46
+Изменения смотрим здесь: http://trac.assembla.com/slaed/changeset?old_path=%2F%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&old=42&new_path=%2F%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%B8%D0%B5+%D1%81%D0%B0%D0%B9%D1%82%D0%B0&new=47
 После внесения изменений, копируем следующие папки и файлы, соблюдая вложенность:
 
 config/config_offline.php

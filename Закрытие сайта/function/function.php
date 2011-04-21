@@ -1184,7 +1184,7 @@ function head() {
 	global $prefix, $db, $home, $index, $conf, $confs, $user, $admin, $name, $bodytext, $hometext, $pagetitle, $key_words;
 	unset($_SESSION[$conf['user_c']]);
 	$_SESSION[$conf['user_c']] = $conf['user_c'];
-	open_offline();
+	if (!defined("ADMIN_FILE")) open_offline();
 	if ((!defined("ADMIN_FILE") && $conf['cache'] == 1) || (!defined("ADMIN_FILE") && $conf['cache'] == 2 && $home)) {
 		$url = str_replace("/", "", $_SERVER['REQUEST_URI']);
 		$url = (!$url) ? "index.php" : $url;
