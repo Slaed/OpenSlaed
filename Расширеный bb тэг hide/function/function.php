@@ -18,6 +18,11 @@ if (defined("MODULE_FILE")) {
 	include("function/admin.php");
 }
 
+if (file_exists("config/config_new_rating.php")) include_once("config/config_new_rating.php");
+function hide_rights () { global $hide,$user,$nhide,$db,$prefix; if (is_array($hide[$user[0]])) return $hide; else { foreach ($nhide['types'] as $a=>$b) { $sql=''; if ($b[0]==1) { $hide['var'][]=$a; $hide['lang'][$a]=array($b[1],$b[2]); $sql=$db->sql_query("SELECT ".$b['sql']['select']." FROM `".$prefix."_".$b['sql']['table']."` WHERE ".$b['sql']['where']."=".$user[0]); list($hide[$user[0]][$a]) = $db->sql_fetchrow($sql); } } return $hide; } }
+function new_parse_hide($text,$nohide=0) { if ($nohide==1) return preg_replace(array("#\[hide(|=([^\]]+) count=(\d+))\]([^\[hide\]]+)\[/hide\]#si","#\[hide(|=([^\]]+) count=(\d+))\](.*)\[/hide\]#si"),'',$text); $text = preg_replace_callback("#\[hide(|=([^\]]+) count=(\d+))\]([^\[hide\]]+)\[/hide\]#si", "each_hide", $text); while (preg_match("#\[hide(|=([^\]]+) count=(\d+))\](.*?)\[/hide\]#si", $text)) $text = preg_replace_callback("#\[hide(|=([^\]]+) count=(\d+))\](.*)\[/hide\]#si", "each_hide", $text); return $text; }
+function each_hide($a) { global $user,$nhide; if (!is_admin()) { if (!is_user() && intval($a[3])>0 && $a[2]!='' && $nhide['types'][$a[2]][0]==1) {$out['status']=0;$out['text']=_NEW_HIDE_7.$nhide['types'][$a[2]][1].$a[3];} elseif (!is_user()) {$out['status']=0;$out['text']=_NEW_HIDE_18;} else { $hide=hide_rights(); if (intval($a[3])>0 && $a[2]!='' && in_array($a[2],$hide['var'])) { if ($hide[$user[0]][$a[2]]>=$a[3]) {$out['status']=1;$out['text']=$a[4];} else {$out['status']=0;$out['text']=_NEW_HIDE_17.$hide['lang'][$a[2]][0].$a[3]._NEW_HIDE_8.$hide['lang'][$a[2]][1].$hide[$user[0]][$a[2]];} } else {$out['status']=1;$out['text']=$a[4];} } } else {$out['status']=1;$out['text']=$a[4];} if ($out['status']==0) return "<fieldset style='width:95%;overflow:auto;'><legend style='color: red;'>"._HIDE."</legend><div style='margin: 3px;'>".$out['text'].'</div></fieldset>'; else return $out['text']; }
+
 # Format theme file
 function get_theme_file($name) {
 	global $home, $conf, $op;
@@ -1672,7 +1677,7 @@ function bb_decode($sourse, $mod) {
 	
 		$sourse = preg_replace($bb, $html, $sourse);
 		if (preg_match("#\[quote\](.*?)\[/quote\]#si", $sourse)) $sourse = encode_quote($sourse);
-		if (preg_match("#\[hide\](.*?)\[/hide\]#si", $sourse)) $sourse = encode_hide($sourse);
+		if (preg_match("#\[hide(|=([^\]]+) count=(\d+))\](.*?)\[/hide\]#si", $sourse)) $sourse = new_parse_hide($sourse);
 		if (preg_match("#\[attach=(.*?)\]#si", $sourse)) $sourse = encode_attach($sourse, strtolower($mod));
 	} else {
 		if (preg_match("#(.*)\[php\](.*)\[/php\](.*)#si", $sourse, $matches)) {
