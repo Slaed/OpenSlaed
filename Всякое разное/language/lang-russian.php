@@ -2,6 +2,9 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_TEXT_FONT","Шрифт");
+define("_TEXT_COLOR","Цвет");
+define("_TEXT_SIZE","Размер");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");
