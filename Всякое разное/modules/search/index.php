@@ -10,7 +10,7 @@ get_lang($conf['name']);
 
 function search_result() {
 	global $prefix, $db, $pagetitle, $admin_file, $conf, $confu;
-	$word = ($_POST['word']) ? text_filter($_POST['word']) : text_filter($_GET['word']);
+	$word = ($_POST['word']) ? text_filter($_POST['word']) : text_filter(iconv('cp1251','utf-8',$_GET['word']));
 	$mod = ($_POST['mod']) ? text_filter($_POST['mod']) : text_filter($_GET['mod']);
 	$mod = ($mod) ? $mod : 0;
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
