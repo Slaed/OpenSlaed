@@ -234,7 +234,7 @@ function broken() {
 	if ($conff['broc'] == 1 && $id) {
 		head();
 		menu(""._BROCFILE."");
-		$db->sql_query("UPDATE ".$prefix."_files SET status='2' WHERE lid='$id'");
+		$db->sql_query("UPDATE ".$prefix."_files SET status='2' WHERE lid='$id' AND status!='0'");
 		warning(""._BROCNOTE."", "?name=".$conf['name']."&op=view&id=$id", 5, 2);
 		foot();
 	} else {
