@@ -1058,7 +1058,7 @@ function get_info() {
 	."<tr><td>"._LOCALITYLANG.":</td><td>".$local."</td></tr>"
 	."<tr><td>"._INTERESTS.":</td><td>".$inter."</td></tr>"
 	.$rank
-		."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[36]."</td></tr>"
+	."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[38]."</td></tr>"
 	."<tr><td>"._REITING.":</td><td align=\"left\">".$rating."</td></tr>"
 	."<tr><td>"._UWARN.":</td><td>".warn_graphic($info[26])."</td></tr>"
 	.$agent.$field.$sign
@@ -3671,7 +3671,7 @@ function redaktor($id, $name, $class, $editor) {
 	$content .= "</select>";
 	return $content;
 }
-
+function sel_coms () { global $outcomm,$db,$prefix; if (is_array($outcomm)) return $outcomm; else { $sql=$db->sql_query("SELECT uid, COUNT( id ) FROM `".$prefix."_comment` GROUP BY `uid`"); while(list($uid,$count) = $db->sql_fetchrow($sql)) $outcomm[$uid]=$count; return $outcomm; }}
 # Show comments
 function ashowcom() {
 	global $prefix, $db, $admin_file, $conf, $confu, $confc, $user, $currentlang;
@@ -3772,7 +3772,9 @@ function ashowcom() {
 			$rwarn = ($user_warnings) ? warn_graphic($user_warnings) : "";
 			$group = ($user_gname) ? _GROUP.": <span style=\"color: ".$user_gcolor."\">".$user_gname."</span>" : "";
 			$point = ($confu['point'] && $user_points) ? _POINTS.": ".$user_points : "";
+			$arr=sel_coms();
 			$regdate = ($user_regdate) ? _REG_DATE.": ".format_time($user_regdate) : "";
+			$regdate .= '<br />COMMENTS: '.intval($arr[$user_id]);
 			$gender = ($user_gender) ? _GENDER.": ".gender($user_gender, 1) : "";
 			$from = ($user_from) ? _FROM.": ".$user_from : "";
 			$sig = ($user_sig) ? "<hr>".$user_sig : "";
