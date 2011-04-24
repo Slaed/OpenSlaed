@@ -42,12 +42,6 @@ if (defined("MODULE_FILE")) {
 	include("function/admin.php");
 }
 
-if (file_exists("config/config_new_hide.php")) include_once("config/config_new_hide.php"); 
- 	function hide_rights () { global $hide,$user,$nhide,$db,$prefix; if (is_array($hide[$user[0]])) return $hide; else { foreach ($nhide['types'] as $a=>$b) { $sql=''; if ($b[0]==1) { $hide['var'][]=$a; $hide['lang'][$a]=array($b[1],$b[2]); $sql=$db->sql_query("SELECT ".$b['sql']['select']." FROM `".$prefix."_".$b['sql']['table']."` WHERE ".$b['sql']['where']."=".$user[0]); list($hide[$user[0]][$a]) = $db->sql_fetchrow($sql); } } return $hide; } } 
- 		function new_parse_hide($text,$nohide=0) { if ($nohide==1) return preg_replace(array("#\[hide(|=([^\]]+) count=(\d+))\]([^\[hide\]]+)\[/hide\]#si","#\[hide(|=([^\]]+) count=(\d+))\](.*)\[/hide\]#si"),'',$text); $text = preg_replace_callback("#\[hide(|=([^\]]+) count=(\d+))\]([^\[hide\]]+)\[/hide\]#si", "each_hide", $text); while (preg_match("#\[hide(|=([^\]]+) count=(\d+))\](.*?)\[/hide\]#si", $text)) $text = preg_replace_callback("#\[hide(|=([^\]]+) count=(\d+))\](.*)\[/hide\]#si", "each_hide", $text); return $text; } 
- 		function each_hide($a) { global $user,$nhide; if (!is_admin()) { if (!is_user() && intval($a[3])>0 && $a[2]!='' && $nhide['types'][$a[2]][0]==1) {$out['status']=0;$out['text']=_NEW_HIDE_7.$nhide['types'][$a[2]][1].$a[3];} elseif (!is_user()) {$out['status']=0;$out['text']=_NEW_HIDE_18;} else { $hide=hide_rights(); if (intval($a[3])>0 && $a[2]!='' && in_array($a[2],$hide['var'])) { if ($hide[$user[0]][$a[2]]>=$a[3]) {$out['status']=1;$out['text']=$a[4];} else {$out['status']=0;$out['text']=_NEW_HIDE_17.$hide['lang'][$a[2]][0].$a[3]._NEW_HIDE_8.$hide['lang'][$a[2]][1].$hide[$user[0]][$a[2]];} } else {$out['status']=1;$out['text']=$a[4];} } } else {$out['status']=1;$out['text']=$a[4];} if ($out['status']==0) return "<div class=\"hide_ms_2\"><div class=\"hide_ms_1\"><legend style='color: red;'>"._HIDE."</legend><img align=left src=\"http://files.maximuma.net/templates/artlight/images/qw.jpg\">".$out['text'].'</div></div></div>'; else return $out['text']; }
- 	
-
 # Format theme
 function get_theme() {
 	global $user, $conf;
@@ -173,6 +167,31 @@ function save_datetime($id, $name) {
 	return $content;
 }
 
+function code_links($title)
+{
+echo <<<HTML
+<script type="text/javascript">
+function jFocus(elm) {if(typeof(elm) == 'string') elm = getElementById(elm);
+if (elm) {      elm.focus(); elm.select();}}
+</script>
+<h2 style="margin: 0 0 5px 0;">Ссылки новости</h2>
+<table border="0" cellspacing="0" cellpadding="2">
+<script>
+var today=new Date()
+document.write('<tr><td><b>HTML</b>:</td><td><input type="text" value="<a href=&#34'+window.location+'&#34>{$title}</a>" size="60" onclick="jFocus(this)"></td></tr>')
+</script>
+<script>
+var today=new Date()
+document.write('<tr><td><b>BBC</b>:</td><td><input type="text" value="[url='+window.location+']{$title}[/url]"size="60" onclick="jFocus(this)"></td></tr>')
+</script>
+<script>
+var today=new Date()
+document.write('<tr><td><b>ССЫЛКА</b>:</td><td><input type="text" value="'+window.location+'"size="60" onclick="jFocus(this)"></td></tr> ')
+</script>
+</table>
+HTML;
+}
+
 # Format radio form
 function radio_form($var, $name, $id="") {
 	if ($id == 1) {
@@ -252,21 +271,6 @@ function encode_attach($sourse, $mod, $title="") {
 	return $sourse;
 }
 
-function code_links($url)
-{
-echo <<<HTML
-<center><script type="text/javascript">
-function jFocus(elm) {if(typeof(elm) == 'string') elm = getElementById(elm);
-if (elm) {      elm.focus(); elm.select();}}
-</script>
-<table border="0" cellspacing="0" cellpadding="2">
-<script>
-var today=new Date()
-document.write('<tr><td><b>Прямая ссылка</b>:</td><td><input type="text" value="{$url}" size="60" onclick="jFocus(this)"></td></tr>')
-</script>
-</table></center>
-HTML;
-}
 # Format search highlight
 function search_color($sourse, $word) {
 	global $conf;
@@ -610,8 +614,8 @@ function ajax_rating($typ, $id, $mod, $rat, $scor, $obj="") {
 	include("config/config_ratings.php");
 	$con = explode("|", $confra[strtolower($mod)]);
 	if (($con[1] && $id && $mod) || ($rat && $scor)) {
-if ($con[3]==1 && !defined("ADMIN_FILE")) $content="<div class='rate' id='rate".$id."'>".new_vote_graphic(array('total'=>$scor,'votes'=>$rat,'bodytext'=>$con[2],'isbody'=>$typ,'mod'=>$mod,'id'=>$id,'useronly'=>$con[4]))."</div>"; 
- 		else $content = (($con[1] && $typ) || ($con[1] && !$con[2] && !$typ)) ? "<script type=\"text/javascript\">ajax('ajax.php?go=1&op=rating&mod=".$mod."&id=$id', 'rate".$id."');</script><div class=\"rate\" id=\"rate".$id."\"></div>" : "<div class=\"rate\">".vote_graphic($rat, $scor)."</div>";
+if ($con[3]==1 && !defined("ADMIN_FILE")) $content="<div class='rate' id='rate".$id."'>".new_vote_graphic(array('total'=>$scor,'votes'=>$rat,'bodytext'=>$con[2],'isbody'=>$typ,'mod'=>$mod,'id'=>$id,'useronly'=>$con[4]))."</div>";
+else $content = (($con[1] && $typ) || ($con[1] && !$con[2] && !$typ)) ? "<script type=\"text/javascript\">ajax('ajax.php?go=1&op=rating&mod=".$mod."&id=$id', 'rate".$id."');</script><div class=\"rate\" id=\"rate".$id."\"></div>" : "<div class=\"rate\">".vote_graphic($rat, $scor)."</div>";
 		return $content;
 	}
 }
@@ -685,8 +689,8 @@ if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\.
 		}
 		$dh = opendir($path);
 		while ($entry = readdir($dh)) {
-
-if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}		}
+if ($entry != "." && $entry != ".." && $entry != "index.html" && preg_match("/\./", $entry)) {$ft=filemtime($path.$entry); if (intval($_GET['text'])==0 || intval($_GET['text'])>0 && $ft>=(time()-3600)) $files[] = array($ft, $entry);}
+		}
 		closedir($dh);
 		if ($files) {
 			rsort($files);
@@ -1054,8 +1058,8 @@ function get_info() {
 	."<tr><td>"._LOCALITYLANG.":</td><td>".$local."</td></tr>"
 	."<tr><td>"._INTERESTS.":</td><td>".$inter."</td></tr>"
 	.$rank
+		."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[36]."</td></tr>"
 	."<tr><td>"._REITING.":</td><td align=\"left\">".$rating."</td></tr>"
-		."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[38]."</td></tr>"
 	."<tr><td>"._UWARN.":</td><td>".warn_graphic($info[26])."</td></tr>"
 	.$agent.$field.$sign
 	."</table></td></tr><tr class=\"bgcolor1\"><td><table width=\"100%\">"
@@ -1395,7 +1399,9 @@ if (!defined("ADMIN_FILE")) open_offline();
 			list($exist) = $db->sql_fetchrow($db->sql_query("SELECT ip FROM ".$prefix."_referer WHERE ip='$ip' AND lid!='0'"));
 			if ($exist) {
 				$db->sql_query("INSERT INTO ".$prefix."_referer VALUES (NULL, '".$uid."', '".$uname."', '".$ip."', '".$referer."', '".$link."', now(), '0')");
+			
 			} else {
+				if(file_get_contents("config/cache/referer.dat")){unlink("config/cache/referer.dat");}
 				$result = $db->sql_query("SELECT link FROM ".$prefix."_auto_links");
 				while(list($slink) = $db->sql_fetchrow($result)) {
 					if (preg_match("#".$slink."#i", $referer)) {
@@ -1569,12 +1575,14 @@ if (!defined("ADMIN_FILE")) open_offline();
       }}
 	$strhead .= $style.$script."<script type=\"text/javascript\" src=\"ajax/global_func.js\"></script>\n<script type=\"text/javascript\" src=\"ajax/load.js\"></script>\n";
 	$strhead .= (!$confs['error_java']) ? "<script type=\"text/javascript\" src=\"ajax/block_error.js\"></script>\n" : "";
-if (file_exists("config/config_header.php")) {   
-    ob_start();   
-    include("config/config_header.php");   
-    $strhead .= ob_get_contents();   
-    ob_end_clean();   
-} 
+	if (!defined("ADMIN_FILE")) {
+		if (file_exists("config/config_header.php")) {
+			ob_start();
+			include("config/config_header.php");
+			$strhead .= ob_get_contents();
+			ob_end_clean();
+		}
+	}
 	$head = addblocks($head);
 	$head = str_replace("{%HEAD%}", $strhead, $head);
 	themeheader($head);
@@ -2023,10 +2031,6 @@ function categories($mod, $tab, $sub, $desc, $id="") {
 			} elseif ($mod == "files") {
 				list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(lid) FROM ".$prefix."_files WHERE cid IN ($catid) AND date <= now() AND status!='0'"));
 				$in = _INF;
-							} elseif ($mod == "mult") {
-				list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(lid) FROM ".$prefix."_mult WHERE cid IN ($catid) AND date <= now() AND status!='0'"));
-				$in = _INF;
-
 			} elseif ($mod == "help") {
 				$uid = intval($user[0]);
 				list($pages_num) = $db->sql_fetchrow($db->sql_query("SELECT Count(sid) FROM ".$prefix."_help WHERE catid IN ($catid) AND time <= now() AND pid='0' AND uid='$uid'"));
@@ -2280,21 +2284,20 @@ function rewrite() {
 }
 
 # Decode BB
-function bb_decode($sourse, $mod, $title="") {
-	if (preg_match("#\[spoiler\](.*)\[/spoiler\]|\[spoiler=(.+?)\](.+?)\[/spoiler\]#si", $sourse)) $sourse = build_spoiler($sourse);
-
+function bb_decode($sourse, $mod,$title="") {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
-		
+		$sourse=bb_pro($sourse);
 		$bb = array();
 		$html = array();
-$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i"; 
-$html[] = "<img src=\"\\1\" border=\"0\" alt=\"$title\" title=\"$title\">"; 
-$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is"; 
-$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"$title\" title=\"$title\">"; 
-$bb[] = "#\[img\ alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is"; 
-$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"$title\" title=\"$title\">"; 
-$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is"; 
-$html[] = "<img src=\"\\3\" align=\"\\1\" border=\"0\" alt=\"$title\" title=\"$title\">";
+$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i";
+$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
+$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\2\" title=\"\\2\">";
+$bb[] = "#\[img\ alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
+$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+$html[] = "<img src=\"\\3\" align=\"\\1\" border=\"0\" alt=\"$title\" title=\"$title\" style=\"padding: 5px; 10px;\">";
+
 		$bb[] = "#\[url\](ed2k://\|file\|(.*?)\|\d+\|\w+\|(h=\w+\|)?/?)\[/url\]#is";
 		$html[] = "eMule/eDonkey: <a href=\"\\1\" target=\"_blank\" title=\"\\2\">\\2</a>";
 		$bb[] = "#\[url=(ed2k://\|file\|(.*?)\|\d+\|\w+\|(h=\w+\|)?/?)\](.*?)\[/url\]#si";
@@ -2329,44 +2332,33 @@ $html[] = "<img src=\"\\3\" align=\"\\1\" border=\"0\" alt=\"$title\" title=\"$t
 		$html[] = "<div align=\"\\1\">\\2</div>";
 		$bb[] = "#\[b\](.*?)\[/b\]#si";
 		$html[] = "<b>\\1</b>";
-			$bb[] = "#\[spb\](.*?)\[/spb\]#si";
-		$html[] = "<center><span style=\"font-size: 14px;color: green;\"><b>Для спасибо есть кнопка.</b></size></color></span><br>
-		<img src='/uploads/files/files-8ToNz6oHsl.jpg' alt='Комментариев'$size_img>";
-$bb[] = "#\[religiya\](.*?)\[/religiya\]#si";
-		$html[] = "<center><span style=\"font-size: 14px;color: green;\"><b>А нажать на СПАСИБО или оценку поставить -  религия не позволяет???</b></size></color></span><br>
-		<img src='/uploads/files/files-ZnrvI0HHd8.jpg' alt='Батюшка. ))'$size_img>";
-
 $bb[]='#\[rtext\](.*?)\[/rtext\]#si';
 
-    $html[]='<div style="float:right; margin:1px; padding:2px; border: double #FFCF4C;background: url(templates/artlight/images/bgbody.gif);
+    $html[]='<div style="float:right; margin:1px; padding:2px; border: double #648B43;
         -moz-border-radius: 10px; 
     -webkit-border-radius: 10px; 
     border-radius: 10px;
         width:auto;">\1</div>';
-
-
+        
 $bb[]='#\[ltext\](.*?)\[/ltext\]#si';
 
-
-$html[]='<div style="float:left; margin:1px; padding:2px; border: double #FFCF4C;background: url(templates/artlight/images/bgbody.gif);
- -moz-border-radius: 10px; 
+$html[]='<div style="float:left; margin:5px; padding:2px; border: double #648B43;
+        -moz-border-radius: 10px; 
     -webkit-border-radius: 10px; 
     border-radius: 10px;
-width:auto;">\1</div>';
+        width:auto;">\1</div>';
+        
+        $bb[]='#\[centerp\](.*?)\[/centerp\]#si';
 
-/*--- MP3 PLAYER + PLAYLIST ---*/
-$bb[] = "#\[3mp3\](.*?)\[/3mp3\]#si"; 
-$html[] = "<object type=\"application/x-shockwave-flash\" data=\"javascripts/audioplayer/dewplayer-playlist.swf\" id=\"\\1\" width=\"240\" height=\"200\"><param name=\"movie\" value=\"javascripts/audioplayer/dewplayer-playlist.swf\"><param name=\"flashvars\" value=\"showtime=true&autoreplay=true&xml=/music/playlist.xml\"><param name=\"wmode\" value=\"transparent\"></object>"; 
-/*--- END MP3 PLAYER + PLAYLIST ---*/
-
-
-
-$bb[] = "#\[ratekp\](.*?)\[/ratekp\]#si";
-$html[] = "<noindex><a href=\"http://www.kinopoisk.ru/level/1/film/\\1/\" target=\"_blank\" rel=\"nofollow\"><img src=\"rating/kinopoisk.php?id=\\1\"></a></noindex>";
-
+$html[]='<div style="text-align:center; margin:5px; padding:2px; 
+       
+        width:auto;">\1</div>';
+        
+        
 $bb[] = "#\[flv\](\S+?)\[/flv\]#is";
 
-$html[] ="<object id=\"videoplayer453\" width=\"434\" height=\"275\"><param name=\"bgcolor\" value=\"#ffffff\" /><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\" /><param name=\"movie\" value=\"uppod.swf\" /><param name=\"flashvars\" value=\"comment=news.maximuma.net&amp;st=video46-1086.txt&amp;file=\\1\" /><embed src=\"uppod.swf\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" flashvars=\"comment=news.maximuma.net&amp;st=/video46-1086.txt&amp;file=\\1\" bgcolor=\"#ffffff\" width=\"545\" height=\"275\"></embed></object>";
+
+$html[] ="<object id=\"videoplayer453\" width=\"434\" height=\"375\"><param name=\"bgcolor\" value=\"#ffffff\" /><param name=\"allowFullScreen\" value=\"true\" /><param name=\"allowScriptAccess\" value=\"always\" /><param name=\"movie\" value=\"uppod.swf\" /><param name=\"flashvars\" value=\"comment=news.maximuma.net&amp;st=video46-1086.txt&amp;file=\\1\" /><embed src=\"uppod.swf\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"always\" allowfullscreen=\"true\" flashvars=\"comment=news.maximuma.net&amp;st=/video46-1086.txt&amp;file=\\1\" bgcolor=\"#ffffff\" width=\"545\" height=\"375\"></embed></object>";
 
 $bb[] = "#\[flv2\](\S+?)\[/flv2\]#is";
 
@@ -2380,6 +2372,8 @@ $html[] = "<object type=\"application/x-shockwave-flash\" data=\"ajax/audioplaye
 <param name=\"wmode\" value=\"transparent\">
 </object>";
 
+$bb[] = "#\[video\](.*?)\[/video\]#si";
+    $html[] = "<p align=\"center\"><br><fieldset><legend>Просмотр видео</legend><embed type=\"application/x-mplayer2\" pluginspage=\"http://www.microsoft.com/Windows/Downloads/Contents/MediaPlayer/\" width=\"500\" height=\"435\" src=\"\\1\" filename=\"\\1\" autostart=\"True\" showcontrols=\"True\" Volume=\"100\"  id='mediaPlayer' displaysize='5' autosize='1'  showstatusbar=\"True\" showdisplay=\"False\" autorewind=\"False\"></embed><br><font class=small>Для просмотра видео, оно должно изначально загрузится.</font></fieldset></p>";
 		$bb[] = "#\[i\](.*?)\[/i\]#si";
 		$html[] = "<i>\\1</i>";
 		$bb[] = "#\[u\](.*?)\[/u\]#si";
@@ -2397,12 +2391,13 @@ $html[] = "<object type=\"application/x-shockwave-flash\" data=\"ajax/audioplaye
 $sourse = bb_decode($matches[1], $mod).build_tabs($matches[2]).bb_decode($matches[3], $mod); 
 }
 		if (preg_match("#\[quote\](.*?)\[/quote\]#si", $sourse)) $sourse = encode_quote($sourse);
-if (preg_match("#\[hide(|=([^\]]+) count=(\d+))\](.*?)\[/hide\]#si", $sourse)) $sourse = new_parse_hide($sourse);
+if (preg_match("#(.*)\[spoiler(.*)\](.*)\[/spoiler\](.*)#is",$sourse,$matches)){ 
+$sourse = bb_decode($matches[1], $mod).build_spoiler($matches[2],$matches[3]).bb_decode($matches[4], $mod); 
+}		if (preg_match("#\[hide\](.*?)\[/hide\]#si", $sourse)) $sourse = encode_hide($sourse);
 		if (preg_match("#\[quote|name=(.*?)\](.*?)\[/quote\]#si", $sourse)) $sourse = parse_quotes($sourse);
-		if (preg_match("#\[attach=(.*?)\]#si", $sourse)) $sourse = encode_attach($sourse, strtolower($mod), $title);
+if (preg_match("#\[attach=(.*?)\]#si", $sourse)) $sourse = encode_attach($sourse, strtolower($mod), $title);
 	} else {
 		if (preg_match("#(.*)\[php\](.*)\[/php\](.*)#si", $sourse, $matches)) {
-			
 			$sourse = bb_decode($matches[1], $mod).encode_php($matches[2]).bb_decode($matches[3], $mod);
 		} elseif (preg_match("#(.*)\[code\](.*)\[/code\](.*)#si", $sourse, $matches)) {
 			$sourse = bb_decode($matches[1], $mod).encode_code($matches[2]).bb_decode($matches[3], $mod);
@@ -2411,10 +2406,23 @@ if (preg_match("#\[hide(|=([^\]]+) count=(\d+))\](.*?)\[/hide\]#si", $sourse)) $
 	return $sourse;
 }
 
+function build_spoiler($title,$sourse) {
+$title = ($title) ? str_replace("=","",$title) : "» Нажмите, чтобы показать спойлер - нажмите опять, чтобы скрыть... «";
+$i = md5( microtime());
+$sourse=str_replace($sourse,"<div class=\"title_spoiler\">&nbsp;<a 
 
+href=\"javascript:ShowOrHide('".$i."')\"><h17>$title</h17></a></div><div id=\"".$i."\" class=\"text_spoiler\" 
+
+style=\"display:none;\">$sourse</div>",$sourse);
+return $sourse; }
 
 # Format hide
-
+function encode_hide($text) {
+	$start_html = "<fieldset style=\"width: 95%; overflow: auto;\"><legend style=\"color: red;\">"._HIDE."</legend><div style=\"margin: 3px;\">";
+	$end_html = "</div></fieldset>";
+	$text = (defined("ADMIN_FILE") || is_user()) ? preg_replace("#\[hide\](.*?)\[/hide\]#si", $start_html."\\1".$end_html, $text) : preg_replace("#\[hide\](.*?)\[/hide\]#si", $start_html._HIDETEXT.$end_html, $text);
+	return $text;
+}
 
 # Format quote
 function encode_quote($text) {
@@ -2761,7 +2769,7 @@ function render_blocks($side, $blockfile, $blocktitle, $content, $bid, $url) {
 function tabs(){
 $tabs .="
 <script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/insert_code.js\"></script>
-<div class=\"rigth\">Tabs:</div><div class=\"center\">";
+<div class=\"left\">Tabs:</div><div class=\"center\">";
 $tabs .="<input class=\"fbutton\" type=\"button\" onclick='AddSmile(\"[tab]\\n\\n{tabs=title}text{/tabs}\\n{tabs=title}text{/tabs}\\n{tabs=title}text{/tabs}\\n{tabs=title}text{/tabs}\\n\\n[/tab]\")' value=\"Tabs\"></div>";
 return $tabs;
 }
@@ -2800,8 +2808,6 @@ function rating() {
 			$query = "ratings, score FROM ".$prefix."_faq WHERE fid='$id'";
 		} elseif ($mod == "files") {
 			$query = "votes, totalvotes FROM ".$prefix."_files WHERE lid='$id'";
-				} elseif ($mod == "mult") {
-			$query = "votes, totalvotes FROM ".$prefix."_mult WHERE lid='$id'";
 		} elseif ($mod == "forum") {
 			$query = "ratings, score FROM ".$prefix."_forum WHERE id='$id'";
 		} elseif ($mod == "jokes") {
@@ -2857,9 +2863,6 @@ function rating() {
 			} elseif ($mod == "files") {
 				$db->sql_query("UPDATE ".$prefix."_files SET votes=votes+1, totalvotes=totalvotes+$rating WHERE lid='$id'");
 				update_points(12);
-					} elseif ($mod == "mult") {
-				$db->sql_query("UPDATE ".$prefix."_mult SET votes=votes+1, totalvotes=totalvotes+$rating WHERE lid='$id'");
-				update_points(12);
 			} elseif ($mod == "forum") {
 				$db->sql_query("UPDATE ".$prefix."_forum SET score=score+$rating, ratings=ratings+1 WHERE id='$id'");
 				update_points(15);
@@ -2913,16 +2916,10 @@ function textarea($id, $name, $var, $mod, $rows) {
 	$editor = intval(substr($admin[3], 0, 1));
 	if ((defined("ADMIN_FILE") && $editor == 1) || (!defined("ADMIN_FILE") && $conf['redaktor'] == 1)) {
 		$code = "<script type=\"text/javascript\" src=\"ajax/insert_code.js\"></script>"
-		
 		."<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td><div class=\"editor\">"
-					."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('rtext', '', '', '', '".$id."')\"><img src=\"".img_find("editor/RT1")."\" title=\""._ERTEXT."\"></div>"
-        ."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('ltext', '', '', '', '".$id."')\"><img src=\"".img_find("editor/LT1")."\" title=\""._ELTEXT."\"></div>"
-		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('quote', '', '', '', '".$id."')\"><img src=\"".img_find("editor/quote")."\" title=\""._EQUOTE."\"></div>"
-
+		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"RowsTextarea('".$id."', 1)\"><img src=\"".img_find("editor/plus")."\" title=\""._EPLUS."\"></div>"
+		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"RowsTextarea('".$id."', 0)\"><img src=\"".img_find("editor/minus")."\" title=\""._EMINUS."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('b', '', '', '', '".$id."')\"><img src=\"".img_find("editor/bold")."\" title=\""._EBOLD."\"></div>"
-		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('spb', '', '', '', '".$id."')\"><img src=\"images/editor/spb.png"."\" title=\""._ESPB."\"></div>"
-		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('religiya', '', '', '', '".$id."')\"><img src=\"images/editor/cross.jpg"."\" title=\""._ERELIGIYA."\"></div>"
-
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('i', '', '', '', '".$id."')\"><img src=\"".img_find("editor/italic")."\" title=\""._EITALIC."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('u', '', '', '', '".$id."')\"><img src=\"".img_find("editor/underline")."\" title=\""._EUNDERLINE."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('s', '', '', '', '".$id."')\"><img src=\"".img_find("editor/striket")."\" title=\""._ESTRIKET."\"></div>"
@@ -2933,23 +2930,27 @@ function textarea($id, $name, $var, $mod, $rows) {
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('right', '', '', '', '".$id."')\"><img src=\"".img_find("editor/right")."\" title=\""._ERIGHT."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('justify', '', '', '', '".$id."')\"><img src=\"".img_find("editor/justify")."\" title=\""._EYUSTIFY."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('code', '', '', '', '".$id."')\"><img src=\"".img_find("editor/code")."\" title=\""._CODE."\"></div>"
+		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('php', '', '', '', '".$id."')\"><img src=\"".img_find("editor/php")."\" title=\"PHP - "._CODE."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('hide', '', '', '', '".$id."')\"><img src=\"".img_find("editor/hide")."\" title=\""._HIDE."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('url', '"._JINFO."', '"._JTYPE."', '"._JERROR."', '".$id."')\"><img src=\"".img_find("editor/url")."\" title=\""._EURL."\"></div>"
-				."</div>"
+		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('mail', '"._JINFO."', '"._JTYPE."', '"._JERROR."', '".$id."')\"><img src=\"".img_find("editor/mail")."\" title=\""._EEMAIL."\"></div>"
+		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('img', '', '', '', '".$id."')\"><img src=\"".img_find("editor/img")."\" title=\""._EIMG."\"></div>"
+		."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('rtext', '', '', '', '".$id."')\"><img src=\"".img_find("editor/RT1")."\" title=\""._ERTEXT."\"></div>"
+        ."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('ltext', '', '', '', '".$id."')\"><img src=\"".img_find("editor/LT1")."\" title=\""._ELTEXT."\"></div>"
+
+        ."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('centerp', '', '', '', '".$id."')\"><img src=\"".img_find("editor/centerp")."\" title=\""._CLTEXT."\"></div>"
+		 ."<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" onclick=\"InsertCode('video', '', '', '', '".$id."')\"><img src=\"".img_find("editor/video")."\" title=\""._VIDEO."\"></div>"
+		."</div><br><br>"
 		."<textarea id=\"".$id."\" name=\"".$name."\" cols=\"65\" rows=\"20%".$rows."\" class=\"".$style."\" OnKeyPress=\"TransliteFeld(this, event)\" OnSelect=\"FieldName(this, this.name)\" OnClick=\"FieldName(this, this.name)\" OnKeyUp=\"FieldName(this, this.name)\">".replace_break(htmlspecialchars_decode($desc))."</textarea>"
 		."<div class=\"editor\">";
-				
-if ((defined("ADMIN_FILE") && $con[8] == 1) || (is_user() && $con[8] == 1) || (!is_user() && $con[9] == 1)) $code .= "<div id=\"af".$id."-title\" class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><img src=\"".img_find("editor/upload")."\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" title=\""._EUPLOAD."\"></div>";
-			if(defined("ADMIN_FILE")){$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><a href=\"uploader.php?form=$id&mod=$mod\" onclick=\"window.open(this.href, 'uploader','width=600,height=600,resizable=yes,scrollbars=yes,left=10');return false;\"><img src=\"".img_find("editor/img")."\" title=\""._EUPLOAD."\"></a></div>";}
-        $code .= "<div class=\"editorbutton\" onmouseover=\"this.className='editorbuttonover';\" onmouseout=\"this.className='editorbutton';\" OnClick=\"InsertCode('3mp3', '', '', '', '".$id."')\"><img src=\"images/editor/2audio.png\"title=\"ДОБАВИТЬ MP3 PLAYER Перед внедрением залить на хостинг в папку: МОЯ ПАПКА С МУЗЫКОЙ/NAME-playlist.xml где NAME каждый раз нужно задавать новое\"></div>";
-
+		if ((defined("ADMIN_FILE") && $con[8] == 1) || (is_user() && $con[8] == 1) || (!is_user() && $con[9] == 1)) $code .= "<div id=\"af".$id."-title\" class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><img src=\"".img_find("editor/upload")."\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" title=\""._EUPLOAD."\"></div>";
 		if (!$conf['smilies']) $code .= "<div id=\"sm".$id."-title\" class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><img src=\"".img_find("editor/smilie")."\" title=\""._ESMILIE."\"></div>";
-if (defined("ADMIN_FILE")){
+		$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('quote', '', '', '', '".$id."')\"><img src=\"".img_find("editor/quote")."\" title=\""._EQUOTE."\"></div>";
+			$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('spoiler', '', '', '', '".$id."')\"><img src=\"".img_find("editor/sploer")."\" title=\"Sploier\"></div>";
+		$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('flv', '', '', '', '".$id."')\"><img src=\"".img_find("editor/flv")."\" title=\"FLV\"></div>";
+		if (defined("ADMIN_FILE")){
 $code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('ratekp', '', '', '', '".$id."')\"><img src=\"".img_find("editor/rating")."\" title=\"Rating Kinopoisc\"></div>";}
 
-					$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('spoiler', '', '', '', '".$id."')\"><img src=\"".img_find("editor/sploer")."\" title=\"Sploier\"></div>";
-
-		$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('flv', '', '', '', '".$id."')\"><img src=\"".img_find("editor/flv")."\" title=\"FLV\"></div>";
 	$code .= "<link rel=\"stylesheet\" href=\"ajax/color/dropdown.css\" type=\"text/css\" />
 <script type=\"text/javascript\" src=\"ajax/color/dropdown.js\"></script>
 <div class=\"floatleft\">
@@ -3063,10 +3064,12 @@ $image = (file_exists(img_find("editor/$out[1]"))) ? img_find("editor/$out[1]") 
 $code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('$out[1]', '', '', '', '".$id."')\"><img src=\"$image\" title=\"$out[2]\"></div>";
 }}
 //my bb code
-
 		if (substr(_LOCALE, 0, 2) == "ru") {
 			$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('flv2', '', '', '', '".$id."')\"><img src=\"".img_find("editor/flv2")."\" title=\"FLV2\"></div>";
 
+			$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"translateAlltoCyrillic()\"><img src=\"".img_find("editor/rus")."\" title=\""._ERUS."\"></div>"
+			."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"translateAlltoLatin()\"><img src=\"".img_find("editor/eng")."\" title=\""._ELAT."\"></div>"
+			."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"changelanguage()\"><img src=\"".img_find("editor/auto")."\" title=\""._EAUTOTR."\"></div>";
 		}
 		$fonts = 0;
 		$font = array(_FONT, "Arial", "Courier New", "Mistral", "Impact", "Sans Serif", "Tahoma", "Helvetica", "Verdana");
@@ -3075,7 +3078,7 @@ $code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbutton
 		$fsize = array(_ESIZE, "8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "30", "32");
 		foreach ($fsize as $val) if ($val != "") $fsizes .= "<option value=\"".$val."\">".$val."</option>";
 		$code .= "<div class=\"editorselect\"><select name=\"family\" OnChange=\"InsertCode('family', this.options[this.selectedIndex].value, '', '', '".$id."'); this.selectedIndex=0;\">".$fonts."</select></div>"
-		."<div class=\"editorselect\"><select name=\"size\" OnChange=\"InsertCode('size', this.options[this.selectedIndex].value, '', '', '".$id."'); this.selectedIndex=0;\">".$fsizes."</select></div></div>";
+		."<div class=\"editorselect\"><select name=\"size\" OnChange=\"InsertCode('size', this.options[this.selectedIndex].value, '', '', '".$id."'); this.selectedIndex=0;\">".$fsizes."</select></div></div><br><br>";
 		if ($conf['smilies'] == 1) {
 			$code .= "<div class=\"smilies\">";
 			for ($i = 1; $i < 19; $i++) {
@@ -3177,7 +3180,7 @@ $code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbutton
 				<span id=\"spanButtonPlaceholder\"></span>
 				<input id=\"btnUpload\" type=\"button\" value=\""._UPLOAD."\" class=\"fbutton\">
 				<input id=\"btnCancel\" type=\"button\" value=\""._CANALLUP."\" disabled=\"disabled\" class=\"fbutton\">
-				<input type=\"button\" value=\"NEW\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" class=\"fbutton\">
+					<input type=\"button\" value=\"NEW\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', '1'); return false;\" class=\"fbutton\">
 				<input type=\"button\" value=\""._UPDATE."\" OnClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '3', 'show_files', '".$id."', '', '', '".$mod."', ''); return false;\" class=\"fbutton\"></p><br></div>
 				<noscript>Were sorry. SWFUpload could not load. You must have JavaScript enabled to enjoy SWFUpload.</noscript>
 				<div id=\"divLoadingContent\" style=\"display: none;\">SWFUpload is loading. Please wait a moment...</div>
@@ -3298,34 +3301,6 @@ $code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbutton
 	return $code;
 }
 
-
-
-
-# Format spoiler
-function build_spoiler($sourse) {
-if (preg_match("#\[spoiler\](.*)\[/spoiler\]#si", $sourse)){
-preg_match_all( "#\[spoiler\](.+?)\[/spoiler\]#is",$sourse,$date);
-for ($i = 0; $i < count($date[0]); $i++) {
-$id_spoiler = md5( microtime()+$i) ;
-$dcont[$i] = "<!--slaed_spoiler--><div class=\"title_spoiler\"><img src=\"http://files.maximuma.net/templates/artlight/images/strelka.gif\"><img id=\"image-$id_spoiler\" style=\"vertical-align: middle;border: none;\" alt=\"\" src=\"images/all/spoiler-plus.gif\" />&nbsp;<a onclick=\"ShowOrHide('".$id_spoiler."');\" style=\"cursor:hand;cursor:pointer\"><!--spoiler_title--><h11>» Нажмите, чтобы показать спойлер - нажмите опять, чтобы скрыть... «</h11><!--spoiler_title_end--></a></div><div id=\"" . $id_spoiler . "\" class=\"text_spoiler\" style=\"display:none;\"><!--spoiler_text-->".$date[1][$i]."<!--spoiler_text_end--></div><!--/slaed_spoiler-->";
-$sourse = str_replace($date[0][$i],$dcont[$i], $sourse);
-}
-}
-if (preg_match("#\[spoiler=(.+?)\](.+?)\[/spoiler\]#si", $sourse)){
-preg_match_all( "#\[spoiler=(.+?)\](.+?)\[/spoiler\]#is",$sourse,$date);
-for ($i = 0; $i < count($date[0]); $i++) {
-$id_spoiler = md5( microtime()+$i) ;
-$date[1][$i] = trim( $date[1][$i]);
-$date[1][$i] = stripslashes( $date[1][$i]);
-$date[1][$i] = str_replace( "&amp;amp;", "&amp;", $date[1][$i]);
-$date[1][$i] = preg_replace( "/javascript:/i", "javascript&#58; ", $date[1][$i]);
-$dcontw[$i] = "<!--slaed_spoiler--><div class=\"title_spoiler\"><img src=\"http://files.maximuma.net/templates/artlight/images/strelka.gif\"><img id=\"image-$id_spoiler\" style=\"vertical-align: middle;border: none;\" alt=\"\" src=\"images/all/spoiler-plus.gif\" />&nbsp&nbsp&nbsp&nbsp;<a onclick=\"ShowOrHide('".$id_spoiler."');\" style=\"cursor:hand;cursor:pointer\"><!--spoiler_title--><h11>".$date[1][$i]."</h11><!--spoiler_title_end--></a></div><div id=\"" . $id_spoiler . "\" class=\"text_spoiler\" style=\"display:none;\"><img align=Right src=\"http://files.maximuma.net/templates/artlight/images/berrors.png\"><!--spoiler_text-->".$date[2][$i]."<!--spoiler_text_end--></div><!--/slaed_spoiler-->";
-$sourse = str_replace($date[0][$i],$dcontw[$i], $sourse);
-}}
-return $sourse;
-	}
-
-
 # Format ajax edit
 function textareae($obj, $go, $op, $id, $cid, $typ, $mod, $text, $rows) {
 	global $conf, $admin;
@@ -3411,8 +3386,7 @@ function num_page() {
 			$content .= " <a href=\"".$index.".php?".$module.$pnum[4]."num=$nextpage\" title=\"&gt;&gt;\">&gt;&gt;</a>";
 		}
 		pagenum(_OVERALL, $pnum[1], _ON, $pnum[2], _PAGE_S, $pnum[3], _PERPAGE, $content);
-	}
-	echo " 
+		echo " 
 <script type=\"text/javascript\" src=\"ajax/paginator/common.js\"></script> 
 <script type=\"text/javascript\" src=\"ajax/paginator/paginator.js\"></script> 
 <link rel=\"stylesheet\" type=\"text/css\" href=\"ajax/paginator/paginator.css\" /> 
@@ -3420,6 +3394,9 @@ function num_page() {
 <script type=\"text/javascript\"> 
 pag = new Paginator('paginator_news',".$pnum[2].",10,$num,\"".$index.".php?".$module.$pnum[4]."num=\"); 
 </script>";
+	}
+
+
 
 }
 
@@ -3486,7 +3463,7 @@ $content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op.
 			if ($i == $num) {
 				$content .= "<span title=\"$i\">$i</span>";
 			} else {
-if ((($i > ($num - $mnum)) && ($i < ($num + $mnum))) OR ($i == $pnum[1]) || ($i == 1)) $content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" title=\"$i\">$i</a>";
+ if ((($i > ($num - $mnum)) && ($i < ($num + $mnum))) OR ($i == $pnum[1]) || ($i == 1)) $content .= "<a href=\"#\" OnClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" OnDblClick=\"LoadGet('1', 'f".$id."', '".$go."', '".$op."', '".$id."', '".$i."', '".$typ."', '".$mod."', '".intval($_GET['text'])."'); return false;\" title=\"$i\">$i</a>"; 
 			}
 			if ($i < $pnum[1]) {
 				if (($i > ($num - $nnum)) && ($i < ($num + $mnum))) $content .= " ";
@@ -3529,7 +3506,6 @@ function upload($typ, $directory, $typefile, $maxsize, $namefile, $width, $heigh
 			} else {
 				$type = strtolower(end(explode(".", $_FILES['userfile']['name'])));
 				if (!check_file($type, $typefile) && !check_size($_FILES['userfile']['tmp_name'], $width, $height)) {
-				if ($type != gif) {$newname = watemark($_FILES['userfile']['tmp_name']);}
 					$newname = ($namefile) ? $namefile."-".gen_pass(10).".".$type : gen_pass(15).".".$type;
 					if (file_exists($directory."/".$newname)) {
 						$stop = _ERROR_EXIST;
@@ -3561,7 +3537,6 @@ function upload($typ, $directory, $typefile, $maxsize, $namefile, $width, $heigh
 			} else {
 				$type = strtolower(end(explode(".", $_FILES['Filedata']['name'])));
 				if (!check_file($type, $typefile) && !check_size($_FILES['Filedata']['tmp_name'], $width, $height)) {
-				if ($type != gif) {$newname = watemark($_FILES['Filedata']['tmp_name']);}
 					$newname = ($namefile) ? $namefile."-".gen_pass(10)."-0.".$type : gen_pass(15).".".$type;
 					if (file_exists($directory."/".$newname)) {
 						header("HTTP/1.1 500 Internal Server Error");
@@ -3674,8 +3649,8 @@ function cat_modul() {
 	$arg = func_get_args();
 	$submit = ($arg[3]) ? "OnChange=\"submit()\"" : "";
 	$content = "<select name=\"".$arg[0]."\" class=\"".$arg[1]."\" $submit>";
-	$cname = array(_FAQ, _FILES, _FORUM, _HELP, _JOKES, _LINKS, _MEDIA, _NEWS, _GUMOR, _GAMES, _KINONEWS, _PAGES, _SHOP, _MULT);
-	$mods = array("faq", "files", "forum", "help", "jokes", "links", "media", "news", "gumor", "games", "kinonews", "pages", "shop", "mult");
+	$cname = array(_FAQ, _FILES, _FORUM, _HELP, _JOKES, _LINKS, _MEDIA, _NEWS, _GUMOR, _GAMES, _KINONEWS, _PAGES, _SHOP);
+	$mods = array("faq", "files", "forum", "help", "jokes", "links", "media", "news", "gumor", "games", "kinonews", "pages", "shop");
 	for ($i = 0; $i < count($mods); $i++) {
 		$selected = ($arg[2] == $mods[$i]) ? "selected" : "";
 		$content .= "<option value=\"".$mods[$i]."\" $selected>".$cname[$i]." - ".$mods[$i]."</option>";
@@ -3732,10 +3707,10 @@ function ashowcom() {
 			unset($com_id, $com_cid, $com_modul, $com_date, $com_uid, $com_name, $com_host, $com_text, $com_status);
 		}
 		if ($where) {
-			$result2 = $db->sql_query("SELECT u.user_lastvisit, u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
-			while (list($user_lastvisit, $user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
-				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
-				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
+			$result2 = $db->sql_query("SELECT u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
+			while (list($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
+				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
+				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
 			}
 		}
 		open();
@@ -3754,7 +3729,7 @@ function ashowcom() {
 			$com_host = $val[6];
 			$com_text = $val[7];
 			$com_status = $val[8];
-			unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
+			unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
 			if ($umassiv) {
 				foreach ($umassiv as $val2) {
 					if (strtolower($com_uid) == strtolower($val2[0])) {
@@ -3780,7 +3755,6 @@ function ashowcom() {
 						$user_gname = $val2[19];
 						$user_grank = $val2[20];
 						$user_gcolor = $val2[21];
-						$user_lastvisit=$val2[22];
 					}
 				}
 			}
@@ -3796,16 +3770,11 @@ function ashowcom() {
 			$rlink = ($user_grank && file_exists("images/ranks/".$user_grank)) ? "<img src=\"images/ranks/".$user_grank."\" alt=\""._RANK."\" title=\""._RANK."\">" : $user_grank;
 			$rate = ajax_rating(0, $user_id, "account", $user_votes, $user_totalvotes, $com_id);
 			$rwarn = ($user_warnings) ? warn_graphic($user_warnings) : "";
-			$group = ($user_gname) ? _GROUP.": <span style=\"color: green;\"><i><b>".$user_gname."</i></b></span>" : "";
-			$point = ($confu['point'] && $user_points) ? _POINTS.": <span style=\"font-size: 11px;color: red;\"><u><b>".$user_points : "</u></b></span></font>";
+			$group = ($user_gname) ? _GROUP.": <span style=\"color: ".$user_gcolor."\">".$user_gname."</span>" : "";
+			$point = ($confu['point'] && $user_points) ? _POINTS.": ".$user_points : "";
 			$regdate = ($user_regdate) ? _REG_DATE.": ".format_time($user_regdate) : "";
-			if ($user_lastvisit) {
-			$dltrus = new Date_DeltaRussian(); 
- 	 	  $user_lastvisit=$dltrus->spellDelta(strtotime($user_lastvisit),time(),3)._TIME_PAST;
-			$regdate .="<br />Был на сайте: ".$user_lastvisit;
-			}
-			$gender = ($user_gender) ? _GENDER.": <span style=\"font-size: 11px;color: green;\"><u><b>".gender($user_gender, 1) : "</u></b></span></font>";
-			$from = ($user_from) ? _FROM.": <span style=\"font-size: 11px;color: blue;\"><b>".$user_from : "</b></span></font>";
+			$gender = ($user_gender) ? _GENDER.": ".gender($user_gender, 1) : "";
+			$from = ($user_from) ? _FROM.": ".$user_from : "";
 			$sig = ($user_sig) ? "<hr>".$user_sig : "";
 			$personal = (is_moder($com_modul) || is_user() || $confc['anonpost'] != 0) ? "<a href=\"javascript: InsertCode('name', '".$avname."', '', '', 'acom');\" title=\""._PERSONAL."\"><img src=\"".img_find("forum/$currentlang/personal")."\" border=\"0\" alt=\""._PERSONAL."\" title=\""._PERSONAL."\"></a>" : "";
 			$down = "<a href=\"javascript: scroll(0, 100000);\" title=\""._PDOWN."\"><img src=\"".img_find("forum/down")."\" border=\"0\" alt=\""._PDOWN."\" title=\""._PDOWN."\"></a>";
@@ -3899,15 +3868,10 @@ foreach ($confbb as $val) {
 if ($val != "") {
 preg_match("#(.*)\|(.*)\|(.*)#i",$val, $out);
 $button .="<input class=\"fbutton\" type=\"button\" onclick='AddSmile(\"".str_replace("<br>","\\n",$out[3])."\")' value=\"$out[2]\">&#160;";
-
-if($i==8)$button .="<br><p>";
-if($i==17)$button .="<br><p>";
-if($i==27)$button .="<br><p>";
-if($i==20)$button .="<br><p>";
-if($i==43)$button .="<br><p>";
-
+if($i==7)$button .="<br><p>";
+if($i==16)$button .="<br><p>";
 $i++;
-}}$button .="</p></div>";
+}}$button .="</div>";
 return $button;
 }}
 
@@ -4171,66 +4135,6 @@ if (!function_exists('fputcsv')) {
 	}
 }
 
-# Format captcha random
-function captcha_random($id='') {
-	global $conf;
-	if ((extension_loaded('gd') && $id == 2) || (extension_loaded('gd') && !is_user())) {
-		$content = '<div class="left">'._SECURITYCODE.':</div><div class="center"><img src="captcha.php" onclick="if(!this.adress)this.adress = this.src; this.src=adress+\'?rand=\'+Math.random();" border="1" title="Нажмите, чтобы обновить картинку" style="cursor:pointer;" alt="'._SECURITYCODE.'"></div>'
-		.'<div class="left">'._TYPESECCODE.':</div><div class="center"><input type="text" name="check" size="10" maxlength="6" style="width: 75px;" class="'.$conf['style'].'"></div>';
-	} else {
-		$content = "<input type=\"hidden\" name=\"check\" value=\"0\">";
-	}
-		return $content;
-}
-function watemark($filename) { 
-$photoImage=imagecreatefromstring(file_get_contents($filename)); 
-$margin = 7; 
-$min_image = 150; 
-$watermark_image_light = 'images/watermark_light.png'; 
-$watermark_image_dark = 'images/watermark_dark.png'; 
-$image_width = imagesx($photoImage); 
-$image_height = imagesy($photoImage); 
-list($watermark_width, $watermark_height)= getimagesize($watermark_image_light); 
-$watermark_x = $image_width - $margin - $watermark_width; 
-$watermark_y = $image_height - $margin - $watermark_height; 
-$watermark_x2 = $watermark_x + $watermark_width; 
-$watermark_y2 = $watermark_y + $watermark_height; 
-
-if ($watermark_x < 0 OR $watermark_y < 0 OR 
-$watermark_x2 > $image_width OR $watermark_y2 > $image_height OR 
-$image_width < $min_image OR $image_height < $min_image) 
-{ 
-return; 
-} 
-
-
-$test = imagecreatetruecolor(1, 1); 
-imagecopyresampled($test, $photoImage, 0, 0, $watermark_x, $watermark_y, 1, 1, $watermark_width, $watermark_height); 
-$rgb = imagecolorat($test, 0, 0); 
-
-$r = ($rgb >> 16) & 0xFF; 
-$g = ($rgb >> 8) & 0xFF; 
-$b = $rgb & 0xFF; 
-
-$max = min($r, $g, $b); 
-$min = max($r, $g, $b); 
-$lightness = (double)(($max + $min) / 510.0); 
-imagedestroy($test); 
-
-$watermark_image = ($lightness < 0.5) ? $watermark_image_light : $watermark_image_dark; 
-
-$watermark = imagecreatefrompng($watermark_image); 
-
-imagealphablending($photoImage, TRUE); 
-imagealphablending($watermark, TRUE); 
-
-imagecopy($photoImage, $watermark, $watermark_x, $watermark_y, 0, 0,$watermark_width, $watermark_height); 
-ImageJPEG($photoImage, $filename); 
-imagedestroy($watermark); 
-imagedestroy($photoImage); 
-
-}
-
 function thanks($mod,$id){
 global $user;
 echo <<<HTML
@@ -4247,22 +4151,32 @@ ajax.runAJAX();
 }
 </script>
 HTML;
-echo"<div id=\"thanks-layer\" style=\"padding-bottom:3px;\"><div style=\"width:80%;border: double #FFCF4C;text-align: inherit;font:11px Tahoma, Verdana; color:green;\">Отблагодарили: ";
+echo"<div id=\"thanks-layer\" style=\"padding-bottom:3px\"><div style=\"font:11px Tahoma, Verdana; color:#666;\">Отблагодарили: ";
 if(file_exists("uploads/$mod-thanks.dat")){
 $array = unserialize(file_get_contents("uploads/$mod-thanks.dat"));
 $i=0;
 $thanks = explode(',', $array[$id]);
-echo"<table width=600 px><tr><td>";
 foreach($thanks as $key => $val){
 $zap = ($i==0) ? "" : ",";
 echo " $zap<a href=\"index.php?name=account&op=info&uname=$val\">$val</a>";
 $i++;}if(in_array($user[1],$thanks))$status=1;}
-echo"</td></tr></table></div>";
-if(is_user() && $status!=1){echo"<span style=\"font-size: 12px;cursor: pointer; cursor: hand; color: red;\"><b>Буду очень признателен за Ваш клик по этой кнопке =>>&nbsp&nbsp&nbsp&nbsp</b><INPUT TYPE='image'; SRC='/images/thanks.gif' value=\"Спасибо\" onclick=\"Thanks('".$id."','".$mod."'); return false;\"/><img src=\"images/smilies/32.gif\"</span>";}
-echo"<br><span style=\"font-size: 10px; color: green;\"><b>Стоит помнить!!!, что именно от количества отблагодаривших зависит срок жизни файла на сервере,а так же скорость добавления новых серий.</b>";
+echo"</div>";
+if(is_user() && $status!=1){echo"<button type=\"button\" value=\"Спасибо\" onclick=\"Thanks('".$id."','".$mod."'); return false;\"/>Спасибо</button>";}
 echo"</div>";
 }
 
+
+# Format captcha random
+function captcha_random($id='') {
+	global $conf;
+	if ((extension_loaded('gd') && $id == 2) || (extension_loaded('gd') && !is_user())) {
+		$content = '<div class="left">'._SECURITYCODE.':</div><div class="center"><img src="captcha.php" onclick="if(!this.adress)this.adress = this.src; this.src=adress+\'?rand=\'+Math.random();" border="1" title="Нажмите, чтобы обновить картинку" style="cursor:pointer;" alt="'._SECURITYCODE.'"></div>'
+		.'<div class="left">'._TYPESECCODE.':</div><div class="center"><input type="text" name="check" size="10" maxlength="6" style="width: 75px;" class="'.$conf['style'].'"></div>';
+	} else {
+		$content = "<input type=\"hidden\" name=\"check\" value=\"0\">";
+	}
+		return $content;
+}
 
 # Format captcha check
 function captcha_check($id='') {
