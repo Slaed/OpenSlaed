@@ -3774,7 +3774,7 @@ function ashowcom() {
 			$point = ($confu['point'] && $user_points) ? _POINTS.": ".$user_points : "";
 			$arr=sel_coms();
 			$regdate = ($user_regdate) ? _REG_DATE.": ".format_time($user_regdate) : "";
-			$regdate .= '<br />COMMENTS: '.intval($arr[$user_id]);
+			$regdate .= '<br />'._USER_COMS.': '.intval($arr[$user_id]);
 			$gender = ($user_gender) ? _GENDER.": ".gender($user_gender, 1) : "";
 			$from = ($user_from) ? _FROM.": ".$user_from : "";
 			$sig = ($user_sig) ? "<hr>".$user_sig : "";
