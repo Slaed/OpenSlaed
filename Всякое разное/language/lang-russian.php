@@ -10,6 +10,7 @@ define("_TIME_DAY","день,дня,дней");
 define("_TIME_MON","месяц,месяца,месяцев"); 
 define("_TIME_YEA","год,года,лет"); 
 define("_TIME_PAST"," назад");
+define("_TIME_PAST_MIN","Менее минуты назад");
 define("_TIME_NOT_LOGIN","Ещё не заходил");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
