@@ -952,6 +952,7 @@ function get_info() {
 	."<tr><td>"._LOCALITYLANG.":</td><td>".$local."</td></tr>"
 	."<tr><td>"._INTERESTS.":</td><td>".$inter."</td></tr>"
 	."<tr><td>"._REITING.":</td><td align=\"left\">".$rating."</td></tr>"
+	."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[36]."</td></tr>"
 	."".$rank."".$agent."".$field."".$sign .""
 	."</table></td></tr><tr class=\"bgcolor1\"><td><table width=\"100%\">"
 	."<tr><td>".user_geo_ip($info[24], 3)."</td><td>".user_geo_ip($info[24], 2)."</td></tr>"

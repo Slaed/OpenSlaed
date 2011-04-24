@@ -2,6 +2,7 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_USER_COMS","Комментариев:"); 
 define("_TIME_SEC","секунду,секунды,секунд"); 
 define("_TIME_MIN","минуту,минуты,минут"); 
 define("_TIME_HOU","час,часа,часов"); 
