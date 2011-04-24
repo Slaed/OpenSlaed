@@ -3732,10 +3732,10 @@ function ashowcom() {
 			unset($com_id, $com_cid, $com_modul, $com_date, $com_uid, $com_name, $com_host, $com_text, $com_status);
 		}
 		if ($where) {
-			$result2 = $db->sql_query("SELECT u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
-			while (list($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
-				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
-				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
+			$result2 = $db->sql_query("SELECT u.user_lastvisit, u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
+			while (list($user_lastvisit, $user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
+				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
+				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
 			}
 		}
 		open();
@@ -3754,7 +3754,7 @@ function ashowcom() {
 			$com_host = $val[6];
 			$com_text = $val[7];
 			$com_status = $val[8];
-			unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
+			unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor,$user_lastvisit);
 			if ($umassiv) {
 				foreach ($umassiv as $val2) {
 					if (strtolower($com_uid) == strtolower($val2[0])) {
@@ -3780,6 +3780,7 @@ function ashowcom() {
 						$user_gname = $val2[19];
 						$user_grank = $val2[20];
 						$user_gcolor = $val2[21];
+						$user_lastvisit=$val2[22];
 					}
 				}
 			}
@@ -3798,6 +3799,11 @@ function ashowcom() {
 			$group = ($user_gname) ? _GROUP.": <span style=\"color: green;\"><i><b>".$user_gname."</i></b></span>" : "";
 			$point = ($confu['point'] && $user_points) ? _POINTS.": <span style=\"font-size: 11px;color: red;\"><u><b>".$user_points : "</u></b></span></font>";
 			$regdate = ($user_regdate) ? _REG_DATE.": ".format_time($user_regdate) : "";
+			if ($user_lastvisit) {
+			$dltrus = new Date_DeltaRussian(); 
+ 	 	  $user_lastvisit=$dltrus->spellDelta(strtotime($user_lastvisit),time(),3)._TIME_PAST;
+			$regdate .="<br />Áûכ םא סאיעו: ".$user_lastvisit;
+			}
 			$gender = ($user_gender) ? _GENDER.": <span style=\"font-size: 11px;color: green;\"><u><b>".gender($user_gender, 1) : "</u></b></span></font>";
 			$from = ($user_from) ? _FROM.": <span style=\"font-size: 11px;color: blue;\"><b>".$user_from : "</b></span></font>";
 			$sig = ($user_sig) ? "<hr>".$user_sig : "";
