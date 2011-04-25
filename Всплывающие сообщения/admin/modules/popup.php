@@ -6,7 +6,7 @@ function popup_admin () {
 global $admin_file;
 $msqa['effects']='blind,bounce,clip,drop,explode,fade,fold,highlight,puff,pulsate,scale,shake,size,slide,transfer';
 include('config/config_popup.php');
-$permtest = end_chmod("config/config_ratings.php", 666);
+$permtest = end_chmod("config/config_popup.php", 666);
 head();
 panel();
 title(_POPUP_MESS_1);
