@@ -36,6 +36,10 @@ $content .= "
 ."<small><b style='color:green'>"._POPUP_MESS_15."<br /></b></small>"
 ."<small><b style='color:red'>"._POPUP_MESS_16."<br /></b></small>"
 ."<div><textarea cols='125' rows='20' name='user' wrap='off'>".stripslashes($msq['text']['user'])."</textarea></div>"
+."<div class='left'>"._POPUP_MESS_21."</div><div class='center'>".radio_form($msq['off']['mg']['status'],"mgstatus")."</div>"
+."<div class='left'>"._POPUP_MESS_22."</div><div class='center'><input type='text' name='mgtime' value='".$msq['off']['mg']['time']."' maxlength='25' size='45' class='admin'></div>"
+."<div class='left'>"._POPUP_MESS_23."</div><div class='center'>".radio_form($msq['off']['mu']['status'],"mustatus")."</div>"
+."<div class='left'>"._POPUP_MESS_22."</div><div class='center'><input type='text' name='mutime' value='".$msq['off']['mu']['time']."' maxlength='25' size='45' class='admin'></div>"
 ."<div class='left'>"._POPUP_MESS_17."</div><div class='center'>".radio_form(0,"old")."<input type='hidden' name='pold' value='".$msq['old']."'></div>
 ";
 echo "<form action='".$admin_file.".php' method='post'>";
@@ -61,6 +65,10 @@ $content .= "\$msq['text']['all'] = '".$_POST['all']."';\n";
 $content .= "\$msq['text']['guest'] = '".$_POST['guest']."';\n";
 $content .= "\$msq['text']['user'] = '".$_POST['user']."';\n";
 $content .= "\$msq['old'] = '".((intval($_POST['old'])==1)?time():intval($_POST['pold']))."';\n";
+$content .= "\$msq['off']['mu']['status'] = '".intval($_POST['mustatus'])."';\n";
+$content .= "\$msq['off']['mu']['time'] = '".intval($_POST['mutime'])."';\n";
+$content .= "\$msq['off']['mg']['status'] = '".intval($_POST['mgstatus'])."';\n";
+$content .= "\$msq['off']['mg']['time'] = '".intval($_POST['mgtime'])."';\n";
 save_conf("config/config_popup.php", $content);
 Header("Location: ".$admin_file.".php?op=popup_admin");
 }

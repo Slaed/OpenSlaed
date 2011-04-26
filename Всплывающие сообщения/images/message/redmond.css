@@ -344,3 +344,5 @@
 .ui-dialog .ui-dialog-buttonpane button { margin: .5em .4em .5em 0; cursor: pointer; }
 .ui-dialog .ui-resizable-se { width: 14px; height: 14px; right: 3px; bottom: 3px; }
 .ui-draggable .ui-dialog-titlebar { cursor: move; }
+#msg_disabled a, #msg_disabled a:visited, #msg_disabled a:link {color:#0070B8; font-weight:bold;}
+#msg_disabled a:hover {color:#33A3EB;}
