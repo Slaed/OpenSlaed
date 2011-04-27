@@ -98,6 +98,7 @@ include_once('function/akismet.class.php');
 $akismet = new Akismet($conf['homeurl'], $spam['key']);
 if($akismet->isKeyValid()) {
 foreach ($_POST['update'] as $m=>$n) {
+if (in_array($m,$_POST['id'])) {
 $akismet->setCommentAuthor($n['name']);
 $akismet->setCommentContent($n['text']);
 $akismet->setUserIP($n['ip']);
@@ -106,12 +107,15 @@ else $akismet->submitHam();
 }
 }
 }
+}
 if (count($_POST['id'])>0 && intval($_POST['nospam'])==1) {
 $db->sql_query("UPDATE ".$prefix."_comment SET status='1' WHERE id IN (".implode(',',$_POST['id']).")");
 foreach ($_POST['update'] as $a=>$b) {
+if (in_array($a,$_POST['id'])) {
 if ($b['mod']=='files') $db->sql_query("UPDATE ".$prefix."_files SET totalcomments=totalcomments+1 WHERE lid='".$b['iid']."'");
 elseif ($b['mod']=='news') $db->sql_query("UPDATE ".$prefix."_stories SET comments=comments+1 WHERE sid='".$b['iid']."'");
 elseif ($b['mod']=='voting') $db->sql_query("UPDATE ".$prefix."_survey SET pool_comments=pool_comments+1 WHERE poll_id='".$b['iid']."'");
+}
 }
 $db->sql_query("DELETE FROM ".$prefix."_spambase WHERE iid IN (".implode(',',$_POST['id']).") AND `type`='comment'");
 } elseif (count($_POST['id'])>0) {
