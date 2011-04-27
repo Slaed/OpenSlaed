@@ -952,7 +952,6 @@ function get_info() {
 	."<tr><td>"._LOCALITYLANG.":</td><td>".$local."</td></tr>"
 	."<tr><td>"._INTERESTS.":</td><td>".$inter."</td></tr>"
 	."<tr><td>"._REITING.":</td><td align=\"left\">".$rating."</td></tr>"
-	."<tr><td>"._USER_COMS.":</td><td align=\"left\">".$info[36]."</td></tr>"
 	."".$rank."".$agent."".$field."".$sign .""
 	."</table></td></tr><tr class=\"bgcolor1\"><td><table width=\"100%\">"
 	."<tr><td>".user_geo_ip($info[24], 3)."</td><td>".user_geo_ip($info[24], 2)."</td></tr>"
@@ -2110,18 +2109,18 @@ function textarea($id, $name, $var, $mod, $rows) {
 			."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"translateAlltoLatin()\"><img src=\"".img_find("editor/eng")."\" title=\""._ELAT."\"></div>"
 			."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"changelanguage()\"><img src=\"".img_find("editor/auto")."\" title=\""._EAUTOTR."\"></div>";
 		}
-		$fonts = "<option value=''>"._TEXT_FONT."</option>";
+		$fonts = 0;
 		$font = array("Arial", "Courier New", "Mistral", "Impact", "Sans Serif", "Tahoma", "Helvetica", "Verdana");
 		foreach ($font as $val) if ($val != "") $fonts .= "<option style=\"font-family: ".$val.";\" value=\"".$val."\">".$val."</option>";
-		$colors = "<option value=''>"._TEXT_COLOR."</option>";
+		$colors = 0;
 		$color = array("black", "silver", "gray", "white", "maroon", "orange", "orangered", "red", "purple", "fuchsia", "green", "lime", "olive", "yellow", "navy", "blue", "teal", "aqua");
 		foreach ($color as $val) if ($val != "") $colors .= "<option style=\"color: ".$val.";\" value=\"".$val."\">"._ECOLOR."</option>";
-		$fsizes = "<option value=''>"._TEXT_SIZE."</option>";
+		$fsizes = 0;
 		$fsize = array("8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "30", "32");
 		foreach ($fsize as $val) if ($val != "") $fsizes .= "<option value=\"".$val."\">"._ESIZE." ".$val."</option>";
-		$code .= "<div class=\"editorselect\"><select name=\"family\" OnChange=\"InsertCode('family', this.options[this.selectedIndex].value, '', '', '".$id."');this.selectedIndex = 0;\">".$fonts."</select></div>"
-		."<div class=\"editorselect\"><select name=\"color\" OnChange=\"InsertCode('color', this.options[this.selectedIndex].value, '', '', '".$id."');this.selectedIndex = 0;\">".$colors."</select></div>"
-		."<div class=\"editorselect\"><select name=\"size\" OnChange=\"InsertCode('size', this.options[this.selectedIndex].value, '', '', '".$id."');this.selectedIndex = 0;\">".$fsizes."</select></div></div>";
+		$code .= "<div class=\"editorselect\"><select name=\"family\" OnChange=\"InsertCode('family', this.options[this.selectedIndex].value, '', '', '".$id."')\">".$fonts."</select></div>"
+		."<div class=\"editorselect\"><select name=\"color\" OnChange=\"InsertCode('color', this.options[this.selectedIndex].value, '', '', '".$id."')\">".$colors."</select></div>"
+		."<div class=\"editorselect\"><select name=\"size\" OnChange=\"InsertCode('size', this.options[this.selectedIndex].value, '', '', '".$id."')\">".$fsizes."</select></div></div>";
 		if ($conf['smilies'] == 1) {
 			$code .= "<div class=\"smilies\">";
 			for ($i = 1; $i < 19; $i++) {
