@@ -65,7 +65,7 @@ $m=$db->sql_numrows($db->sql_query("SELECT `id` FROM ".$prefix."_whoiswho WHERE 
 if ($m>$nnewrate['maxhistory']) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$nnewrate['maxhistory']));
 $up=($rating==1)?5:0;
 $db->sql_query("UPDATE ".$prefix.$c['table']." SET ".$c['update']['count']."=".$c['update']['count']."+1, ".$c['update']['summ']."=".$c['update']['summ']."+$up WHERE ".$c['where']."='$id'");
-update_points($c['points']);
+if (intval($c['points'])>0) update_points($c['points']);
 $o['text']=_NEW_RATE_7;
 } elseif ($e==0) $o['text']=_NEW_RATE_5;
 else $o['text']=_NEW_RATE_6;
@@ -81,7 +81,7 @@ function new_whoiswho ($a) {
 global $db,$prefix;
 header('Content-type: text/html; charset=utf-8');
 include("config/config_ratings.php");
-if ($nnewrate['useronly']==1 && !is_user()) {echo '<br /><table class="whoiswho_rating"><caption>'._NEW_RATE_23.'</caption></table>'; exit();}
+if (!is_admin && ($nnewrate['useronly']==2 || $nnewrate['useronly']==1 && !is_user())) {echo '<br /><table class="whoiswho_rating"><caption>'.(($nnewrate['useronly']==2)?_NEW_RATE_29:_NEW_RATE_23).'</caption></table>'; exit();}
 $i=2;
 $result=$db->sql_query("SELECT v.comment,v.date,v.ip,v.vote,u.user_name,v.uid FROM `".$prefix."_whoiswho` AS v LEFT JOIN `".$prefix."_users` AS u ON (v.uid=u.user_id) WHERE `iid`='".$a['id']."' AND `module`='".$a['mod']."' ORDER BY `date` DESC LIMIT 0, 10");
 while(list($comment,$date,$ip,$vote,$name,$uid) = $db->sql_fetchrow($result)) {

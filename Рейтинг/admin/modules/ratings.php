@@ -15,7 +15,7 @@ function ratings() {
 	$mods = array("account", "files", "news");
 	$lang = array(_ACCOUNT, _FILES, _NEWS);
 	$i = 0;
-	$content="<div class=\"left\">"._NEW_RATE_22."</div><div class=\"center\">".radio_form($nnewrate['useronly'], "useronly")."</div>";
+	$content="<div class=\"left\">"._NEW_RATE_22."</div><div class=\"center\"><select name='useronly'><option value='1'>"._NEW_RATE_26."</option><option value='0'>"._NEW_RATE_27."</option><option value='2'>"._NEW_RATE_28."</option></select></div>";
 	$content.="<div class=\"left\">"._NEW_RATE_24."</div><div class=\"center\">".radio_form($nnewrate['allowcom'], "allowcom")."</div>";
 	$content.="<div class=\"left\">"._NEW_RATE_25."</div><div class=\"center\"><input type=\"text\" name=\"maxhistory\" value='".$nnewrate['maxhistory']."' maxlength=\"25\" size=\"45\" class=\"admin\"></div>";
 	foreach ($mods as $val) {
