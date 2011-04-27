@@ -18,6 +18,7 @@ if (defined("MODULE_FILE")) {
 	include("function/admin.php");
 }
 
+if (!is_array($user) && isset($_GET[$conf['user_c']])) $user = explode(":", addslashes(base64_decode($_GET[$conf['user_c']])));
 # Format theme file
 function get_theme_file($name) {
 	global $home, $conf, $op;
@@ -2170,7 +2171,7 @@ function textarea($id, $name, $var, $mod, $rows) {
 				SWFUpload.onload = function () {
 					var settings = {
 						flash_url : \"upload.swf\",
-						upload_url: \"ajax.php?go=4&mod=".$mod."\",
+						upload_url: \"ajax.php?go=4&mod=".$mod.((is_user()&&isset($_COOKIE[$conf['user_c']]))?'&'.$conf['user_c'].'='.$_COOKIE[$conf['user_c']]:'')."\",
 						file_size_limit : \"".$fsizel." MB\",
 						file_types : \"*.".str_replace(",", ";*.", $con[0])."\",
 						file_types_description : \"All Files\",
