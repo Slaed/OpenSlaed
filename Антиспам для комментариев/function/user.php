@@ -135,7 +135,7 @@ function userblock() {
 function show_com($cid) {
 	global $prefix, $db, $admin_file, $conf, $user, $confu;
 	include("config/config_comments.php");
-	list($numstories) = $db->sql_fetchrow($db->sql_query("SELECT Count(cid) FROM ".$prefix."_comment WHERE cid='$cid' AND modul='".$conf['name']."'"));
+	list($numstories) = $db->sql_fetchrow($db->sql_query("SELECT Count(cid) FROM ".$prefix."_comment WHERE cid='$cid' AND modul='".$conf['name']."' AND status='1'"));
 	if ($numstories > 0) {
 		$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 		$offset = ($num - 1) * $confc['num'];
