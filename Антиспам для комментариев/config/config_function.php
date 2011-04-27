@@ -1,4 +1,8 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+include_once('function/akismet.class.php');
+function spam_check($in=array(),$default=array()) { global $conf; include('config/config_spam.php'); if (is_admin() || $default['user']!=1 && is_user() && $spam['user']==1) return 1; if ($default['url']!=1 && $spam['url']==1 && (preg_match("#\[url(.*?)\[/url\]#si", $in['text']) || preg_match("#<a.* href=(.*)>(.*)</a>#siU", $in['text']))) return 3; $akismet = new Akismet($conf['homeurl'], $spam['key']); if($akismet->isKeyValid() && $default['akismet']!=1 && $spam['akismet']==1) { if ($in['name']) $akismet->setCommentAuthor($in['name']); if ($in['email']) $akismet->setCommentAuthorEmail($in['email']); if ($in['url']) $akismet->setCommentAuthorURL($in['url']); $akismet->setCommentContent($in['text']); if ($in['link']) { include("config/config_rewrite.php"); $in['link']=rtrim($conf['homeurl'],'/').'/'.ltrim((($conf['rewrite']==1)?preg_replace($in,$out,$in['link']):$in['link']),'/'); $akismet->setPermalink($in['link']); } else $akismet->setPermalink('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']); if($akismet->isCommentSpam()) return 2; } return 1; }
+function spam_save($id,$status,$type='comment',$stop='') {global $prefix, $db; if ($id && $status!=1) {$db->sql_query("INSERT INTO ".$prefix."_spambase VALUES (NULL,'$id','".$type."','$status')"); if ($stop!='') {head(); warning($stop."<br><br>"._GOBACK."", "", "", 1); foot(); die();}}}
+
 ?>

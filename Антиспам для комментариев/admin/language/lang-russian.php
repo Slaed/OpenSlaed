@@ -1,7 +1,22 @@
 <?php
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
-
+define("_ANTI_SPAM_ADM_1","Антиспам");
+define("_ANTI_SPAM_ADM_2","Возможно спам");
+define("_ANTI_SPAM_ADM_3","Настройки");
+define("_ANTI_SPAM_ADM_4","Выделенные: ");
+define("_ANTI_SPAM_ADM_5","Это не спам");
+define("_ANTI_SPAM_ADM_6","Это спам удалить");
+define("_ANTI_SPAM_ADM_7"," Отправить иформацию на Akismet.com");
+define("_ANTI_SPAM_ADM_8","Выполнить");
+define("_ANTI_SPAM_ADM_9","Проверять публикации через сервис Akismet.com");
+define("_ANTI_SPAM_ADM_11","Ключ с сайта Akismet.com:");
+define("_ANTI_SPAM_ADM_12","Проверять публикации на содержание ссылок:");
+define("_ANTI_SPAM_ADM_13","Не проверять публикации пользователей:");
+define("_ANTI_SPAM_ADM_14","&nbsp;Выбрать всё");
+define("_ANTI_SPAM_ADM_15","Причина");
+define("_ANTI_SPAM_ADM_16","Ссылка");
+define("_ANTI_SPAM_ADM_17","Akismet.com");
 define("_ACTIVATE2","Активировать?");
 define("_ACTMULTILINGUAL","Активировать многоязыковые свойства?");
 define("_ACTUSEFLAGS","Показывать флаги вместо меню?");

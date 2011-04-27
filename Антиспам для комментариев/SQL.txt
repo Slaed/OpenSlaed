@@ -1,0 +1,8 @@
+CREATE TABLE `{pref}_spambase` (
+`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`iid` INT( 11 ) NOT NULL ,
+`type` VARCHAR( 20 ) NOT NULL ,
+`status` TINYINT( 1 ) NOT NULL 
+) ENGINE = MYISAM ;
+
+ALTER TABLE `{pref}_comment` ADD `status` TINYINT( 1 ) NOT NULL DEFAULT '1'

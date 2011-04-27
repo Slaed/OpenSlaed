@@ -148,7 +148,7 @@ function show_com($cid) {
 			$a = $numstories;
 			if ($numstories > $offset) $a -= $offset;
 		}
-		$result = $db->sql_query("SELECT id, cid, date, uid, name, host_name, comment FROM ".$prefix."_comment WHERE cid='$cid' AND modul='".$conf['name']."' ORDER BY date ".$sort." LIMIT ".$offset.", ".$confc['num']."");
+		$result = $db->sql_query("SELECT id, cid, date, uid, name, host_name, comment FROM ".$prefix."_comment WHERE cid='$cid' AND modul='".$conf['name']."' AND status='1' ORDER BY date ".$sort." LIMIT ".$offset.", ".$confc['num']."");
 		$c = 0;
 		while (list($com_id, $com_cid, $com_date, $com_uid, $com_name, $com_host, $com_text) = $db->sql_fetchrow($result)) {
 			$cmassiv[] = array($com_id, $com_cid, $com_date, $com_uid, $com_name, $com_host, $com_text);
@@ -271,7 +271,10 @@ function save_com() {
 		$cid = intval($_POST['cid']);
 		$ip = getip();
 		$comment = nl2br(text_filter($comment, 2));
-		$db->sql_query("INSERT INTO ".$prefix."_comment VALUES (NULL, '$cid', '".$conf['name']."', now(), '$postid', '$postname', '$ip', '$comment')");
+		$spam=spam_check(array('text'=>$comment,'name'=>(is_user())?$user[1]:$postname));
+		$db->sql_query("INSERT INTO ".$prefix."_comment VALUES (NULL, '$cid', '".$conf['name']."', now(), '$postid', '$postname', '$ip', '$comment', '".(($spam==1)?1:0)."')");
+		list($last_id) = $db->sql_fetchrow($db->sql_query("SELECT LAST_INSERT_ID()"));
+		if ($spam!=1) spam_save($last_id,$spam,'comment',_ANTISPAM_C_1);
 		if ($conf['name'] == "files") {
 			$db->sql_query("UPDATE ".$prefix."_files SET totalcomments=totalcomments+1 WHERE lid='$cid'");
 			update_points(10);
