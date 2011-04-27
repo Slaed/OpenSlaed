@@ -81,7 +81,7 @@ function new_whoiswho ($a) {
 global $db,$prefix;
 header('Content-type: text/html; charset=utf-8');
 include("config/config_ratings.php");
-if (!is_admin && ($nnewrate['useronly']==2 || $nnewrate['useronly']==1 && !is_user())) {echo '<br /><table class="whoiswho_rating"><caption>'.(($nnewrate['useronly']==2)?_NEW_RATE_29:_NEW_RATE_23).'</caption></table>'; exit();}
+if (!is_admin() && ($nnewrate['useronly']==2 || $nnewrate['useronly']==1 && !is_user())) {echo '<br /><table class="whoiswho_rating"><caption>'.(($nnewrate['useronly']==2)?_NEW_RATE_29:_NEW_RATE_23).'</caption></table>'; exit();}
 $i=2;
 $result=$db->sql_query("SELECT v.comment,v.date,v.ip,v.vote,u.user_name,v.uid FROM `".$prefix."_whoiswho` AS v LEFT JOIN `".$prefix."_users` AS u ON (v.uid=u.user_id) WHERE `iid`='".$a['id']."' AND `module`='".$a['mod']."' ORDER BY `date` DESC LIMIT 0, 10");
 while(list($comment,$date,$ip,$vote,$name,$uid) = $db->sql_fetchrow($result)) {
