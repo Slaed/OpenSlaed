@@ -2,6 +2,7 @@
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
 function new_vote_graphic ($a,$b=1) {
+include("config/config_ratings.php");
 $vote['plus']=floor($a['total']/5);
 $vote['minus']=$a['votes']-$vote['plus'];
 $out['sum']=$vote['plus']-$vote['minus'];
@@ -14,9 +15,11 @@ $out['sum']='+'.$out['sum'];
 } else $out['type']='nt';
 if ((!$a['bodytext'] || $a['bodytext'] && $a['isbody']) && ($a['useronly']==0 || $a['useronly']==1 && is_user())) {
 $check=new_rating(array($a['mod'],$a['id']),'check',$b);
+if ($nnewrate['allowcom']==1) $jsonc=array("renew_rating('".$a['id']."','".$a['mod']."','0',false);","renew_rating('".$a['id']."','".$a['mod']."','1',false);");
+else $jsonc=array("new_rating('".$a['id']."','".$a['mod']."','0');","new_rating('".$a['id']."','".$a['mod']."','1');");
 if ($check==0) $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."<span class='new_rating_yes' title='"._NEW_RATE_8."'>&nbsp;</span></span>";
 elseif ($check==1) $content="<span class='rating_nt ".$out['type']."' title='"._NEW_RATE_6."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span>";
-else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"new_rating('".$a['id']."','".$a['mod']."','1');\">&nbsp;</span><span class='rating_nt ".$out['type']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"new_rating('".$a['id']."','".$a['mod']."','0');\">&nbsp;</span></span>";
+else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"".$jsonc[1]."\">&nbsp;</span><span class='rating_nt ".$out['type']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"".$jsonc[1]."\">&nbsp;</span></span>";
 } else $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span>";
 return $content;
 }
@@ -57,7 +60,7 @@ $e=new_rating(array($mod,$id),'check',$f);
 if ($e==2) {
 setcookie(substr($mod, 0, 2)."-".$id, $id, time() + intval($con[0]));
 $db->sql_query("INSERT INTO ".$prefix."_rating VALUES (NULL, '$id', '$mod', '".time()."', '$uid', '$ip')");
-$comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='')?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):'';
+$comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='' && $nnewrate['allowcom']==0)?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):'';
 $db->sql_query("INSERT INTO ".$prefix."_whoiswho VALUES (NULL, '$id', '$mod', '$uid', now(), '$ip', '".(($rating==1)?1:-1)."', '$comment')");
 $m=$db->sql_numrows($db->sql_query("SELECT `id` FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."'"));
 if ($m>$n) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$n));
