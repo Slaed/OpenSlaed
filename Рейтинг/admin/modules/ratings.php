@@ -17,6 +17,7 @@ function ratings() {
 	$i = 0;
 	$content="<div class=\"left\">"._NEW_RATE_22."</div><div class=\"center\">".radio_form($nnewrate['useronly'], "useronly")."</div>";
 	$content.="<div class=\"left\">"._NEW_RATE_24."</div><div class=\"center\">".radio_form($nnewrate['allowcom'], "allowcom")."</div>";
+	$content.="<div class=\"left\">"._NEW_RATE_25."</div><div class=\"center\"><input type=\"text\" name=\"maxhistory\" value='".$nnewrate['maxhistory']."' maxlength=\"25\" size=\"45\" class=\"admin\"></div>";
 	foreach ($mods as $val) {
 		if ($val != "") {
 			$con = explode("|", $confra[$val]);
@@ -44,6 +45,7 @@ function ratings_save_conf() {
 	$i = 0;
 	$content = "\$nnewrate['useronly'] = ".intval($_POST['useronly']).";\n";
 	$content .= "\$nnewrate['allowcom'] = ".intval($_POST['allowcom']).";\n";
+	$content .= "\$nnewrate['maxhistory'] = ".intval($_POST['maxhistory']).";\n";
 	foreach ($mods as $val) {
 		if ($val != "") {
 			$xtime = (!intval($_POST['time'][$i])) ? 2592000 : $_POST['time'][$i] * 86400;

@@ -26,7 +26,6 @@ return $content;
 
 function new_rating ($a=array(),$b='',$f=1) {
 global $db,$prefix,$user,$out;
-$n=10;
 $c=array();
 $uid = (is_user()) ? intval(substr($user[0], 0, 11)) : 0;
 $ip = getip();
@@ -63,7 +62,7 @@ $db->sql_query("INSERT INTO ".$prefix."_rating VALUES (NULL, '$id', '$mod', '".t
 $comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='' && $nnewrate['allowcom']==0)?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):'';
 $db->sql_query("INSERT INTO ".$prefix."_whoiswho VALUES (NULL, '$id', '$mod', '$uid', now(), '$ip', '".(($rating==1)?1:-1)."', '$comment')");
 $m=$db->sql_numrows($db->sql_query("SELECT `id` FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."'"));
-if ($m>$n) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$n));
+if ($m>$nnewrate['maxhistory']) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$nnewrate['maxhistory']));
 $up=($rating==1)?5:0;
 $db->sql_query("UPDATE ".$prefix.$c['table']." SET ".$c['update']['count']."=".$c['update']['count']."+1, ".$c['update']['summ']."=".$c['update']['summ']."+$up WHERE ".$c['where']."='$id'");
 update_points($c['points']);
