@@ -1,6 +1,8 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+$charset['rating']='utf-8'; # utf-8, windows-1251
+
 function new_vote_graphic ($a,$b=1) {
 include("config/config_ratings.php");
 $vote['plus']=floor($a['total']/5);
@@ -25,7 +27,7 @@ return $content;
 }
 
 function new_rating ($a=array(),$b='',$f=1) {
-global $db,$prefix,$user,$out;
+global $db,$prefix,$user,$out,$charset;
 $c=array();
 $uid = (is_user()) ? intval(substr($user[0], 0, 11)) : 0;
 $ip = getip();
@@ -36,10 +38,11 @@ $rating = (isset($_GET['rating'])) ? intval($_GET['rating']) : 1;
 $con = explode("|", $confra[strtolower($mod)]);
 $past = time() - intval($con[0]);
 $cookies = (isset($_COOKIE[''.substr($mod, 0, 2).'-'.$id.''])) ? intval($_COOKIE[substr($mod, 0, 2).'-'.$id]) : "";
-#Настройки
 if ($mod=='news') $c=array('select'=>'ratings,score','table'=>'_stories','update'=>array('summ'=>'score', 'count'=>'ratings'),'where'=>'sid','points'=>33);
 if ($mod=='files') $c=array('select'=>'votes,totalvotes','table'=>'_files','update'=>array('summ'=>'totalvotes', 'count'=>'votes'),'where'=>'lid','points'=>12);
+##Свой модуль-1##
 if ($mod=='account') $c=array('select'=>'user_votes,user_totalvotes','table'=>'_users','update'=>array('summ'=>'user_totalvotes', 'count'=>'user_votes'),'where'=>'user_id','points'=>2);
+##Свой модуль-1##
 if ($b=='select') {
 if (is_array($out[$mod]) && $f==1) return $out;
 $out[$mod]=array();
@@ -59,7 +62,7 @@ $e=new_rating(array($mod,$id),'check',$f);
 if ($e==2) {
 setcookie(substr($mod, 0, 2)."-".$id, $id, time() + intval($con[0]));
 $db->sql_query("INSERT INTO ".$prefix."_rating VALUES (NULL, '$id', '$mod', '".time()."', '$uid', '$ip')");
-$comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='' && $nnewrate['allowcom']==0)?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):'';
+$comment=(isset($_GET['comment']) && save_text($_GET['comment'])!='' && $nnewrate['allowcom']==0)?(($charset['rating']=='utf-8')?mb_substr(save_text($_GET['comment']),0,30,'utf-8'):substr(save_text(iconv("utf-8", $charset['rating'], $_GET['comment'])),0,30)):'';
 $db->sql_query("INSERT INTO ".$prefix."_whoiswho VALUES (NULL, '$id', '$mod', '$uid', now(), '$ip', '".(($rating==1)?1:-1)."', '$comment')");
 $m=$db->sql_numrows($db->sql_query("SELECT `id` FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."'"));
 if ($m>$nnewrate['maxhistory']) $db->sql_query("DELETE FROM ".$prefix."_whoiswho WHERE `iid`='".$id."' AND `module`='".$mod."' ORDER BY `date` ASC LIMIT ".($m-$nnewrate['maxhistory']));
@@ -72,14 +75,14 @@ else $o['text']=_NEW_RATE_6;
 list($count,$summ) = $db->sql_fetchrow($db->sql_query("SELECT ".$c['select']." FROM ".$prefix.$c['table']." WHERE ".$c['where']."='$id'"));
 $o['html']=new_vote_graphic(array('total'=>$summ,'votes'=>$count,'bodytext'=>0,'isbody'=>1,'mod'=>$mod,'id'=>$id),0);
 $o['status']=$e;
-echo json_encode($o);
+if ($charset['rating']=='windows-1251') {unset($b,$c,$d); header('Content-type: text/html; charset='.$charset['rating']); foreach ($o as $b=>$c) $d[]='"'.$b.'":"'.addcslashes(str_replace(array("\r","\n"),"",$c), '"').'"'; echo '{'.implode(',',$d).'}'; } else echo json_encode($o);
 }
 }
 function new_ratings_date($date, $is_time=false, $type='rus') {if (is_integer($date)) {$date=intval($date);$date=date('Y-m-d H:i:s', $date);}list($day, $time) = explode(' ', $date);if ($type=='-') return $day;elseif ($type!='rus') return implode($type, explode('-',$day));switch($day) {case date('Y-m-d'):$result = _NEW_RATE_18;break;case date( 'Y-m-d', mktime(0, 0, 0, date("m"), date("d")-1, date("Y")) ):$result = _NEW_RATE_19;break;default: {list($y, $m, $d)  = explode('-', $day);$result = $d.' '.str_replace(array('01','02','03','04','05','06','07','08','09','10','11','12'), explode(',',_NEW_RATE_20), $m).' '.$y;}}if($is_time) {list($h, $m, $s)  = explode(':', $time);$result .= ' в '.$h.':'.$m;}return $result;}
 
 function new_whoiswho ($a) {
-global $db,$prefix;
-header('Content-type: text/html; charset=utf-8');
+global $db,$prefix,$charset;
+header('Content-type: text/html; charset='.$charset['rating']);
 include("config/config_ratings.php");
 if (!is_admin() && ($nnewrate['useronly']==2 || $nnewrate['useronly']==1 && !is_user())) {echo '<br /><table class="whoiswho_rating"><caption>'.(($nnewrate['useronly']==2)?_NEW_RATE_29:_NEW_RATE_23).'</caption></table>'; exit();}
 $i=2;
