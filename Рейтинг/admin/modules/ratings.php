@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2005 - 2008 SLAED
+# Copyright Â© 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
 if (!defined("ADMIN_FILE") || !is_admin_god()) die("Illegal File Access");
@@ -13,10 +13,10 @@ function ratings() {
 	include("config/config_ratings.php");
 	$permtest = end_chmod("config/config_ratings.php", 666);
 	if ($permtest) warning($permtest, "", "", 1);
-	##Ñâîé ìîäóëü-1##
+	##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-1##
 	$mods = array("account", "files", "news");
 	$lang = array(_ACCOUNT, _FILES, _NEWS);
-	##Ñâîé ìîäóëü-1##
+	##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-1##
 	$i = 0;
 	$content="<div class=\"left\">"._NEW_RATE_22."</div><div class=\"center\"><select name='useronly'><option value='1'".(($nnewrate['useronly']==1)?" selected='selected'":"").">"._NEW_RATE_26."</option><option value='0'".(($nnewrate['useronly']==0)?" selected='selected'":"").">"._NEW_RATE_27."</option><option value='2'".(($nnewrate['useronly']==2)?" selected='selected'":"").">"._NEW_RATE_28."</option></select></div>";
 	$content.="<div class=\"left\">"._NEW_RATE_24."</div><div class=\"center\">".radio_form($nnewrate['allowcom'], "allowcom")."</div>";
@@ -44,9 +44,9 @@ function ratings_save_conf() {
 	global $admin_file;
 	include("config/config_ratings.php");
 	$content = "\$confra = array();\n";
-	##Ñâîé ìîäóëü-2##
+	##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-2##
 	$mods = array("account", "files", "news");
-	##Ñâîé ìîäóëü-2##
+	##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-2##
 	$i = 0;
 	$content = "\$nnewrate['useronly'] = ".intval($_POST['useronly']).";\n";
 	$content .= "\$nnewrate['allowcom'] = ".intval($_POST['allowcom']).";\n";
@@ -71,9 +71,9 @@ close();
 
 function ratings_whoiswho () {
 global $db,$prefix,$admin_file;
-##Ñâîé ìîäóëü-3##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-3##
 $arr=array('news'=>_NEW_RATE_36,'files'=>_NEW_RATE_37,'account'=>_NEW_RATE_38);
-##Ñâîé ìîäóëü-3##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-3##
 $conf['anum']=10;
 $num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 $offset = ($num-1) * $conf['anum'] ;
@@ -102,12 +102,12 @@ while(list($id,$title) = $db->sql_fetchrow($res)) {$in[$a][$id]=array('title'=>$
 } elseif ($a=='files') {
 $res=$db->sql_query("SELECT `lid`,`title` FROM  ".$prefix."_files WHERE `lid` IN (".implode(',',$b).")");
 while(list($id,$title) = $db->sql_fetchrow($res)) {$in[$a][$id]=array('title'=>$title,'url'=>'index.php?name='.$a.'&op=view&id='.$id);}
-##Ñâîé ìîäóëü-4##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-4##
 } elseif ($a=='account') {
 $res=$db->sql_query("SELECT `user_id`,`user_name` FROM  ".$prefix."_users WHERE `user_id` IN (".implode(',',$b).")");
 while(list($id,$title) = $db->sql_fetchrow($res)) {$in[$a][$id]=array('title'=>_NEW_RATE_32.$title,'url'=>'index.php?name='.$a.'&op=info&uname='.$title);}
 }
-##Ñâîé ìîäóëü-4##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-4##
 unset($res,$id,$title);
 }
 unset($a,$b);
@@ -154,11 +154,11 @@ if ($a=='news') {
 $db->sql_query("UPDATE ".$prefix."_stories SET ratings=ratings-1, score=score-5*".$_POST['rat'][$c]." WHERE `sid`='$d'");
 } elseif ($a=='files') {
 $db->sql_query("UPDATE ".$prefix."_files SET votes=votes-1, totalvotes=totalvotes-5*".$_POST['rat'][$c]." WHERE `lid`='$d'");
-##Ñâîé ìîäóëü-5##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-5##
 } elseif ($a=='account') {
 $db->sql_query("UPDATE ".$prefix."_users SET user_votes=user_votes-1, user_totalvotes=user_totalvotes-5*".$_POST['rat'][$c]." WHERE `user_id`='$d'");
 }
-##Ñâîé ìîäóëü-5##
+##Ð¡Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ-5##
 }
 }
 $db->sql_query("DELETE FROM  ".$prefix."_whoiswho WHERE `id` IN (".implode(',',$e).")");
