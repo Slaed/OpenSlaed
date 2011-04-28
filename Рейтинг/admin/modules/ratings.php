@@ -82,11 +82,11 @@ panel();
 title(_NEW_RATE_30);
 ratings_navig();
 open();
-$s=$ss='';
+$p=$s=$ss='';
 if (isset($_GET['filter']) && isset($_GET['var'])) {
-if (is_array($_GET['filter'])) foreach ($_GET['filter'] as $a=>$b) {$s[]=text_filter($b)."='".text_filter($_GET['var'][$a])."'";$ss[]="w.".text_filter($b)."='".text_filter($_GET['var'][$a])."'";}
-else {$s[]=" ".text_filter($_GET['filter'])."='".text_filter($_GET['var'])."'";$ss[]=" w.".text_filter($_GET['filter'])."='".text_filter($_GET['var'])."'";}
-if ($s!='') {$s=' WHERE '.implode(' AND ',$s);$ss=' WHERE '.implode(' AND ',$ss);}
+if (is_array($_GET['filter'])) foreach ($_GET['filter'] as $a=>$b) {$p[]='filter[]='.$b.'&var[]='.$_GET['var'][$a];$s[]=text_filter($b)."='".text_filter($_GET['var'][$a])."'";$ss[]="w.".text_filter($b)."='".text_filter($_GET['var'][$a])."'";}
+else {$p[]='filter='.$_GET['filter'].'&var='.$_GET['var'];$s[]=" ".text_filter($_GET['filter'])."='".text_filter($_GET['var'])."'";$ss[]=" w.".text_filter($_GET['filter'])."='".text_filter($_GET['var'])."'";}
+if ($s!='') {$p=implode('&',$p).'&';$s=' WHERE '.implode(' AND ',$s);$ss=' WHERE '.implode(' AND ',$ss);}
 unset($a);
 }
 $result = $db->sql_query("SELECT w.id, w.iid, w.module, w.uid, w.date, w.ip, w.vote, w.comment, u.user_name FROM ".$prefix."_whoiswho AS w LEFT JOIN ".$prefix."_users AS u ON (w.uid=u.user_id)".$ss." ORDER BY w.date DESC LIMIT ".$offset.", ".$conf['anum']);
@@ -138,7 +138,7 @@ echo "</table>";
 echo "<div class='button'><input type='hidden' name='op' value='ratings_delete'><input type='submit' value='"._NEW_RATE_41."' class='fbutton'></div></form>";
 list($numstories) = $db->sql_fetchrow($db->sql_query("SELECT Count(id) FROM ".$prefix."_whoiswho".$s));
 $numpages = ceil($numstories/$conf['anum']);
-num_page("", $numstories, $numpages, $conf['anum'], "op=ratings_whoiswho&");
+num_page("", $numstories, $numpages, $conf['anum'], "op=ratings_whoiswho&".$p);
 } else warning(_NO_INFO, "", "", 2);
 close();
 foot();
