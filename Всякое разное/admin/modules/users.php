@@ -299,7 +299,10 @@ function user_new() {
 	$result = $db->sql_query("SELECT user_id, user_name, user_email, user_regdate, check_num FROM ".$prefix."_users_temp WHERE user_id LIMIT ".$offset.", ".$conf['anum']."");
 	if ($db->sql_numrows($result) > 0) {
 		open();
+		echo '<script type="text/javascript">function checkAll(oForm, cbName, checked){for (var i=0; i < oForm[cbName].length; i++) oForm[cbName][i].checked = checked;}</script>';
+		echo "<form action='".$admin_file.".php' method='post' id='del_new_users'>";
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
+		."<span style='float:right;font-size:11px;margin-bottom:5px;background:#C3F5A4;padding: 5px 10px;border:1px #43B000 solid;'><input onclick=\"checkAll(this.form,'delete[]',this.checked)\" type='checkbox' value='delete'> Select all</span>"
 		."<th>"._ID."</th><th>"._NICKNAME."</th><th>"._EMAIL."</th><th>"._REG_DATE."</th><th>"._FUNCTIONS."</th></tr>";
 		while (list($user_id, $user_name, $user_email, $user_regdate, $check_num) = $db->sql_fetchrow($result)) {
 			echo "<tr class=\"bgcolor1\">"
@@ -307,9 +310,10 @@ function user_new() {
 			."<td>".$user_name."</td>"
 			."<td>".$user_email."</td>"
 			."<td align=\"center\">".$user_regdate."</td>"
-			."<td align=\"center\">".ad_status("".$conf['homeurl']."/index.php?name=account&op=activate&user=".urlencode($user_name)."&num=".$check_num."", $active)." ".ad_delete("".$admin_file.".php?op=user_new_del&id=".$user_id."&refer=1", $user_name)."</td></tr>";
+			."<td align=\"center\"><input type='checkbox' name='delete[]' value='".$user_id."'> ".ad_status("".$conf['homeurl']."/index.php?name=account&op=activate&user=".urlencode($user_name)."&num=".$check_num."", $active)." ".ad_delete("".$admin_file.".php?op=user_new_del&id=".$user_id."&refer=1", $user_name)."</td></tr>";
 		}
 		echo "</table>";
+		echo "<div class='button'><input type='hidden' name='op' value='user_new_delete'><input type='submit' value='Delete selected' class='fbutton'></div></form>";
 		close();
 		list($numstories) = $db->sql_fetchrow($db->sql_query("SELECT Count(user_id) FROM ".$prefix."_users_temp WHERE user_id"));
 		$numpages = ceil($numstories / $conf['anum']);
@@ -452,5 +456,13 @@ switch($op) {
 	case "user_save":
 	user_save();
 	break;
+	
+	case "user_new_delete":
+	if (count($_POST['delete'])>0) {
+	$db->sql_query("DELETE FROM ".$prefix."_users_temp WHERE user_id IN (".implode(',',$_POST['delete']).")");
+	}
+	referer($admin_file.".php?op=user_new");
+	break;
+
 }
 ?>
