@@ -15,14 +15,15 @@ $out['type']='mn';
 $out['type']='pl';
 $out['sum']='+'.$out['sum'];
 } else $out['type']='nt';
+$who=(!is_admin() && ($nnewrate['useronly']==2 || $nnewrate['useronly']==1 && !is_user()))?"":" onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'";
 if ((!$a['bodytext'] || $a['bodytext'] && $a['isbody']) && ($a['useronly']==0 || $a['useronly']==1 && is_user())) {
 $check=new_rating(array($a['mod'],$a['id']),'check',$b);
 if ($nnewrate['allowcom']==1) $jsonc=array("renew_rating('".$a['id']."','".$a['mod']."','0',false);","renew_rating('".$a['id']."','".$a['mod']."','1',false);");
 else $jsonc=array("new_rating('".$a['id']."','".$a['mod']."','0');","new_rating('".$a['id']."','".$a['mod']."','1');");
-if ($check==0) $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."<span class='new_rating_yes' title='"._NEW_RATE_8."'>&nbsp;</span></span>";
-elseif ($check==1) $content="<span class='rating_nt ".$out['type']."' title='"._NEW_RATE_6."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span>";
-else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"".$jsonc[1]."\">&nbsp;</span><span class='rating_nt ".$out['type']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"".$jsonc[1]."\">&nbsp;</span></span>";
-} else $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."' onclick='new_whiiswho(\"".$a['mod']."\",".$a['id'].");'>".$out['sum']."</span>";
+if ($check==0) $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."'$who>".$out['sum']."<span class='new_rating_yes' title='"._NEW_RATE_8."'>&nbsp;</span></span>";
+elseif ($check==1) $content="<span class='rating_nt ".$out['type']."' title='"._NEW_RATE_6."'$who>".$out['sum']."</span>";
+else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"".$jsonc[1]."\">&nbsp;</span><span class='rating_nt ".$out['type']."'$who>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"".$jsonc[1]."\">&nbsp;</span></span>";
+} else $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."'$who>".$out['sum']."</span>";
 return $content;
 }
 
