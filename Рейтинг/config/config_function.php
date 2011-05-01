@@ -22,7 +22,7 @@ if ($nnewrate['allowcom']==1) $jsonc=array("renew_rating('".$a['id']."','".$a['m
 else $jsonc=array("new_rating('".$a['id']."','".$a['mod']."','0');","new_rating('".$a['id']."','".$a['mod']."','1');");
 if ($check==0) $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."'$who>".$out['sum']."<span class='new_rating_yes' title='"._NEW_RATE_8."'>&nbsp;</span></span>";
 elseif ($check==1) $content="<span class='rating_nt ".$out['type']."' title='"._NEW_RATE_6."'$who>".$out['sum']."</span>";
-else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"".$jsonc[1]."\">&nbsp;</span><span class='rating_nt ".$out['type']."'$who>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"".$jsonc[1]."\">&nbsp;</span></span>";
+else $content="<span class='rating_nt'><span class='new_rating plus' title='"._NEW_RATE_3."' onclick=\"".$jsonc[1]."\">&nbsp;</span><span class='rating_nt ".$out['type']."'$who>".$out['sum']."</span><span class='new_rating minus' title='"._NEW_RATE_4."' onclick=\"".$jsonc[0]."\">&nbsp;</span></span>";
 } else $content="<span class='rating_nt ".$out['type']."' title='".$out['title']."'$who>".$out['sum']."</span>";
 return $content;
 }
