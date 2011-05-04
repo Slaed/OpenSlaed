@@ -78,7 +78,7 @@ if ($count > 0) {
 echo '<script type="text/javascript">function checkAll(oForm, cbName, checked){for (var i=0; i < oForm[cbName].length; i++) oForm[cbName][i].checked = checked;}</script>';
 echo "<form action='".$admin_file.".php?op=smtp_del' method='post' id='blogs_form'><table width='100%' border='0' cellpadding='3' cellspacing='1' class='sort' id='sort_i'><tr>
 <span style='float:right;font-size:11px;margin-bottom:5px;background:#C3F5A4;padding: 5px 10px;border:1px #43B000 solid;'><input onclick=\"checkAll(this.form,'delete[]',this.checked)\" type='checkbox' value='delete'>"._SMTP_A_22."</span>
-<th>"._SMTP_A_23."</th><th>"._SMTP_A_24."</th><th>"._SMTP_A_25."</th><th>"._SMTP_A_26."</th><th>"._SMTP_A_27."</th><th>"._SMTP_A_28."</th><th></th>"._SMTP_A_29."</tr>";
+<th>"._SMTP_A_23."</th><th>"._SMTP_A_24."</th><th>"._SMTP_A_25."</th><th>"._SMTP_A_26."</th><th>"._SMTP_A_27."</th><th>"._SMTP_A_28."</th><th>"._SMTP_A_29."</th></tr>";
 $result = $db->sql_query("SELECT l.id,l.uid,l.mail,l.date,l.info,l.type,l.status,u.user_name FROM ".$prefix."_mail_log AS l LEFT JOIN ".$prefix."_users AS u ON (l.uid=u.user_id)".$sql['where']." ORDER BY l.date DESC LIMIT ".$num['from'].", ".$num['num']."");
 while (list($id,$uid,$mail,$date,$info,$type,$status,$name) = $db->sql_fetchrow($result)) {
 $info=unserialize($info);
