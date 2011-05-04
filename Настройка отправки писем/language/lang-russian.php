@@ -2,6 +2,28 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_MAIL_SMTP_1","Письмо для ");
+define("_MAIL_SMTP_2"," успешно отправлено!");
+define("_MAIL_SMTP_3","Ошибка при отправке письма на ");
+define("_MAIL_SMTP_4","Не удалось установить соединение с сервером ");
+define("_MAIL_SMTP_5","Соединение с сервером прошло успешно!");
+define("_MAIL_SMTP_6","Ошибка приветсвия EHLO!");
+define("_MAIL_SMTP_7","Приветсвие сервера EHLO прошло успешно!");
+define("_MAIL_SMTP_8","Сервер не разрешил начать авторизацию!");
+define("_MAIL_SMTP_9","Авторизация разрешена!");
+define("_MAIL_SMTP_10","Ошибка при запросе авторизации пользователя ");
+define("_MAIL_SMTP_11","Авторизации пользователя ");
+define("_MAIL_SMTP_12"," разрешена!");
+define("_MAIL_SMTP_13","Проверка пароля... Пароль неверный!");
+define("_MAIL_SMTP_14","Проверка пароля... Пароль верный!");
+define("_MAIL_SMTP_15","Сервер отказал в команде MAIL FROM!");
+define("_MAIL_SMTP_16","Сервер принял команду MAIL FROM!");
+define("_MAIL_SMTP_17","Сервер не принял команду RCPT TO: ");
+define("_MAIL_SMTP_18","Сервер принял команду RCPT TO: ");
+define("_MAIL_SMTP_19","Сервер не принял DATA!");
+define("_MAIL_SMTP_20","Сервер принял команду DATA!");
+define("_MAIL_SMTP_21","Ошибка отправки письма! Код: ");
+define("_MAIL_SMTP_22","Письмо успешно отправлено!");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");
