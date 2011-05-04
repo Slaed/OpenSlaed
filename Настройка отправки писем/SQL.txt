@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS `{pref}_mail_log` (
+  `id` int(11) NOT NULL auto_increment,
+  `mail` varchar(100) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `info` text NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `type` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `date` (`date`,`status`)
+) ENGINE=MyISAM;
