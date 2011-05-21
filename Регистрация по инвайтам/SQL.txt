@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS `{pref}_invates` (
+  `id` int(11) NOT NULL auto_increment,
+  `invate` varchar(32) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `nuid` varchar(25) NOT NULL default '0',
+  `date` datetime NOT NULL,
+  `end_date` datetime NOT NULL,
+  `coast` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `invate` (`invate`),
+  KEY `uid` (`uid`,`date`)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `{pref}_invates_bonus` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `uid` (`uid`)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `{pref}_invates_points` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `points` int(11) NOT NULL,
+  `expend` int(11) NOT NULL,
+  `bonus` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=MyISAM;

@@ -1,0 +1,1 @@
+function invate_select(elm) {if(typeof(elm) == 'string') elm = getElementById(elm);if (elm) {elm.focus(); elm.select();}}

@@ -21,6 +21,11 @@ ErrorDocument 503												http://www.slaed.net/faq-cat-39.html
 RewriteEngine On
 RewriteBase /
 
+RewriteRule ^account-invite-(.*)-mail-(.*).(html|htm)$				index.php?name=account&op=newuser&invate=$1&mail=$2 [NC,L]
+RewriteRule ^account-invite-(.*).(html|htm)$				index.php?name=account&op=newuser&invate=$1 [NC,L]
+RewriteRule ^account-invites-num-([0-9]*).(html|htm)$				index.php?name=account&op=invates&num=$1 [NC,L]
+RewriteRule ^account-invites.(html|htm)$				index.php?name=account&op=invates [NC,L]
+
 # Index
 RewriteRule ^index.html											index.php [NC]
 

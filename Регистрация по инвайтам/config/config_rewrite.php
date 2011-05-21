@@ -4,6 +4,15 @@
 
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+$out[] = "account-invite-$3-mail-$5.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=newuser&(amp;)?invate=([0-9A-z_-]+)&(amp;)?mail=([%&;/:|\-{}().&_A-zА-я0-9+=-@]*)'";
+$out[] = "account-invite-$3.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=newuser&(amp;)?invate=([0-9A-z_-]+)'";
+$out[] = "account-invites-num-$3.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=invates&(amp;)?num=(\d+)'";
+$out[] = "account-invites.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=invates'";
+
 $out[] = "rss-\\1-\\3-num-\\5.html";
 $in[] = "'(?<!/)rss.php\?name=([a-zA-Z0-9_]*)&(amp;)?cat=([0-9]*)&(amp;)?num=([0-9]*)'";
 $out[] = "rss-\\1-\\3.html";

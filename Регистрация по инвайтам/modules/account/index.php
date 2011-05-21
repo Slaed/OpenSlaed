@@ -52,7 +52,7 @@ function checkuser($user_name, $user_email, $rulescheck) {
 }
 
 function newuser() {
-	global $db, $conf, $confu, $stop;
+	global $db, $conf, $confu, $stop, $invate;
 	if (!is_user()) {
 		head();
 		if ($stop) {
@@ -65,13 +65,16 @@ function newuser() {
 			warning(_NOREG, "", "", 1);
 		} else {
 			$user_name = (isset($_POST['user_name'])) ? text_filter(substr($_POST['user_name'], 0, 25)) : "";
-			$user_email = (isset($_POST['user_email'])) ? text_filter($_POST['user_email']) : "";
+			$user_email = (isset($_POST['user_email'])) ? text_filter($_POST['user_email']) : ((isset($_GET['mail']))?text_filter($_GET['mail']):'');
+			$user_invite = (isset($_POST['invite']))?text_filter($_POST['invite']):((isset($_GET['invate']))?text_filter($_GET['invate']):'');
 			open();
+      if ($invate['status']==1) warning(_INVATE_56, "", "", 0);
 			echo "<form action=\"index.php?name=".$conf['name']."\" method=\"post\">"
 			."<div class=\"left\">"._NICKNAME.":</div><div class=\"center\"><input type=\"text\" name=\"".$conf['sitekey']."\" value=\"".$user_name."\" size=\"30\" maxlength=\"25\" class=\"".$conf['style']."\"></div>"
 			."<div class=\"left\">"._EMAIL.":</div><div class=\"center\"><input type=\"text\" name=\"user_email\" value=\"".$user_email."\" size=\"30\" maxlength=\"255\" class=\"".$conf['style']."\"></div>"
 			."<div class=\"left\">"._PASSWORD.":</div><div class=\"center\" OnMouseOver=\"Tip('"._BLANKFORAUTO."')\"><input type=\"password\" name=\"user_password\" size=\"25\" maxlength=\"25\" class=\"".$conf['style']."\"></div>"
 			."<div class=\"left\">"._RETYPEPASSWORD.":</div><div class=\"center\" OnMouseOver=\"Tip('"._BLANKFORAUTO."')\"><input type=\"password\" name=\"user_password2\" size=\"25\" maxlength=\"25\" class=\"".$conf['style']."\"></div>";
+			if ($invate['status']==1) echo "<div class=\"left\">"._INVATE_55.":</div><div class=\"center\"><input type=\"text\" name=\"invite\" value=\"".$user_invite."\" size=\"30\" maxlength=\"32\" class=\"".$conf['style']."\"></div>";
 			if (extension_loaded("gd") AND ($conf['gfx_chk'] == 3 OR $conf['gfx_chk'] == 4 OR $conf['gfx_chk'] == 6 OR $conf['gfx_chk'] == 7)) {
 				echo "<div class=\"left\">"._SECURITYCODE.":</div><div class=\"center\"><img src=\"index.php?captcha=1\" border=\"1\" alt=\""._SECURITYCODE."\" title=\""._SECURITYCODE."\"></div>"
 				."<div class=\"left\">"._TYPESECCODE.":</div><div class=\"center\"><input type=\"text\" name=\"check\" size=\"10\" maxlength=\"6\" style=\"width: 75px;\" class=\"".$conf['style']."\"></div>";
@@ -91,7 +94,7 @@ function newuser() {
 }
 
 function finnewuser() {
-	global $prefix, $db, $conf, $confu, $stop;
+	global $prefix, $db, $conf, $confu, $stop, $invate;
 	if (!$confu['reg']) {
 		head();
 		warning(_NOREG, "", "", 1);
@@ -112,6 +115,7 @@ function finnewuser() {
 		} elseif ($user_password == $user_password2 && strlen($user_password) < $confu['minpass']) {
 			$stop = _CHARMIN.": ".$confu['minpass'];
 		}
+		if ($invate['status']==1 && !invate_check(text_filter($_POST['invite']))) $stop=_INVATE_57;
 		if (!$stop) {
 			$check_num = md5(gen_pass(10));
 			$time = time();
@@ -119,6 +123,7 @@ function finnewuser() {
 			$user_name = text_filter($user_name);
 			$user_email = text_filter($user_email);
 			$db->sql_query("INSERT INTO ".$prefix."_users_temp (user_id, user_name, user_email, user_password, user_regdate, check_num, time) VALUES (NULL, '$user_name', '$user_email', '$user_password', now(), '$check_num', '$time')");
+			if ($invate['status']==1) invate_update(array('uname'=>$user_name,'invate'=>text_filter($_POST['invite'])));
 			head();
 			if ($confu['nomail'] == 1) {
 				title(_ACCOUNTCREATED);
@@ -177,11 +182,13 @@ function activate() {
 function info() {
 	global $prefix, $db, $conf, $confu, $pagetitle, $admin_file;
 	$user_name = htmlspecialchars(substr($_GET['uname'], 0, 25));
-	$result = $db->sql_query("SELECT u.user_id, u.user_name, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_occ, u.user_from, u.user_interests, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_password, u.user_storynum, u.user_blockon, u.user_block, u.user_theme, u.user_newsletter, u.user_lastvisit, u.user_lang, u.user_points, u.user_last_ip, u.user_warnings, u.user_group, u.user_birthday, u.user_gender, u.user_votes, u.user_totalvotes, u.user_field, u.user_agent, g.name, g.rank FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON (g.id=u.user_group) WHERE user_name='$user_name'");
+	$result = $db->sql_query("SELECT m.user_name AS invited, i.uid, u.user_id, u.user_name, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_occ, u.user_from, u.user_interests, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_password, u.user_storynum, u.user_blockon, u.user_block, u.user_theme, u.user_newsletter, u.user_lastvisit, u.user_lang, u.user_points, u.user_last_ip, u.user_warnings, u.user_group, u.user_birthday, u.user_gender, u.user_votes, u.user_totalvotes, u.user_field, u.user_agent, g.name, g.rank FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON (g.id=u.user_group) LEFT JOIN ".$prefix."_invates AS i ON (i.nuid=u.user_name) LEFT JOIN ".$prefix."_users AS m ON (i.uid=m.user_id) WHERE u.user_name='$user_name'");
 	if ($db->sql_numrows($result) > 0) {
-		list($user_id, $user_name, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_occ, $user_from, $user_interests, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msnm, $user_password, $user_storynum, $user_blockon, $user_block, $user_theme, $user_newsletter, $user_lastvisit, $user_lang, $user_points, $user_last_ip, $user_warnings, $user_group, $user_birthday, $user_gender, $user_votes, $user_totalvotes, $user_field, $user_agent, $gname, $grank) = $db->sql_fetchrow($result);
+		list($invited, $who, $user_id, $user_name, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_occ, $user_from, $user_interests, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msnm, $user_password, $user_storynum, $user_blockon, $user_block, $user_theme, $user_newsletter, $user_lastvisit, $user_lang, $user_points, $user_last_ip, $user_warnings, $user_group, $user_birthday, $user_gender, $user_votes, $user_totalvotes, $user_field, $user_agent, $gname, $grank) = $db->sql_fetchrow($result);
 		head();
 		open();
+		if ($who=='-1') $user_regdate.="</td></tr><tr><td>"._INVATE_59."</td><td><font color='#FF5000'>"._INVATE_60."</font>";
+		elseif ($invited) $user_regdate.="</td></tr><tr><td>"._INVATE_59."</td><td><a href='index.php?name=".$conf['name']."&op=info&uname=".$invited."'>".$invited."</a>";
 		echo get_info($user_id, $user_name, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_occ, $user_from, $user_interests, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msnm, $user_password, $user_storynum, $user_blockon, $user_block, $user_theme, $user_newsletter, $user_lastvisit, $user_lang, $user_points, $user_last_ip, $user_warnings, $user_group, $user_birthday, $user_gender, $user_votes, $user_totalvotes, $user_field, $user_agent, $gname, $grank, 1);
 		close();
 		last($user_id, $user_name);
@@ -623,6 +630,107 @@ function savepass() {
 	}
 }
 
+function invates () {
+global $db,$prefix,$invate,$user,$conf,$pagetitle;
+$pagetitle = $conf['defis']." "._INVATE_1;
+if (is_user()) {
+head();
+title(_INVATE_1);
+navi('0');
+open();
+invate_expire();
+$inf=invate_list();
+$i=0;
+$db->sql_query("INSERT INTO ".$prefix."_invates_points (id,uid,points,expend,bonus) VALUES (NULL,'".$user[0]."','".$inf['summ']."',0,0) ON DUPLICATE KEY UPDATE points='".$inf['summ']."'");
+list($inf['bonus'],$inf['expend'],$inf['regdate']) = $db->sql_fetchrow($db->sql_query("SELECT i.bonus,i.expend,UNIX_TIMESTAMP(u.user_regdate) FROM ".$prefix."_invates_points AS i LEFT JOIN ".$prefix."_users AS u ON (u.user_id=i.uid) WHERE i.uid='".$user[0]."'"));
+$inf['dostupno']=$inf['bonus']+$inf['summ']-$inf['expend'];
+$inf['regdate']=floor((time()-$inf['regdate'])/(60*60*24));
+$mindate=array();
+if ($invate['mindate']>0) {$mindate[]=_INVATE_51.$invate['mindate']._INVATE_52.'<br />';$mindate[]=_INVATE_53.$inf['regdate']._INVATE_52;}
+warning(_INVATE_25.$invate['coast'].',<br />'.$mindate[0]._INVATE_26.$inf['dostupno'].$mindate[1], "", "", 0);
+close();
+open();
+echo "<h2>"._INVATE_14."</h2>"
+."<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
+."<th>"._INVATE_15."</th><th>"._INVATE_2."</th><th>"._INVATE_3."</th><th>"._INVATE_17."</th><th>"._INVATE_4."</th></tr>";
+foreach ($inf['list'] as $a=>$b) {
+$i++;
+echo "<tr class='bgcolor1'>"
+."<td align='center'><b>$i</b></td>"
+."<td align='left'><b><span style='color:#4E96B8;'>".$b['lang'][0]."</span></b></td>"
+."<td align='center'><b><span style='color:#1484CC;' title='"._INVATE_6.$b['lang'][3]."'>".$b['detail']['one']."</span></b></td>"
+."<td align='center'><b><span style='color:#FF5000;' title='"._INVATE_5.$b['lang'][1]."'>".$b['detail']['count']."</span></b></td>"
+."<td align='center'><b><span style='color:green;' title='"._INVATE_6.$b['lang'][2]."'>".$b['detail']['summ']."</span></b></td>"
+."</tr>";
+}
+echo "<tr class='bgcolor1 invites_bonus' title='"._INVATE_21."'><td align='center'>".($i+1)."</td><td align='left'>"._INVATE_18."</td><td align='center'>-</td><td align='center'>-</td><td align='center'>".$inf['bonus']."</td> </tr>";
+echo "<tr class='bgcolor1 invites_summ' title='"._INVATE_22."'><td align='center'>".($i+2)."</td><td align='left'>"._INVATE_16."</td><td align='center'>-</td><td align='center'>-</td><td align='center'>".$inf['summ']."</td> </tr>";
+echo "<tr class='bgcolor1 invites_expend' title='"._INVATE_23."'><td align='center'>".($i+3)."</td><td align='left'>"._INVATE_19."</td><td align='center'>-</td><td align='center'>-</td><td align='center'>".$inf['expend']."</td> </tr>";
+echo "<tr class='bgcolor1 invites_dostupno' title='"._INVATE_24."'><td align='center'>".($i+4)."</td><td align='left'>"._INVATE_20."</td><td align='center'>-</td><td align='center'>-</td><td align='center'>".$inf['dostupno']."</td> </tr>";
+echo "</table>";
+$perpage=1;
+$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
+$offset = intval(($num-1)*$perpage);
+$sql=$db->sql_query("SELECT i.invate,i.email,i.nuid,i.date,i.end_date,i.coast,u.user_id FROM ".$prefix."_invates AS i LEFT JOIN ".$prefix."_users AS u ON (i.nuid=u.user_name) WHERE i.uid='".$user[0]."' ORDER BY i.date DESC LIMIT $offset, ".$perpage);
+list($count)=$db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM ".$prefix."_invates WHERE uid='".$user[0]."'"));
+close();
+open();
+echo "<h2>"._INVATE_27."</h2>";
+if ($count==0) warning(_INVATE_28, "", "", 0);
+else {
+echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
+."<th>"._INVATE_29."</th><th>"._INVATE_30."</th><th>"._INVATE_31."</th><th>"._INVATE_32."</th><th>"._INVATE_33."</th></tr>";
+while(list($invt,$mail,$name,$date,$end_date,$coast,$nuid)=$db->sql_fetchrow($sql)) {
+if ($name=='0') $name=_INVATE_39;
+elseif ($nuid) $name="<a href='index.php?name=account&op=info&uname=$name' title='"._INVATE_40."'>$name</a>";
+else $name="<span title='"._INVATE_58."'>$name</span>";
+echo "<tr class='bgcolor1'><td align='center'><a href='index.php?name=account&op=newuser&invate=$invt".(($mail!='')?"&mail=$mail":"")."'><img src='images/invate/icon.png' title='"._INVATE_41."' /></a>&nbsp;<textarea style='overflow:hidden;' wrap='off' rows='1' cols='10' onclick='invate_select(this);' onblur='this.value +=\" \";this.value=this.value.slice(0, -1);'>$invt</textarea></td><td align='left'>".(($mail!='')?"<a href='mailto:$mail'>$mail</a>":_INVATE_38)."</td><td align='center'>".invate_date($date)."</td><td align='center'>".(($end_date==0)?_INVATE_37:invate_date($end_date))."</td><td align='center'>".$name."</td> </tr>";
+}
+echo "</table><div>&nbsp;</div>";
+num_page($conf['name'], $count, ceil($count/$perpage), $perpage, 'op=invates&');
+}
+close();
+open();
+echo "<h2>"._INVATE_42."</h2>";
+if ($invate['status']==0) warning(_INVATE_43, "", "", 1);
+elseif ($invate['mindate']>0 && $invate['mindate']>$inf['regdate']) warning(_INVATE_54.$invate['mindate']._INVATE_52, "", "", 1);
+elseif ($inf['dostupno']<$invate['coast']) warning(_INVATE_49, "", "", 1);
+else {
+if ($invate['live']!=0) warning(_INVATE_44.$invate['live']._INVATE_45, "", "", 0);
+echo '<form action="index.php?name='.$conf['name'].'" method="post">';
+if ($invate['email']==1) echo '<div><span id="snippet-headers"><span class="html"><span>'._INVATE_47.'</span><input class="invite_input" name="email" type="text" /><br /><small style="color:#FF5000;"><b>'._INVATE_48.'</b></small></span></span></div>';
+echo '<div style="padding-top:10px;margin:auto 35%;"><button class="invite_button invite_orange" type="submit">'._INVATE_46.'</button></div>';
+echo '<input type="hidden" name="op" value="invate_create">';
+echo '</form>';
+}
+close();
+foot();
+} else edithome();
+}
+
+function invate_create() {
+global $invate,$user,$db,$prefix,$conf;
+if (is_user() && $invate['status']==1) {
+if ($invate['mindate']>0) {
+list($inf['regdate']) = $db->sql_fetchrow($db->sql_query("SELECT UNIX_TIMESTAMP(user_regdate) FROM ".$prefix."_users WHERE `user_id`='".$user[0]."'"));
+if ($invate['mindate']>floor((time()-$inf['regdate'])/(60*60*24))) {Header("Location: index.php?name=".$conf['name']."&op=invates");die();}
+}
+$inf=invate_list();
+$db->sql_query("INSERT INTO ".$prefix."_invates_points (id,uid,points,expend,bonus) VALUES (NULL,'".$user[0]."','".$inf['summ']."',0,0) ON DUPLICATE KEY UPDATE points='".$inf['summ']."'");
+list($inf['bonus'],$inf['expend']) = $db->sql_fetchrow($db->sql_query("SELECT bonus,expend FROM ".$prefix."_invates_points WHERE `uid`='".$user[0]."'"));
+$inf['dostupno']=$inf['bonus']+$inf['summ']-$inf['expend'];
+if ($inf['dostupno']>=$invate['coast']) {
+if ($invate['email']==1 && isset($_POST['email']) && !checkemail($_POST['email'])) {
+$repl=invate_save(array('mail'=>text_filter($_POST['email'])));
+$message=nl2br(strtr(stripslashes($invate['text']),$repl));
+mail_send(text_filter($_POST['email']), $conf['adminmail'], $invate['title'], $message, 0, 3);
+} else invate_save();
+$db->sql_query("UPDATE ".$prefix."_invates_points SET `expend`=expend+".$invate['coast']." WHERE `uid`='".$user[0]."'");
+}
+}
+Header("Location: index.php?name=".$conf['name']."&op=invates");
+}
+
 switch($op) {
 	default:
 	account();
@@ -679,5 +787,14 @@ switch($op) {
 	case "savepass":
 	savepass();
 	break;
+	
+	case "invates":
+	invates();
+	break;
+	
+	case "invate_create":
+	invate_create();
+	break;
+
 }
 ?>
