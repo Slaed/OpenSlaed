@@ -2,6 +2,8 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_MEM"," использовано памяти ");
+define("_MB"," MB");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");

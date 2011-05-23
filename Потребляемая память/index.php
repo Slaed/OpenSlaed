@@ -3,6 +3,7 @@
 # Website: http://www.slaed.net
 
 define("MODULE_FILE", true);
+if (function_exists('memory_get_usage')) $start_memory = memory_get_usage();
 $start_time = array_sum(explode(" ", microtime()));
 include("function/function.php");
 $name = (isset($_POST['name'])) ? ((isset($_POST['name'])) ? analyze($_POST['name']) : "") : ((isset($_GET['name'])) ? analyze($_GET['name']) : "");

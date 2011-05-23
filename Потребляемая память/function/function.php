@@ -1737,7 +1737,7 @@ function checkemail($mail) {
 
 # Format add block
 function addblocks($str) {
-	global $blocks, $blocks_c, $home, $showbanners, $foot, $db, $start_time, $conf, $foot;
+	global $blocks, $blocks_c, $home, $showbanners, $foot, $db, $start_time, $conf, $foot, $start_memory;
 	preg_match_all('#{%BLOCKS([^%]+)%}#iUs', $str, $blk);
 	$ci = sizeof($blk[1]);
 	for ($i = 0; $i < $ci; $i++) {
@@ -1808,7 +1808,8 @@ function addblocks($str) {
 				$total_time = round(array_sum(explode(" ", microtime())) - $start_time, 3);
 				$sqlnums = $db->num_queries;
 				$total_time_db = round($db->total_time_db, 3);
-				$total_time = ""._GENERATION.": ".$total_time." "._SEC.". "._AND." ".$sqlnums." "._GENERATION_DB." ".$total_time_db." "._SEC.".";
+				if (function_exists('memory_get_usage')) $total_memory = _MEM.round((memory_get_usage() - $start_memory)/(1024*1024),3)._MB;
+				$total_time = ""._GENERATION.": ".$total_time." "._SEC.". "._AND." ".$sqlnums." "._GENERATION_DB." ".$total_time_db." "._SEC.".".$total_memory;
 				$footer = $total_time;
 			}
 			$blk[1][$i] = $footer;
