@@ -2,6 +2,21 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_location_account","Аккаунт");
+define("_location_blogs","Блоги");
+define("_location_contact","Обратная связь");
+define("_location_content","Статические страницы");
+define("_location_files","Файлы");
+define("_location_google","Поиск от Google");
+define("_location_holidays","Праздники");
+define("_location_informer","Информер");
+define("_location_news","Новости");
+define("_location_quotes","Цитаты");
+define("_location_recommend","Рекоммедовать");
+define("_location_rss_info","Rss поток");
+define("_location_search","Поиск");
+define("_location_top_users","Список пользователей");
+define("_location_voting","Голосование");
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");

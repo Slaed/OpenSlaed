@@ -339,6 +339,7 @@ function user_sinfo() {
 		$result = $db->sql_query("SELECT uname, UNIX_TIMESTAMP(now())-time AS time, host_addr, guest, module FROM ".$prefix."_session ORDER BY uname");
 		while (list($uname, $time, $host, $guest, $module) = $db->sql_fetchrow($result)) {
 			$strip = cutstr($uname, 10);
+			if (defined('_location_'.mb_strtolower($module,'utf-8'))) $module=constant('_location_'.mb_strtolower($module,'utf-8'));
 			$linkstrip = str_replace("_", " ", cutstr($module, 7));
 			if ($guest == 2) {
 				$who_online .= "<tr><td>".user_geo_ip($host, 3)."</td><td><a href=\"index.php?name=account&op=info&uname=$uname\" title=\"".display_time($time)."\">$strip</a></td><td align=\"right\">$linkstrip</td></tr>";
@@ -1551,7 +1552,7 @@ function getparent($id, $title) {
 # Lang filter
 function cutstr($linkstrip, $strip) {
 	$linkstrip = stripslashes($linkstrip);
-	if (strlen($linkstrip) > $strip) $linkstrip = mb_substr($linkstrip, 0, $strip, "utf-8")."...";
+	if (mb_strlen($linkstrip, 'utf-8') > $strip) $linkstrip = mb_substr($linkstrip, 0, $strip, "utf-8")."...";
 	return $linkstrip;
 }
 
