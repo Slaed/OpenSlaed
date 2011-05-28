@@ -2,6 +2,11 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define("_COMM_ALARM_1",'Уведомления');
+define("_COMM_ALARM_2",'Настройка уведомлений');
+define("_COMM_ALARM_3",'Заголовок письма:');
+define("_COMM_ALARM_4",'Текст письма:<br /><br /><br /><small><b>{url} - ссылка на публикацию<br />{text} - текст комментария<br />{author} - автор комментария<br />{ip} - IP автора комментария<br />{mod} - модуль, в котором оставили комментарий</b></small>');
+define("_COMM_ALARM_5",'Отправлять уведомление о новых комментариях для следующих модулей');
 define("_ACTIVATE2","Активировать?");
 define("_ACTMULTILINGUAL","Активировать многоязыковые свойства?");
 define("_ACTUSEFLAGS","Показывать флаги вместо меню?");

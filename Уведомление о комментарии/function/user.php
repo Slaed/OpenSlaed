@@ -272,6 +272,7 @@ function save_com() {
 		$ip = getip();
 		$comment = nl2br(text_filter($comment, 2));
 		$db->sql_query("INSERT INTO ".$prefix."_comment VALUES (NULL, '$cid', '".$conf['name']."', now(), '$postid', '$postname', '$ip', '$comment')");
+		email_alarm (array('url'=>'index.php?name='.$conf['name'].'&op=view&id='.$cid,'text'=>bb_decode($comment),'ip'=>$ip,'name'=>$postname,'uid'=>$postid));
 		if ($conf['name'] == "files") {
 			$db->sql_query("UPDATE ".$prefix."_files SET totalcomments=totalcomments+1 WHERE lid='$cid'");
 			update_points(10);

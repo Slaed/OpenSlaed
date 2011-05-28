@@ -1,4 +1,5 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+function email_alarm ($in=array()) { global $conf,$user; include('config/config_alarm.php'); $in['not_send']=array(); if ($alarm['module'][strtolower($conf['name'])]==1 && !in_array(intval($in['uid']),$in['not_send'])) { $in['name']=((intval($in['uid'])>0)?'<a href="'.rtrim($conf['homeurl'],'/').'/index.php?name=account&op=info&uname='.$user[1].'">'.$user[1].'</a>':'<strong>'.$in['name'].'</strong>'); $message=nl2br(strtr(stripslashes($alarm['text']),array('{text}'=>$in['text'],'{author}'=>$in['name'],'{mod}'=>ucfirst(strtolower($conf['name'])),'{url}'=>rtrim($conf['homeurl'],'/').'/'.$in['url'],'{ip}'=>$in['ip']))); mail_send($conf['adminmail'],$conf['adminmail'],ucfirst(strtolower($conf['name'])).': '.$alarm['title'],$message,0,3); } }
 ?>

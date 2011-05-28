@@ -9,7 +9,7 @@ function comm_navi() {
 	panel();
 	open();
 	echo "<h1>"._EDITCOMMENTS."</h1>"
-	."<h5>[ <a href=\"".$admin_file.".php?op=comm_show\">"._HOME."</a> | <a href=\"".$admin_file.".php?op=comm_conf\">"._PREFERENCES."</a> ]</h5>";
+	."<h5>[ <a href=\"".$admin_file.".php?op=comm_show\">"._HOME."</a> | <a href=\"".$admin_file.".php?op=comm_conf\">"._PREFERENCES."</a> | <a href=\"".$admin_file.".php?op=comm_alarm\">"._COMM_ALARM_1."</a> ]</h5>";
 	close();
 }
 
@@ -107,7 +107,45 @@ function comm_save() {
 	Header("Location: ".$admin_file.".php?op=comm_conf");
 }
 
+function comm_alarm() {
+global $admin_file;
+$alarm['mods']=array('news','files','voting');
+head();
+comm_navi();
+include("config/config_alarm.php");
+$permtest = end_chmod("config/config_alarm.php", 666);
+if ($permtest) warning($permtest, "", "", 1);
+open();
+echo "<h2>"._COMM_ALARM_2."</h2>"
+."<form action='".$admin_file.".php' method='post'>"
+."<div class='left'>"._COMM_ALARM_3."</div><div class='center'><input type='text' name='title' value='".stripslashes($alarm['title'])."' maxlength='400' size='45' class='admin'></div>"
+."<div class='left'>"._COMM_ALARM_4."</div><div class='center'><textarea name='text' cols='65' rows='25' class='admin' wrap='off'>".stripslashes($alarm['text'])."</textarea></div></div>";
+echo "<h2>"._COMM_ALARM_5."</h2>";
+foreach ($alarm['mods'] as $a) {$a=strtolower($a);echo "<div class='left'>".ucfirst($a)."</div><div class='center'>".radio_form($alarm['module'][$a],"mods[$a]")."</div>";}
+echo "<div class='button'><input type='hidden' name='op' value='comm_alarm_save'><input type='submit' value='"._SAVECHANGES."' class='fbutton'></div></form>";
+close();
+foot();
+}
+
+function comm_alarm_save() {
+global $admin_file;
+$content .= "\$alarm['text'] = '".$_POST['text']."';\n";
+$content .= "\$alarm['title'] = '".$_POST['title']."';\n";
+foreach ($_POST['mods'] as $a=>$b) $content .= "\$alarm['module']['$a'] = ".intval($b).";\n";
+save_conf("config/config_alarm.php", $content);
+Header("Location: ".$admin_file.".php?op=comm_alarm");
+}
+
 switch($op) {
+
+case "comm_alarm":
+comm_alarm();
+break;
+
+case "comm_alarm_save":
+comm_alarm_save();
+break;
+
 	case "comm_show":
 	comm_show();
 	break;
