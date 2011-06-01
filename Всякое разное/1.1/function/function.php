@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright В© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:
@@ -210,7 +210,7 @@ function gender($gender, $id) {
 function encode_attach($sourse, $mod) {
 	include("config/config_uploads.php");
 	include("config/config_templ.php");
-	$match_count = (preg_match("#width=#i", $sourse)) ? preg_match_all("#\[attach=([a-zA-Zа-яА-Я0-9\_\-\. ]+) align=([a-zA-Zа-яА-Я0-9\_\-\.\"\ ]+) title=([a-zA-Zа-яА-Я0-9\_\-\.\"\ ]+) width=([0-5]?[0-9]?[0-9]+) height=([0-5]?[0-9]?[0-9]+)\]#si", $sourse, $date) : preg_match_all("#\[attach=([a-zA-Zа-яА-Я0-9\_\-\. ]+) align=([a-zA-Zа-яА-Я0-9\_\-\.\"\ ]+) title=([a-zA-Zа-яА-Я0-9\_\-\.\"\ ]+)\]#si", $sourse, $date);
+	$match_count = (preg_match("#width=#i", $sourse)) ? preg_match_all("#\[attach=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\. ]+) align=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\.\"\ ]+) title=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\.\"\ ]+) width=([0-5]?[0-9]?[0-9]+) height=([0-5]?[0-9]?[0-9]+)\]#si", $sourse, $date) : preg_match_all("#\[attach=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\. ]+) align=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\.\"\ ]+) title=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\.\"\ ]+)\]#si", $sourse, $date);
 	$con = explode("|", $confup[$mod]);
 	$file = "";
 	for ($i = 0; $i < $match_count; $i++) {
@@ -329,10 +329,9 @@ function user_sinfo($id="") {
 		$a = 0; $m = 0; $b = 0; $u = 0; $i = 0;
 		$result = $db->sql_query("SELECT uname, UNIX_TIMESTAMP(now())-time AS time, host_addr, guest, module, url, error FROM ".$prefix."_session ORDER BY uname");
 		while (list($uname, $time, $host, $guest, $module, $url, $error) = $db->sql_fetchrow($result)) {
-		if (defined('_location_'.strtolower($module))) $module=constant('_location_'.strtolower($module));
                   preg_match("#^%2F(.*)$#", $url, $matches);
                   $url = preg_replace('#\s#', '%20', $matches[1]);
-                  $linkstrip = ($error) ? $error : ((preg_match("/^(index([.a-z]*))?$/i", $url)) ? "Главная" : ucwords(str_replace("_", " ", cutstr($module, 8))));
+                  $linkstrip = ($error) ? $error : ((preg_match("/^(index([.a-z]*))?$/i", $url)) ? "Mainpage" : ucwords(str_replace("_", " ", cutstr($module, 8))));
 			$strip = cutstr($uname, 10);                     
                   if ($guest == 3) { 
                   if ($conf['session'] && is_admin()){
@@ -730,7 +729,7 @@ function letter($mod) {
 	foreach(range(0, 9) as $num) $content .= " | <a href=\"index.php?name=$mod&op=liste&let=$num\" title=\"$num\">$num</a>";
 	if (substr(_LOCALE, 0, 2) == "ru") {
 		$content .= "</div><div class=\"letter\"><a href=\"index.php?name=".$mod."&op=liste\" title=\""._ALL."\">"._ALL."</a> ";
-		foreach(range("А", "Я") as $rus) $content .= " | <a href=\"index.php?name=$mod&op=liste&let=".urlencode($rus)."\" title=\"$rus\">$rus</a>";
+		foreach(range("Рђ", "РЇ") as $rus) $content .= " | <a href=\"index.php?name=$mod&op=liste&let=".urlencode($rus)."\" title=\"$rus\">$rus</a>";
 	}
 	$content .= "</div><div class=\"letter\"><a href=\"index.php?name=".$mod."&op=liste\" title=\""._ALL."\">"._ALL."</a> ";
 	foreach(range("A", "Z") as $eng) $content .= " | <a href=\"index.php?name=$mod&op=liste&let=$eng\" title=\"$eng\">$eng</a>";
@@ -1021,7 +1020,7 @@ function get_info() {
 	}
 	$rank = ($info[35] && file_exists("images/ranks/".$info[35])) ? "<tr><td>"._RANK.":</td><td><img src=\"images/ranks/".$info[35]."\" border=\"0\" alt=\""._RANK."\" title=\""._RANK."\"></td></tr>" : "";
 	$admin = ($info[36] && is_moder($conf['name'])) ? "<tr><td width=\"100%\" class=\"bgcolor1\" colspan=\"2\" align=\"center\">".ad_bann($admin_file.".php?op=security_block&new_ip=".$info[25], $info[25])." ".ad_edit($admin_file.".php?op=user_add&id=".$info[0])." ".ad_delete($admin_file.".php?op=user_del&id=".$info[0], $info[1])."</td></tr>" : "";
-	$infos = "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"bgcolor4\"><tr align=\"center\"><th colspan=\"2\">"._PERSONALINFO."</th></tr><tr class=\"bgcolor1\"><td width=\"20%\" align=\"center\"><table><tr align=\"center\"><td>".$avatar."</td></tr><tr align=\"center\"><td><form action=\"index.php\" method=\"post\"><input type=\"hidden\" name=\"name\" value=\"private\"><input type=\"hidden\" name=\"op\" value=\"message\"><input type=\"hidden\" name=\"uname\" value=\"$name\"><input type=\"submit\" value=\"Написать сообщение\" class=\"fbutton\"></form></td></tr></table></td><td width=\"80%\" valign=\"top\" rowspan=\"2\"><table width=\"100%\">"
+	$infos = "<table width=\"100%\" border=\"0\" cellpadding=\"3\" cellspacing=\"1\" class=\"bgcolor4\"><tr align=\"center\"><th colspan=\"2\">"._PERSONALINFO."</th></tr><tr class=\"bgcolor1\"><td width=\"20%\" align=\"center\"><table><tr align=\"center\"><td>".$avatar."</td></tr><tr align=\"center\"><td><form action=\"index.php\" method=\"post\"><input type=\"hidden\" name=\"name\" value=\"private\"><input type=\"hidden\" name=\"op\" value=\"message\"><input type=\"hidden\" name=\"uname\" value=\"$name\"><input type=\"submit\" value=\"РќР°РїРёСЃР°С‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ\" class=\"fbutton\"></form></td></tr></table></td><td width=\"80%\" valign=\"top\" rowspan=\"2\"><table width=\"100%\">"
 	.$id.$ip
 	."<tr><td width=\"40%\">"._NICKNAME.":</td><td width=\"60%\">".$name."</td></tr>"
 	.$urank
@@ -1500,7 +1499,7 @@ if (!defined("ADMIN_FILE")) open_offline();
 			$key_gen = "$pagetitle $hometext $bodytext";
 			$key_gen = substr($key_gen, 0, 1500);
 			$key_gen = text_filter(bb_decode($key_gen, ""), 1);
-			$key_gen = trim(preg_replace("/[^a-zA-Zа-яА-Я0-9]/", " ", $key_gen));
+			$key_gen = trim(preg_replace("/[^a-zA-ZР°-СЏРђ-РЇ0-9]/", " ", $key_gen));
 			$key_gen = preg_replace("/( |".CHR(10)."|".CHR(13).")+/", ",", $key_gen);
 			$key_gen = array_unique(explode(",", $key_gen));
 			foreach ($key_gen as $val) if (strlen($val) > 3) $key_words[] = $val;
@@ -1761,24 +1760,24 @@ function backup() {
 			if (!$safe && function_exists("set_time_limit")) set_time_limit(600);
 			mysql_connect($dbhost, $dbuname, $dbpass);
 
-			# Кодировка соединения с MySQL
-			# auto - автоматический выбор (устанавливается кодировка таблицы), latin1, cp1251, utf8 и т.п.
+			# РљРѕРґРёСЂРѕРІРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ MySQL
+			# auto - Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РІС‹Р±РѕСЂ (СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РєРѕРґРёСЂРѕРІРєР° С‚Р°Р±Р»РёС†С‹), latin1, cp1251, utf8 Рё С‚.Рї.
 			$ccharset = "auto";
 
-			# Типы таблиц у которых сохраняется только структура, разделенные запятой
+			# РўРёРїС‹ С‚Р°Р±Р»РёС† Сѓ РєРѕС‚РѕСЂС‹С… СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ СЃС‚СЂСѓРєС‚СѓСЂР°, СЂР°Р·РґРµР»РµРЅРЅС‹Рµ Р·Р°РїСЏС‚РѕР№
 			$conlycreate = "MRG_MyISAM,MERGE,HEAP,MEMORY";
 
-			# В фильтре таблиц указываются специальные шаблоны по которым отбираются таблицы. В шаблонах можно использовать следующие специальные символы:
-			# символ * — означает любое количество символов;
-			# символ ? — означает один любой символ;
-			# символ ^ — означает исключение из списка таблицы или таблиц.
+			# Р’ С„РёР»СЊС‚СЂРµ С‚Р°Р±Р»РёС† СѓРєР°Р·С‹РІР°СЋС‚СЃСЏ СЃРїРµС†РёР°Р»СЊРЅС‹Рµ С€Р°Р±Р»РѕРЅС‹ РїРѕ РєРѕС‚РѕСЂС‹Рј РѕС‚Р±РёСЂР°СЋС‚СЃСЏ С‚Р°Р±Р»РёС†С‹. Р’ С€Р°Р±Р»РѕРЅР°С… РјРѕР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃР»РµРґСѓСЋС‰РёРµ СЃРїРµС†РёР°Р»СЊРЅС‹Рµ СЃРёРјРІРѕР»С‹:
+			# СЃРёРјРІРѕР» * вЂ” РѕР·РЅР°С‡Р°РµС‚ Р»СЋР±РѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ;
+			# СЃРёРјРІРѕР» ? вЂ” РѕР·РЅР°С‡Р°РµС‚ РѕРґРёРЅ Р»СЋР±РѕР№ СЃРёРјРІРѕР»;
+			# СЃРёРјРІРѕР» ^ вЂ” РѕР·РЅР°С‡Р°РµС‚ РёСЃРєР»СЋС‡РµРЅРёРµ РёР· СЃРїРёСЃРєР° С‚Р°Р±Р»РёС†С‹ РёР»Рё С‚Р°Р±Р»РёС†.
 
-			# Примеры:
-			# slaed_* все таблицы начинающиеся с "slaed_" (все таблицы форума invision board)
-			# slaed_*, ^slaed_session все таблицы начинающиеся с "slaed_", кроме "slaed_session"
-			# slaed_s*s, ^slaed_session все таблицы начинающиеся с "slaed_s" и заканчивающиеся буквой "s", кроме "slaed_session"
-			# ^*s все таблицы, кроме таблиц заканчивающихся буквой "s"
-			# ^slaed_???? все таблицы, кроме таблиц, которые начинаются с "slaed_" и содержат 4 символа после знака подчеркивания
+			# РџСЂРёРјРµСЂС‹:
+			# slaed_* РІСЃРµ С‚Р°Р±Р»РёС†С‹ РЅР°С‡РёРЅР°СЋС‰РёРµСЃСЏ СЃ "slaed_" (РІСЃРµ С‚Р°Р±Р»РёС†С‹ С„РѕСЂСѓРјР° invision board)
+			# slaed_*, ^slaed_session РІСЃРµ С‚Р°Р±Р»РёС†С‹ РЅР°С‡РёРЅР°СЋС‰РёРµСЃСЏ СЃ "slaed_", РєСЂРѕРјРµ "slaed_session"
+			# slaed_s*s, ^slaed_session РІСЃРµ С‚Р°Р±Р»РёС†С‹ РЅР°С‡РёРЅР°СЋС‰РёРµСЃСЏ СЃ "slaed_s" Рё Р·Р°РєР°РЅС‡РёРІР°СЋС‰РёРµСЃСЏ Р±СѓРєРІРѕР№ "s", РєСЂРѕРјРµ "slaed_session"
+			# ^*s РІСЃРµ С‚Р°Р±Р»РёС†С‹, РєСЂРѕРјРµ С‚Р°Р±Р»РёС† Р·Р°РєР°РЅС‡РёРІР°СЋС‰РёС…СЃСЏ Р±СѓРєРІРѕР№ "s"
+			# ^slaed_???? РІСЃРµ С‚Р°Р±Р»РёС†С‹, РєСЂРѕРјРµ С‚Р°Р±Р»РёС†, РєРѕС‚РѕСЂС‹Рµ РЅР°С‡РёРЅР°СЋС‚СЃСЏ СЃ "slaed_" Рё СЃРѕРґРµСЂР¶Р°С‚ 4 СЃРёРјРІРѕР»Р° РїРѕСЃР»Рµ Р·РЅР°РєР° РїРѕРґС‡РµСЂРєРёРІР°РЅРёСЏ
 			$ctables = "^ipb_*";
 
 			$bsize = 0;
@@ -1800,7 +1799,7 @@ function backup() {
 				$btables_exclude = 1;
 			}
 			$db = $dbname;
-			mysql_select_db($db) or trigger_error("Не удается выбрать базу данных.<br>" . mysql_error(), E_USER_ERROR);
+			mysql_select_db($db) or trigger_error("РќРµ СѓРґР°РµС‚СЃСЏ РІС‹Р±СЂР°С‚СЊ Р±Р°Р·Сѓ РґР°РЅРЅС‹С….<br>" . mysql_error(), E_USER_ERROR);
 			$tables = array();
 			$result = mysql_query("SHOW TABLES");
 			$all = 0;
@@ -1844,7 +1843,7 @@ function backup() {
 			fwrite($fp, "# DB: ".$db."\n# Tables: ".$tabs."\n# Size: ".round($bsize / 1048576, 2)." MB\n# Lines: ".number_format($tabinfo[0], 0, ",", " ")."\n# Date: ".date("Y.m.d H:i:s")."\n\n");
 			$result = mysql_query("SET SQL_QUOTE_SHOW_CREATE = 1");
 			if ($bmysql_ver > 40101 && $ccharset != 'auto') {
-				mysql_query("SET NAMES '".$ccharset."'") or trigger_error("Неудается изменить кодировку соединения.<br>".mysql_error(), E_USER_ERROR);
+				mysql_query("SET NAMES '".$ccharset."'") or trigger_error("РќРµСѓРґР°РµС‚СЃСЏ РёР·РјРµРЅРёС‚СЊ РєРѕРґРёСЂРѕРІРєСѓ СЃРѕРµРґРёРЅРµРЅРёСЏ.<br>".mysql_error(), E_USER_ERROR);
 				$last_charset = $ccharset;
 			} else{
 				$last_charset = "";
@@ -1852,7 +1851,7 @@ function backup() {
 			foreach ($tables as $table) {
 				if ($bmysql_ver > 40101 && $tab_charset[$table] != $last_charset) {
 					if ($ccharset == "auto") {
-						mysql_query("SET NAMES '" . $tab_charset[$table] . "'") or trigger_error("Неудается изменить кодировку соединения.<br>".mysql_error(), E_USER_ERROR);
+						mysql_query("SET NAMES '" . $tab_charset[$table] . "'") or trigger_error("РќРµСѓРґР°РµС‚СЃСЏ РёР·РјРµРЅРёС‚СЊ РєРѕРґРёСЂРѕРІРєСѓ СЃРѕРµРґРёРЅРµРЅРёСЏ.<br>".mysql_error(), E_USER_ERROR);
 						$last_charset = $tab_charset[$table];
 					}
 				}
@@ -2131,7 +2130,7 @@ function catmids() {
 
 # Length end filter
 function cutstr($linkstrip, $strip) {
-	if (strlen($linkstrip) > $strip) $linkstrip = substr($linkstrip, 0, $strip)."…";
+	if (strlen($linkstrip) > $strip) $linkstrip = substr($linkstrip, 0, $strip)."вЂ¦";
 	return $linkstrip;
 }
 
@@ -2224,9 +2223,9 @@ function bb_decode($sourse, $mod) {
 		$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
 		$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\2\" title=\"\\2\">";
-		$bb[] = "#\[img\ alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+		$bb[] = "#\[img\ alt=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
-		$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-Zа-яА-Я0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+		$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-ZР°-СЏРђ-РЇ0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\3\" align=\"\\1\" border=\"0\" alt=\"\\2\" title=\"\\2\">";
 		$bb[] = "#\[url\](ed2k://\|file\|(.*?)\|\d+\|\w+\|(h=\w+\|)?/?)\[/url\]#is";
 		$html[] = "eMule/eDonkey: <a href=\"\\1\" target=\"_blank\" title=\"\\2\">\\2</a>";
@@ -3459,7 +3458,7 @@ function ashowcom() {
 			if ($user_lastvisit) {
 			$dltrus = new Date_DeltaRussian(); 
  	 	  $user_lastvisit=$dltrus->spellDelta(strtotime($user_lastvisit),time(),3)._TIME_PAST;
-			$regdate .="<br />Был на сайте: ".$user_lastvisit;
+			$regdate .="<br />Р‘С‹Р» РЅР° СЃР°Р№С‚Рµ: ".$user_lastvisit;
 			}
 			$gender = ($user_gender) ? _GENDER.": ".gender($user_gender, 1) : "";
 			$from = ($user_from) ? _FROM.": ".$user_from : "";
@@ -3810,7 +3809,7 @@ if (!function_exists('fputcsv')) {
 function captcha_random($id='') {
 	global $conf;
 	if ((extension_loaded('gd') && $id == 2) || (extension_loaded('gd') && !is_user())) {
-		$content = '<div class="left">'._SECURITYCODE.':</div><div class="center"><img src="captcha.php" onclick="if(!this.adress)this.adress = this.src; this.src=adress+\'?rand=\'+Math.random();" border="1" title="Нажмите, чтобы обновить картинку" style="cursor:pointer;" alt="'._SECURITYCODE.'"></div>'
+		$content = '<div class="left">'._SECURITYCODE.':</div><div class="center"><img src="captcha.php" onclick="if(!this.adress)this.adress = this.src; this.src=adress+\'?rand=\'+Math.random();" border="1" title="РќР°Р¶РјРёС‚Рµ, С‡С‚РѕР±С‹ РѕР±РЅРѕРІРёС‚СЊ РєР°СЂС‚РёРЅРєСѓ" style="cursor:pointer;" alt="'._SECURITYCODE.'"></div>'
 		.'<div class="left">'._TYPESECCODE.':</div><div class="center"><input type="text" name="check" size="10" maxlength="6" style="width: 75px;" class="'.$conf['style'].'"></div>';
 	} else {
 		$content = "<input type=\"hidden\" name=\"check\" value=\"0\">";
