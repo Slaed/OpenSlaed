@@ -26,6 +26,33 @@
 ===================================================================
 */
 
+define("_location_account","Аккаунт"); 
+define("_location_blogs","Блоги"); 
+define("_location_contact","Обратная связь"); 
+define("_location_content","Статические страницы"); 
+define("_location_files","Файлы"); 
+define("_location_google","Поиск от Google"); 
+define("_location_holidays","Праздники"); 
+define("_location_informer","Информер"); 
+define("_location_news","Новости"); 
+define("_location_quotes","Цитаты"); 
+define("_location_recommend","Рекоммедовать"); 
+define("_location_rss_info","Rss поток"); 
+define("_location_search","Поиск"); 
+define("_location_top_users","Список пользователей"); 
+define("_location_voting","Голосование");
+define("_location_pages","Публикации");
+define("_location_auto_links","Обмен ссылками");
+define("_location_faq","Вопросы Ответы");
+define("_location_forum","Форум");
+define("_location_help","Поддержка");
+define("_location_internet_radio","Радио");
+define("_location_jokes","Анекдоты");
+define("_location_links","Ссылки");
+define("_location_media","Медиа");
+define("_location_order","Заказ");
+define("_location_private","Личные сообщения");
+define("_location_shop","Магазин");
 define("_USER_COMS","Комментариев");
 define("_TIME_SEC","секунду,секунды,секунд");  
 define("_TIME_MIN","минуту,минуты,минут");  
