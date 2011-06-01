@@ -215,16 +215,17 @@ function view() {
 	$pag = intval($_GET['pag']);
 	$word = ($_GET['word']) ? text_filter($_GET['word']) : "";
 	$cwhere = catmids($conf['name'], "s.catid");
-	$result = $db->sql_query("SELECT s.pid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_page AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE s.pid = '$id' AND s.time <= now() AND s.status!='0' ".$cwhere);
+	$result = $db->sql_query("SELECT s.uid, s.pid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_page AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE s.pid = '$id' AND s.time <= now() AND s.status!='0' ".$cwhere);
 	if ($db->sql_numrows($result) == 1) {
 		$db->sql_query("UPDATE ".$prefix."_page SET counter=counter+1 WHERE pid='$id'");
-		list($pid, $catid, $uname, $title, $time, $hometext, $bodytext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		list($uid, $pid, $catid, $uname, $title, $time, $hometext, $bodytext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
 		$pagetitle = (intval($catid)) ? $conf['defis']." "._PAGES." ".$conf['defis']." $ctitle ".$conf['defis']." $title" : $conf['defis']." "._PAGES." ".$conf['defis']." $title";
 		head();
 		menu(_PAGES);
 		if ($catid) templ("catlink", catlink($conf['name'], $catid, $confp['defis'], _PAGES));
             $bookmarks = ($confp['bookmarks']) ? "<hr width=\"23%\" align=\"left\"><script src=\"ajax/ok2.js\" type=\"text/javascript\"></script>" : ""; 
 		$text = ($bodytext) ? $hometext."<br><br>".$bodytext.$bookmarks : $hometext.$bookmarks;
+		$text .='<br /><br />'.show_thanks($conf['name'],$pid,$uid);
 		$conpag = explode("[pagebreak]", $text);
 		$pageno = count($conpag);
 		$pag = ($pag == "" || $pag < 1) ? 1 : $pag;
