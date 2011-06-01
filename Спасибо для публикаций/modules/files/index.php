@@ -180,9 +180,9 @@ function view() {
 	global $prefix, $db, $hometext, $pagetitle, $admin_file, $conf, $confu, $conff;
 	$id = intval($_GET['id']);
 	$word = ($_GET['word']) ? text_filter($_GET['word']) : "";
-	$result = $db->sql_query("SELECT f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE lid='$id' AND date <= now() AND status!='0'");
+	$result = $db->sql_query("SELECT f.uid, f.cid, f.name, f.title, f.url, f.description, f.bodytext, f.date, f.filesize, f.version, f.email, f.homepage, f.votes, f.totalvotes, f.totalcomments, f.hits, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_files AS f LEFT JOIN ".$prefix."_categories AS c ON (f.cid=c.id) LEFT JOIN ".$prefix."_users AS u ON (f.uid=u.user_id) WHERE lid='$id' AND date <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
-		list($cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		list($uid, $cid, $uname, $title, $url, $description, $bodytext, $date, $f_size, $f_version, $a_email, $a_homepage, $votes, $totalvotes, $totalcomments, $hits, $ccid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
 		$pagetitle = (intval($cid)) ? "".$conf['defis']." "._FILES." ".$conf['defis']." $ctitle ".$conf['defis']." $title" : "".$conf['defis']." "._FILES." ".$conf['defis']." $title";
 		$hometext = $description;
 		$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$ccid\" title=\"".$ctitle."\">".cutstr($ctitle, 15)."</a>";
@@ -216,6 +216,7 @@ function view() {
 		if ($a_homepage) $link .= " <a href=\"".$a_homepage."\" target=\"_blank\" title=\""._FAUURL."\"><img src=\"".img_find("all/home")."\" border=\"0\" align=\"center\"></a>";
 		$link .= "".$admin."</td></tr></table>";
 		
+		$dtext .= '<br />'.show_thanks($conf['name'],$id,$uid);
 		basic($cid, $cimg, $ctitle, $id, search_color($title, $word), search_color(bb_decode($dtext, $conf['name']), $word), $link, $read, $post, $ndate, $reads, $comm, $arating, $print, $admin, $size, $vers, $down, $broc, $email, $home);
 		if ($conff['comm']) {
 			echo "<a name=\"$id\"></a>";

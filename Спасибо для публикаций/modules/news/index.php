@@ -178,10 +178,10 @@ function view() {
 	$id = intval($_GET['id']);
 	$pag = intval($_GET['pag']);
 	$word = ($_GET['word']) ? text_filter($_GET['word']) : "";
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.comments, s.counter, s.acomm, s.score, s.ratings, s.associated, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE sid = '$id' AND time <= now() AND status!='0'");
+	$result = $db->sql_query("SELECT s.uid, s.sid, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.comments, s.counter, s.acomm, s.score, s.ratings, s.associated, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE sid = '$id' AND time <= now() AND status!='0'");
 	if ($db->sql_numrows($result) == 1) {
 		$db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 WHERE sid='$id'");
-		list($sid, $catid, $uname, $title, $time, $hometext, $bodytext, $field, $comments, $counter, $acomm, $score, $ratings, $associated, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
+		list($uid, $sid, $catid, $uname, $title, $time, $hometext, $bodytext, $field, $comments, $counter, $acomm, $score, $ratings, $associated, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result);
 		$pagetitle = (intval($catid)) ? "".$conf['defis']." "._NEWS." ".$conf['defis']." $ctitle ".$conf['defis']." $title" : "".$conf['defis']." "._NEWS." ".$conf['defis']." $title";
 		head();
 		menu(""._NEWS."");
@@ -203,6 +203,7 @@ function view() {
 		$cdescription = ($cdescription) ? $cdescription : $ctitle;
 		$cimg = ($cimg) ? "<a href=\"index.php?name=".$conf['name']."&cat=$cid\"><img src=\"images/categories/".$cimg."\" border=\"0\" alt=\"$cdescription\" title=\"$cdescription\" align=\"right\" hspace=\"10\" vspace=\"10\"></a>" : "";
 		$link = "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td width=\"75%\" align=\"left\">".$post."".$ndate."".$reads."</td><td>".$arating."</td><td align=\"right\">".$print."".$admin."</td></tr></table>";
+		$print .= show_thanks($conf['name'],$sid,$uid);
 		basic($cid, $cimg, $ctitle, $sid, search_color($title, $word), search_color(bb_decode($conpag[$arrayelement], $conf['name']), $word), $link, $read, $post, $ndate, $reads, $comm, $arating, $print, $admin);
 		num_pages($conf['name'], 1, $pageno, 1, "op=view&id=".$id."&");
 		if ($confn['newassoc']) {

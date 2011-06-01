@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `{pref}_thanks_user` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  `thanks` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `uid` (`uid`)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `{pref}_thanks` (
+  `id` int(11) NOT NULL auto_increment,
+  `mid` int(11) NOT NULL,
+  `module` varchar(50) NOT NULL,
+  `name` varchar(25) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `mid` (`mid`),
+  KEY `module` (`module`)
+) ENGINE=MyISAM;
