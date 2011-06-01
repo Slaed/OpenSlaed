@@ -329,9 +329,10 @@ function user_sinfo($id="") {
 		$a = 0; $m = 0; $b = 0; $u = 0; $i = 0;
 		$result = $db->sql_query("SELECT uname, UNIX_TIMESTAMP(now())-time AS time, host_addr, guest, module, url, error FROM ".$prefix."_session ORDER BY uname");
 		while (list($uname, $time, $host, $guest, $module, $url, $error) = $db->sql_fetchrow($result)) {
+		if (defined('_location_'.strtolower($module))) $module=constant('_location_'.strtolower($module));
                   preg_match("#^%2F(.*)$#", $url, $matches);
                   $url = preg_replace('#\s#', '%20', $matches[1]);
-                  $linkstrip = ($error) ? $error : ((preg_match("/^(index([.a-z]*))?$/i", $url)) ? "Mainpage" : ucwords(str_replace("_", " ", cutstr($module, 8))));
+                  $linkstrip = ($error) ? $error : ((preg_match("/^(index([.a-z]*))?$/i", $url)) ? "Главная" : ucwords(str_replace("_", " ", cutstr($module, 8))));
 			$strip = cutstr($uname, 10);                     
                   if ($guest == 3) { 
                   if ($conf['session'] && is_admin()){
