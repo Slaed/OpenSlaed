@@ -182,7 +182,7 @@ function info() {
 		list($thcount, $thanks, $user_id, $user_name, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_occ, $user_from, $user_interests, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msnm, $user_password, $user_storynum, $user_blockon, $user_block, $user_theme, $user_newsletter, $user_lastvisit, $user_lang, $user_points, $user_last_ip, $user_warnings, $user_group, $user_birthday, $user_gender, $user_votes, $user_totalvotes, $user_field, $user_agent, $gname, $grank) = $db->sql_fetchrow($result);
 		head();
 		open();
-		$user_regdate.="</td></tr><tr><td>"._THANKS_12."</td><td>".$thcount."</td></tr><tr><td>"._THANKS_13."</td><td>".$thanks;
+		$user_regdate.="</td></tr><tr><td>"._THANKS_12."</td><td>".intval($thcount)."</td></tr><tr><td>"._THANKS_13."</td><td>".intval($thanks);
 		echo get_info($user_id, $user_name, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_occ, $user_from, $user_interests, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msnm, $user_password, $user_storynum, $user_blockon, $user_block, $user_theme, $user_newsletter, $user_lastvisit, $user_lang, $user_points, $user_last_ip, $user_warnings, $user_group, $user_birthday, $user_gender, $user_votes, $user_totalvotes, $user_field, $user_agent, $gname, $grank, 1);
 		close();
 		last($user_id, $user_name);
