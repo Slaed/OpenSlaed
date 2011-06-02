@@ -3417,10 +3417,10 @@ function ashowcom() {
 			unset($com_id, $com_cid, $com_modul, $com_date, $com_uid, $com_name, $com_host, $com_text, $com_status);
 		}
 		if ($where) {
-			$result2 = $db->sql_query("SELECT u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
-			while (list($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
-				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
-				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor);
+			$result2 = $db->sql_query("SELECT th.count AS thcount, th.thanks AS thanks, u.user_id, u.user_name, u.user_rank, u.user_email, u.user_website, u.user_avatar, u.user_regdate, u.user_icq, u.user_from, u.user_sig, u.user_viewemail, u.user_aim, u.user_yim, u.user_msnm, u.user_points, u.user_warnings, u.user_gender, u.user_votes, u.user_totalvotes, g.name, g.rank, g.color FROM ".$prefix."_users AS u LEFT JOIN ".$prefix."_groups AS g ON ((g.extra=1 AND u.user_group=g.id) OR (g.extra!=1 AND u.user_points>=g.points)) LEFT JOIN ".$prefix."_thanks_user AS th ON (th.uid=u.user_id) WHERE u.user_id IN (".implode(", ", $where).") ORDER BY g.extra ASC, g.points ASC");
+			while (list($thcount, $thanks, $user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor) = $db->sql_fetchrow($result2)) {
+				$umassiv[] = array($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor, 'thcount'=>$thcount, 'thanks'=>$thanks);
+				unset($user_id, $user_name, $user_rank, $user_email, $user_website, $user_avatar, $user_regdate, $user_icq, $user_from, $user_sig, $user_viewemail, $user_aim, $user_yim, $user_msn, $user_points, $user_warnings, $user_gender, $user_votes, $user_totalvotes, $user_gname, $user_grank, $user_gcolor, $thcount, $thanks);
 			}
 		}
 		open();
@@ -3465,6 +3465,8 @@ function ashowcom() {
 						$user_gname = $val2[19];
 						$user_grank = $val2[20];
 						$user_gcolor = $val2[21];
+						$thcount=$val2['thcount'];
+						$thanks=$val2['thanks'];
 					}
 				}
 			}
@@ -3483,6 +3485,7 @@ function ashowcom() {
 			$group = ($user_gname) ? _GROUP.": <span style=\"color: ".$user_gcolor."\">".$user_gname."</span>" : "";
 			$point = ($confu['point'] && $user_points) ? _POINTS.": ".$user_points : "";
 			$regdate = ($user_regdate) ? _REG_DATE.": ".format_time($user_regdate) : "";
+			$regdate .="<br />"._THANKS_12." ".intval($thcount)."<br />"._THANKS_13." ".intval($thanks);
 			$gender = ($user_gender) ? _GENDER.": ".gender($user_gender, 1) : "";
 			$from = ($user_from) ? _FROM.": ".$user_from : "";
 			$sig = ($user_sig) ? "<hr>".$user_sig : "";
