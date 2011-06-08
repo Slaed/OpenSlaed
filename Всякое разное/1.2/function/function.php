@@ -991,7 +991,7 @@ function get_info() {
 	$aim = ($info[13]) ? $info[13] : "<i>"._NO_INFO."</i>";
 	$yim = ($info[14]) ? $info[14] : "<i>"._NO_INFO."</i>";
 	$msn = ($info[15]) ? $info[15] : "<i>"._NO_INFO."</i>";
-	$lastvisit = ($info[22]) ? format_time($info[22], _TIMESTRING) : "<i>"._NO_INFO."</i>";
+	if ($info[22]!=0) {$dltrus = new Date_DeltaRussian();$lastvisit=$dltrus->spellDelta(strtotime($info[22]),time(),3)._TIME_PAST;} else $lastvisit=_TIME_NOT_LOGIN;
 	$points = ($confu['point'] && $info[24]) ? "<tr><td>"._POINTS.":</td><td>".$info[24]."</td></tr>" : "";
 	$ip = (is_moder($conf['name'])) ? "<tr><td>"._IP.":</td><td>".$info[25]."</td></tr>" : "";
 	if ($info[28]) {
