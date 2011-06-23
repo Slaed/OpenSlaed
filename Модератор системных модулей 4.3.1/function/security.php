@@ -28,6 +28,8 @@
 
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+include("config/config_moders.php");
+
 # Global config file include
 include("config/config_global.php");
 
@@ -389,10 +391,11 @@ reset($_COOKIE);
 reset($_FILES);
 
 # Check super admin
-function is_admin_god() {
-	global $prefix, $db, $admin;
+function is_admin_god($in='0') {
+	global $prefix, $db, $admin, $admods;
 	static $godtrue;
 	if (isset($admin)) {
+	$name = htmlspecialchars(substr($admin[1], 0, 25));if (is_admin() && $in!='0' && is_array($admods['access'][$name]) && in_array($in,$admods['access'][$name])) return 1;
 		if (!isset($godtrue)) {
 			$id = intval(substr($admin[0], 0, 11));
 			$name = htmlspecialchars(substr($admin[1], 0, 25));

@@ -26,7 +26,7 @@
 ===================================================================
 */
 
-if (!defined("ADMIN_FILE") || !is_admin_god()) die("Illegal File Access");
+if (!defined("ADMIN_FILE") || !is_admin_god(basename(__FILE__))) die("Illegal File Access");
 
 function comm_navi() {
 	global $admin_file, $chng_user, $search;

@@ -183,13 +183,14 @@ function panel() {
 	if (phpversion() < "4.3.0") warning(_PHPSETUP, "", "", 1);
 	if ($conf['admininfo']) warning($conf['admininfo'], "", "", 2);
 	if ($conf['panel'] == 1) {
-		if (is_admin_god()) {
-			ob_start();
+
 			$dir = opendir("admin/links");
 			while ($file = readdir($dir)) {
-				if (substr($file, 0, 6) == "links.") $files[] = $file;
+				if (substr($file, 0, 6) == "links." && is_admin_god(str_replace('links.', '', $file))) $files[] = $file;
 			}
 			closedir($dir);
+			if (is_array($files)) {
+			ob_start();
 			sort($files);
 			foreach ($files as $entry) include("admin/links/".$entry);
 			adminmenu($admin_file.".php?op=logout", _ADMINLOGOUT, "exit.png");
@@ -197,7 +198,7 @@ function panel() {
 			ob_end_clean();
 			panel_admin(_ADMINMENU, $cont);
 			$counter = "";
-		}
+    }
 		ob_start();
 		$result = $db->sql_query("SELECT title, active FROM ".$prefix."_modules ORDER BY title ASC");
 		while (list($title, $active) = $db->sql_fetchrow($result)) {
@@ -253,13 +254,13 @@ if (is_admin()) {
 		break;
 		
 		default:
-		if (is_admin_god()) {
+
 			$dir = opendir("admin/modules");
 			while ($file = readdir($dir)) {
-				if (preg_match("/(\.php)$/is", $file) && $file != "." && $file != "..") include("admin/modules/".$file);
+				if (preg_match("/(\.php)$/is", $file) && $file != "." && $file != ".." && is_admin_god($file)) include("admin/modules/".$file);
 			}
 			closedir($dir);
-		}
+
 		$result = $db->sql_query("SELECT title FROM ".$prefix."_modules ORDER BY title ASC");
 		while (list($mtitle) = $db->sql_fetchrow($result)) {
 			if (is_admin_god() || is_admin_modul($mtitle)) {
