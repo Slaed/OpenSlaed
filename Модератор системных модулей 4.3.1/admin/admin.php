@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright Â© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:
@@ -115,7 +115,7 @@ function login() {
 		."<div><span>"._NICKNAME.":</span><input type=\"text\" name=\"name\" size=\"10\" maxlength=\"25\" class=\"ftext\"></div>"
 		."<div><span>"._PASSWORD.":</span><input type=\"password\" name=\"pwd\" size=\"10\" maxlength=\"25\" class=\"ftext\"></div>";
 		if (extension_loaded("gd") && ($conf['gfx_chk'] == 1 || $conf['gfx_chk'] == 5 || $conf['gfx_chk'] == 6 || $conf['gfx_chk'] == 7)) {
-			echo "<div><span>"._SECURITYCODE.":</span><img src=\"captcha.php\" onclick=\"if(!this.adress)this.adress = this.src; this.src=adress+'?rand='+Math.random();\" border=\"1\" title=\"Íàæìèòå, ÷òîáû îáíîâèòü êàðòèíêó\" style=\"cursor:pointer;\" alt=\""._SECURITYCODE."\"></div>"
+			echo "<div><span>"._SECURITYCODE.":</span><img src=\"captcha.php\" onclick=\"if(!this.adress)this.adress = this.src; this.src=adress+'?rand='+Math.random();\" border=\"1\" title=\"ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¾Ð±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ÐºÐ°Ñ€Ñ‚Ð¸Ð½ÐºÑƒ\" style=\"cursor:pointer;\" alt=\""._SECURITYCODE."\"></div>"
 			."<div><span>"._TYPESECCODE.":</span><input type=\"text\" name=\"check\" size=\"10\" maxlength=\"6\" style=\"width: 75px;\" class=\"ftext\"></div>";
 		}
 		echo "</div><div class=\"button\"><input type=\"hidden\" name=\"op\" value=\"check_admin\"><input type=\"submit\" value=\""._LOGIN."\" class=\"fbutton\"></div></form>";
@@ -183,11 +183,11 @@ function panel() {
 	if (phpversion() < "4.3.0") warning(_PHPSETUP, "", "", 1);
 	if ($conf['admininfo']) warning($conf['admininfo'], "", "", 2);
 	if ($conf['panel'] == 1) {
-		#if (is_admin_god()) {
+		if (is_admin_god()) {
 			ob_start();
 			$dir = opendir("admin/links");
 			while ($file = readdir($dir)) {
-				if (substr($file, 0, 6) == "links." /**/&& is_admin_god(str_replace('links.', '', $file))/**/) $files[] = $file;
+				if (substr($file, 0, 6) == "links.") $files[] = $file;
 			}
 			closedir($dir);
 			sort($files);
@@ -197,7 +197,7 @@ function panel() {
 			ob_end_clean();
 			panel_admin(_ADMINMENU, $cont);
 			$counter = "";
-		#}
+		}
 		ob_start();
 		$result = $db->sql_query("SELECT title, active FROM ".$prefix."_modules ORDER BY title ASC");
 		while (list($title, $active) = $db->sql_fetchrow($result)) {
@@ -253,13 +253,13 @@ if (is_admin()) {
 		break;
 		
 		default:
-		#if (is_admin_god()) {
+		if (is_admin_god()) {
 			$dir = opendir("admin/modules");
 			while ($file = readdir($dir)) {
-				if (preg_match("/(\.php)$/is", $file) && $file != "." && $file != ".." /**/&& is_admin_god($file)/**/) include("admin/modules/".$file);
+				if (preg_match("/(\.php)$/is", $file) && $file != "." && $file != "..") include("admin/modules/".$file);
 			}
 			closedir($dir);
-		#}
+		}
 		$result = $db->sql_query("SELECT title FROM ".$prefix."_modules ORDER BY title ASC");
 		while (list($mtitle) = $db->sql_fetchrow($result)) {
 			if (is_admin_god() || is_admin_modul($mtitle)) {
