@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright В© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:
@@ -92,7 +92,7 @@ function admininfo() {
 			}
 			if (is_active("private") && is_admin_modul("private")) {
 				$num6 = $db->sql_numrows($db->sql_query("SELECT id FROM ".$prefix."_private_complaint WHERE status='0'"));
-				$w_content .= "<tr><td><a href=\"".$admin_file.".php?op=privates\">Поступ. жалобы</a>: </td><td>$num6</td></tr>";
+				$w_content .= "<tr><td><a href=\"".$admin_file.".php?op=privates\">РџРѕСЃС‚СѓРї. Р¶Р°Р»РѕР±С‹</a>: </td><td>$num6</td></tr>";
 			}
 			$w_content .= "</table>";
 			themesidebox(_WAITINGCONT, $w_content, 3);

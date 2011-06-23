@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright Â© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:

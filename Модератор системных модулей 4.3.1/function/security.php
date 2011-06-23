@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright Â© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:
@@ -569,7 +569,7 @@ function text_filter($message, $type="") {
 
 # Length center filter
 function cutstrc($linkstrip, $strip) {
-	if (strlen($linkstrip) > $strip) $linkstrip = substr($linkstrip, 0, $strip - 19)."…".substr($linkstrip, -16);
+	if (strlen($linkstrip) > $strip) $linkstrip = substr($linkstrip, 0, $strip - 19)."â€¦".substr($linkstrip, -16);
 	return $linkstrip;
 }
 
