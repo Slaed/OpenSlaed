@@ -45,31 +45,31 @@ function AddSmile(SmileCode) {
 	return;
 }
 function AddIE(Open, Close) {
-	if (SelField.createTextRange && SelField.caretPos && Close == '\n') {
-		var caretPos = SelField.caretPos;
-		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? Open + Close + ' ' : Open + Close;
-		SelField.focus();
-	} else if (SelField.caretPos) {
-		SelField.caretPos.text = Open + SelField.caretPos.text + Close;
-	} else {
-		SelField.value += Open + Close;
-		SelField.focus();
-	}
+sel=document.selection.createRange();
+var l = sel.text.length;
+sel.text=Open+sel.text+Close;
+sel.moveEnd("character", -Close.length);
+sel.moveStart("character", -l);
+sel.select();
+return false;
 }
+
 function AddMoz(txtarea, Open, Close) {
-	var selLength = txtarea.textLength;
-	var selStart = txtarea.selectionStart;
-	var selEnd = txtarea.selectionEnd;
-	if (selEnd == 1 || selEnd == 2) {
-		selEnd = selLength;
-	}
-	var s1 = (txtarea.value).substring(0,selStart);
-	var s2 = (txtarea.value).substring(selStart, selEnd)
-	var s3 = (txtarea.value).substring(selEnd, selLength);
-	txtarea.value = s1 + Open + s2 + Close + s3;
-	return;
+var ss = txtarea.scrollTop;
+sel1 = txtarea.value.substr(0, txtarea.selectionStart);
+sel2 = txtarea.value.substr(txtarea.selectionEnd);
+sel = txtarea.value.substr(txtarea.selectionStart, txtarea.selectionEnd - txtarea.selectionStart);
+txtarea.value = sel1 + Open + sel + Close + sel2;
+txtarea.selectionStart = sel1.length + Open.length;
+txtarea.selectionEnd = txtarea.selectionStart + sel.length;
+txtarea.scrollTop = ss;
+return false;
 }
+
 function InsertCode(code, info, type, error, area) {
+var txtarea = document.getElementById(area);
+txtarea.focus();
+
 	if ((ClientVer >= 4) && IsIE && IsWin) {
 		if (code == 'name') {
 			AddIE('[b]' + info + '[/b]', ', ');
@@ -91,10 +91,8 @@ function InsertCode(code, info, type, error, area) {
 		} else if (code == 'attach') {
 			AddIE('[' + code + '=' + info + ' align=center title=title]', '\n');
 		} else {
-			var selection = false;
-			selection = document.selection.createRange().text;
-			if (selection && code == 'quote') {
-				AddIE('[' + code + ']' + selection + '[/' + code + ']', '\n');
+			if (code == 'quote') {
+				AddIE('[' + code + ']', '[/' + code + ']\n');
 			} else {
 				if (code == 'img' && info) {
 					AddIE('[' + code + '=center alt=title]' + info +'[/' + code + ']', '\n');
@@ -106,7 +104,6 @@ function InsertCode(code, info, type, error, area) {
 			}
 		}
 	} else {
-		var txtarea = document.getElementById(area);
 		if (code == 'name') {
 			AddMoz(txtarea, '[b]' + info + '[/b]', ', ');
 		} else if (code == 'url' || code == 'mail') {

@@ -2078,7 +2078,7 @@ function textarea($id, $name, $var, $mod, $rows) {
 	$con = explode("|", $confup[strtolower($mod)]);
 	$style = (defined("ADMIN_FILE")) ? "admin" : strtolower($mod);
 	if ((defined("ADMIN_FILE") && $conf['redaktor'] == 1) || (!defined("ADMIN_FILE"))) {
-		$code = "<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/insert_code.js\"></script>"
+		$code = "<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/insert_code.js?".filemtime('ajax/insert_code.js')."\"></script>"
 		."<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td><div class=\"editor\">"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"RowsTextarea('".$id."', 1)\"><img src=\"".img_find("editor/plus")."\" title=\""._EPLUS."\"></div>"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"RowsTextarea('".$id."', 0)\"><img src=\"".img_find("editor/minus")."\" title=\""._EMINUS."\"></div>"
