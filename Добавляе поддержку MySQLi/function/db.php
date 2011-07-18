@@ -2,6 +2,11 @@
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
 switch($dbtype) {
+
+	case "mysqli":
+	include("function/db/mysqli.php");
+	break;
+
 	case "mysql":
 	include("function/db/mysql.php");
 	break;
@@ -31,7 +36,7 @@ switch($dbtype) {
 	break;
 }
 
-$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname, false);
+$db = new sql_db($dbhost, $dbuname, $dbpass, $dbname, false, $dbcode);
 if (!$db->db_connect_id) get_exit(""._SQLERROR."", 0);
 
 if ($dbcode && $dbtype == "mysql") {

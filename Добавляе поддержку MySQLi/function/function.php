@@ -1268,10 +1268,8 @@ function head() {
 		}
 		$ctime = time();
 		if ($uname) {
-			$db->sql_query("UPDATE ".$prefix."_session SET uname='$uname', time='$ctime', host_addr='$ip', guest='$guest', module='$name', url='$url' WHERE uname='$uname'");
-			$e = @mysql_info();
-			preg_match("#^\D+(\d+)#", $e, $matches);
-			if ($matches[1] == 0) $db->sql_query("INSERT INTO ".$prefix."_session (uname, time, host_addr, guest, module, url) VALUES ('$uname', '$ctime', '$ip', '$guest', '$name', '$url')");
+			$sql=$db->sql_query("UPDATE ".$prefix."_session SET uname='$uname', time='$ctime', host_addr='$ip', guest='$guest', module='$name', url='$url' WHERE uname='$uname'");
+			if ($db->sql_affectedrows($sql) == 0) $db->sql_query("INSERT INTO ".$prefix."_session (uname, time, host_addr, guest, module, url) VALUES ('$uname', '$ctime', '$ip', '$guest', '$name', '$url')");
 		}
 	}
 	$ThemeSel = get_theme();
