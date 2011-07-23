@@ -78,16 +78,11 @@ $text['title']="<a href='".$text['url']."' title='"._CSUB_3."'>$title</a>";
 $text['text']=str_replace(array('{title}','{url}','{author}','{text}','{unsubscribe}'),array($text['title'],"<a href='".$text['url']."' title='"._CSUB_3."'>".$text['url']."</a>",$author,bb_decode($in['text']),"<a href='".$text['unsubscribe']."' title='"._CSUB_4."'>".$text['unsubscribe']."</a>"),$subscribe['mods'][$in['mod']]['text']);
 mail_send($mail,$conf['adminmail'],$subscribe['mods'][$in['mod']]['title'],nl2br($text['text']));
 if ($subscribe['type']==1) $db->sql_query("UPDATE ".$prefix."_com_subscribe SET `status`='0' WHERE `id`='$id'");
-}
-}
-}
-}
-}
+}}}}}
 
 function generate_code($length=8) { $num = range(0, 9); $alf = range('a', 'z'); $symbols = array_merge($num, $alf); shuffle($symbols); $code_array = array_slice($symbols, 0, (int)$length); $code = implode("", $code_array); return $code; }
 function subscribe_encode ($a) { global $subscribe; if ($subscribe['charset']=='windows-1251') { header('Content-type: text/html; charset='.$thanks['charset']); foreach ($a as $b=>$c) $d[]='"'.$b.'":"'.addcslashes(str_replace(array("\r","\n"),"",$c), '"').'"'; return '{'.implode(',',$d).'}'; } else return json_encode($a); }
 
-##&name=news&id=5 - для подписки
 function comments_sub () {
 global $user,$db,$prefix,$subscribe;
 $out['status']=0;
@@ -109,8 +104,6 @@ $out=array('status'=>1,'text'=>_CSUB_5);
 return $out;
 }
 
-#&uid=4&hash=2qo6cd8z - для отписки (гость)
-#&hash=2qo6cd8z - для отписки (пользователь)
 function comments_unsub () {
 global $db,$prefix,$user;
 if (is_user()) $_GET['uid']=$user[0];
@@ -122,8 +115,6 @@ else $out=array('status'=>1,'text'=>_CSUB_11);
 return $out;
 }
 
-#subscribe_button ('news',5);
-#&uid=1&sact=gfh5xd0z - для активации подписки (гость), авто (для пользователя)
 function subscribe_button ($mod,$id) {
 global $user,$db,$prefix,$subscribe;
 $out['html']='';
