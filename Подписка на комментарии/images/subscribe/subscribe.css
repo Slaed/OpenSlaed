@@ -1,0 +1,48 @@
+.clear {display:block;clear:both;height:0px;line-height:0px;font-size:0px;}
+#subscribe_comm {margin-bottom:20px;float:right;}
+#subscribe_comm .button { display: inline-block; zoom: 1; *display: inline; vertical-align: baseline; margin: 0 2px; outline: none; cursor: pointer; text-align: center; text-decoration: none; font: 14px/100% Arial, Helvetica, sans-serif; padding: .5em 2em .55em; text-shadow: 0 1px 1px rgba(0,0,0,.3); -webkit-border-radius: .5em; -moz-border-radius: .5em; border-radius: .5em; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+#subscribe_comm .button:hover { text-decoration: none; }
+#subscribe_comm .button:active { position: relative; top: 1px; }
+#subscribe_comm .medium { font-size: 12px; padding: .4em 1.5em .42em; }
+#subscribe_comm .orange { color: #fef4e9; border: solid 1px #da7c0c; background: #f78d1d; background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20)); background: -moz-linear-gradient(top,  #faa51a,  #f47a20); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#faa51a', endColorstr='#f47a20'); }
+#subscribe_comm .orange:hover { background: #f47c20; background: -webkit-gradient(linear, left top, left bottom, from(#f88e11), to(#f06015)); background: -moz-linear-gradient(top,  #f88e11,  #f06015); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f88e11', endColorstr='#f06015'); }
+#subscribe_comm .orange:active { color: #fcd3a5; background: -webkit-gradient(linear, left top, left bottom, from(#f47a20), to(#faa51a)); background: -moz-linear-gradient(top,  #f47a20,  #faa51a); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f47a20', endColorstr='#faa51a'); }
+#subscribe_comm .red { color: #faddde; border: solid 1px #980c10; background: #d81b21; background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317)); background: -moz-linear-gradient(top,  #ed1c24,  #aa1317); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317'); }
+#subscribe_comm .red:hover { background: #b61318; background: -webkit-gradient(linear, left top, left bottom, from(#c9151b), to(#a11115)); background: -moz-linear-gradient(top,  #c9151b,  #a11115); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#c9151b', endColorstr='#a11115'); }
+#subscribe_comm .red:active { color: #de898c; background: -webkit-gradient(linear, left top, left bottom, from(#aa1317), to(#ed1c24)); background: -moz-linear-gradient(top,  #aa1317,  #ed1c24); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#aa1317', endColorstr='#ed1c24'); }
+#subscribe_comm .blue { color: #d9eef7; border: solid 1px #0076a3; background: #0095cd; background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5)); background: -moz-linear-gradient(top,  #00adee,  #0078a5); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5'); }
+#subscribe_comm .blue:hover { background: #007ead; background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e)); background: -moz-linear-gradient(top,  #0095cc,  #00678e); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#0095cc', endColorstr='#00678e'); }
+#subscribe_comm .blue:active { color: #80bed6; background: -webkit-gradient(linear, left top, left bottom, from(#0078a5), to(#00adee)); background: -moz-linear-gradient(top,  #0078a5,  #00adee); filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#0078a5', endColorstr='#00adee'); }
+/**/
+div.jGrowl { padding:10px; z-index:9999; color:#fff; font-size:12px; }
+div.ie6 { position:absolute; }
+div.ie6.top-right { right:auto; bottom:auto; left:expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' ); top:expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); }
+div.ie6.top-left { left:expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' ); top:expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); }
+div.ie6.bottom-right { left:expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' ); top:expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); }
+div.ie6.bottom-left { left:expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' ); top:expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); }
+div.ie6.center { left:expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' ); top:expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); width:100%; }
+div.jGrowl { position:absolute; }
+body > div.jGrowl { position:fixed; }
+div.jGrowl.top-left { left:0px; top:0px; }
+div.jGrowl.top-right { right:0px; top:0px; }
+div.jGrowl.bottom-left { left:0px; bottom:0px; }
+div.jGrowl.bottom-right { right:0px; bottom:0px; }
+div.jGrowl.center { top:0px; width:50%; left:25%; }
+div.center div.jGrowl-notification, div.center div.jGrowl-closer { margin-left:auto; margin-right:auto; }
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {color:#fff; background-color: #000; opacity:.75; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85); zoom:1; width:280px; padding:10px; margin-top:5px; margin-bottom:5px; font-family:Tahoma, Arial, Helvetica, sans-serif; font-size:1em; text-align:left; display:none; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
+div.jGrowl div.jGrowl-notification { min-height:40px; }
+div.jGrowl div.jGrowl-notification div.jGrowl-header { font-weight:bold; font-size:.90em; padding-bottom:5px;}
+div.jGrowl div.jGrowl-notification div.jGrowl-close { z-index:99; float:right; font-weight:bold; font-size:1em; cursor:pointer; }
+div.jGrowl div.jGrowl-closer { padding-top:4px; padding-bottom:4px; cursor:pointer; font-size:.9em; font-weight:bold; text-align:center; }
+@media print { div.jGrowl { display:none; } }
+div.jGrowl div.smoke {width:280px;height:55px;overflow:hidden;font-size:13px;}
+div.jGrowl div.smoke.red { background-color: #FFB2B9; color:#B00023;}
+div.jGrowl div.jGrowl-closer,div.jGrowl div.smoke.green { background-color: #C7F6B9; color:#1D7323;}
+div.jGrowl div.smoke.blue { background-color: #C7F6FF; color:#1D73BC;}
+div.jGrowl div.smoke.green * { color:#1D7323;}
+div.jGrowl div.smoke.red * { color:#B00023;}
+div.jGrowl div.smoke.blue * { color:#1D73BC;}
+/**/
+.ajax_preloader{display:none;margin-top:-50px;margin-left:-150px;top:50%;left:50%;position:fixed;z-index:999;width:300px;height:100px;border:4px solid #A1D973;background:#fff url(/images/subscribe/ajax_preloader.gif) center center no-repeat;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);-moz-opacity:.8;-khtml-opacity:.8;opacity:.8;}
+.ajax_preloader span{margin-top:80px;text-align:center;display:block;color:#6B6B6B;font-size:11px;font-weight:bold;}
+/**/

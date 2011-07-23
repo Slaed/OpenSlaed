@@ -679,5 +679,7 @@ switch($op) {
 	case "savepass":
 	savepass();
 	break;
+	
+	case "subscribe_account":subscribe_account();break;
 }
 ?>

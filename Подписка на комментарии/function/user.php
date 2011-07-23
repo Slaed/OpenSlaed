@@ -20,6 +20,7 @@ function navi($id) {
 	if ($conf['forum']) {
 		$massiv[] = "<a href=\"forum/index.php\"><img src=\"images/account/forum.png\" border=\"0\" alt=\""._FORUM."\" title=\""._FORUM."\"></a><br><a href=\"forum/index.php\">"._FORUM."</a>";
 	}
+	$massiv[] = "<a href='index.php?name=account&op=subscribe_account'><img src='images/subscribe/subscribe.png' border='0' alt='"._CSUB_1."' title='"._CSUB_1."'></a><br><a href='index.php?name=account&op=subscribe_account'>"._CSUB_1."</a>";
 	$massiv[] = "<a href=\"index.php?name=account&op=edithome\"><img src=\"images/account/preferences.png\" border=\"0\" alt=\""._CHANGE."\" title=\""._CHANGE."\"></a><br><a href=\"index.php?name=account&op=edithome\">"._CHANGE."</a>";
 	$massiv[] = "<a href=\"index.php?name=account&op=logout\"><img src=\"images/account/exit.png\" border=\"0\" alt=\""._LOGOUT."\" title=\""._LOGOUT."\"></a><br><a href=\"index.php?name=account&op=logout\">"._LOGOUT."</a>";
 	$content = "";
@@ -135,6 +136,7 @@ function userblock() {
 function show_com($cid) {
 	global $prefix, $db, $admin_file, $conf, $user, $confu;
 	include("config/config_comments.php");
+	echo paste_onuser($cid);
 	list($numstories) = $db->sql_fetchrow($db->sql_query("SELECT Count(cid) FROM ".$prefix."_comment WHERE cid='$cid' AND modul='".$conf['name']."'"));
 	if ($numstories > 0) {
 		$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
@@ -272,6 +274,7 @@ function save_com() {
 		$ip = getip();
 		$comment = nl2br(text_filter($comment, 2));
 		$db->sql_query("INSERT INTO ".$prefix."_comment VALUES (NULL, '$cid', '".$conf['name']."', now(), '$postid', '$postname', '$ip', '$comment')");
+		csub_send (array('author'=>$postname,'mod'=>$conf['name'],'id'=>$cid,'text'=>$comment,'cid'=>$db->sql_nextid()));
 		if ($conf['name'] == "files") {
 			$db->sql_query("UPDATE ".$prefix."_files SET totalcomments=totalcomments+1 WHERE lid='$cid'");
 			update_points(10);

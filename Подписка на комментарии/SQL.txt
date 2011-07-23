@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS `{prefix}_com_subscribe` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mod` varchar(50) NOT NULL,
+  `iid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `hash` varchar(8) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `mod` (`mod`),
+  KEY `iid` (`iid`),
+  KEY `uid` (`uid`),
+  KEY `hash` (`hash`),
+  KEY `status` (`status`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
