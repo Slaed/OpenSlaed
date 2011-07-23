@@ -4,6 +4,10 @@
 
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+$out[] = "subscribe/comments/$3.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=subscribe_account&(amp;)?num=(\d+)'";
+$out[] = "subscribe/comments.html";
+$in[] = "'(?<!/)index.php\?name=account&(amp;)?op=subscribe_account'";
 $out[] = "rss-\\1-\\3-num-\\5.html";
 $in[] = "'(?<!/)rss.php\?name=([a-zA-Z0-9_]*)&(amp;)?cat=([0-9]*)&(amp;)?num=([0-9]*)'";
 $out[] = "rss-\\1-\\3.html";

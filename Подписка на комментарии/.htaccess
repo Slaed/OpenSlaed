@@ -20,7 +20,8 @@ ErrorDocument 503												http://www.slaed.net/faq-cat-39.html
 # Mod rewrite on
 RewriteEngine On
 RewriteBase /
-
+RewriteRule ^subscribe/comments/([0-9]*).(html|htm)$				index.php?name=account&op=subscribe_account&num=$1 [NC,L]
+RewriteRule ^subscribe/comments.(html|htm)$				index.php?name=account&op=subscribe_account [NC,L]
 # Index
 RewriteRule ^index.html											index.php [NC]
 
