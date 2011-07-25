@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `{prefix}_com_subscribe` (
+CREATE TABLE IF NOT EXISTS `{pref}_com_subscribe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `mod` varchar(50) NOT NULL,
   `iid` int(11) NOT NULL,
@@ -13,3 +13,15 @@ CREATE TABLE IF NOT EXISTS `{prefix}_com_subscribe` (
   KEY `hash` (`hash`),
   KEY `status` (`status`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `{pref}_com_smod` (
+  `id` int(11) NOT NULL auto_increment,
+  `mod` varchar(50) NOT NULL,
+  `info` text NOT NULL,
+  `send` tinyint(1) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `mod` (`mod`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+INSERT INTO `{pref}_com_smod` (`id`, `mod`, `info`, `send`, `status`) VALUES (1, 'news', 'a:5:{s:4:"name";s:14:"Новости";s:5:"param";a:3:{s:5:"table";s:7:"stories";s:2:"id";s:3:"sid";s:5:"title";s:5:"title";}s:3:"url";s:36:"index.php?name={mod}&op=view&id={id}";s:5:"title";s:67:"Добавлен новый комменарий к новости!";s:4:"text";s:965:"Здравствуйте, сообщаем вам о новом комментарии к новости - {title}\r\n\r\n&lt;b&gt;Ссылка на комментарий:&lt;/b&gt; {url}\r\n&lt;b&gt;Автор комменария:&lt;/b&gt; {author}\r\n&lt;b&gt;Текст комментария:&lt;/b&gt; {text}\r\n\r\nНовые уведомления о комментариях к данной новости НЕ будут отправлены вам пока вы не просмотрите уже существующие комментарии по ссылке выше!\r\n\r\nЭто письмо вам было отправлено как подписчику на комментарии к новости {title}.\r\n&lt;b&gt;&lt;font color=&quot;orange&quot;&gt;Вы в любой момент можете отказаться от рассылки, для этого перейдите по следующей ссылке:&lt;/font&gt;&lt;/b&gt;\r\n{unsubscribe}";}', 1, 1);

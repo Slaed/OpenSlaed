@@ -1,6 +1,9 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+# Кодировка (utf-8,windows-1251) + пересохраните данный файл в нужной кодировке
+$subscribe['charset']='utf-8';
+
 define('_CSUB_1','Мои подписки на комментарии');
 define('_CSUB_2','Информация о пользователе');
 define('_CSUB_3','Просмотреть комментарий');
@@ -25,46 +28,11 @@ define('_CSUB_21','Активна');
 define('_CSUB_22','Удалить выбранные');
 define('_CSUB_23','Снять/выбрать всё');
 
-# Кодировка (utf-8,windows-1251) + пересохраните данный файл в нужной кодировке
-$subscribe['charset']='utf-8';
-# Не отсылать уведомления пока предыдущие комментарии не прочитаны (1 - да)
-$subscribe['type']=1;
-# Кол-во подписок на странице (в пользовательской части, нумерация страниц)
-$subscribe['num']=10;
-# Настройка доп. модулей: $subscribe['mods'][ИМЯ_МОДУЛЯ]=array... Пример см. ниже:
-$subscribe['mods']['news']=array(
-# Разрешить подписку в данном модуле (1 - да)
-'status'=>1,
-# Рассылать уведомления о добавленном комментарии для данного модуля (1 - да)
-'send'=>1,
-# SQL запрос для выборки заголовка и номера (id) публикации, {prefix} - префикс к БД, {id} - список запрашиваемых id
-'sql'=>'SELECT `title`,`sid` FROM {prefix}_stories WHERE `sid` IN ({id})',
-# Ссылка на публикацию {mod} - название модуля, {id} - id публикации
-'url'=>'index.php?name={mod}&op=view&id={id}',
-# Заголовок письма уведомления о добавленном комментарии для данного модуля
-'title'=>'Добавлен новый комменарий к новости!',
-# Текст письма уведомления, где:
-## {title} - ссылка на комментарий с заголовоком новости
-## {url} - ссылка на комментарий
-## {author} - автор комментария
-## {text} - текст комментария
-## {unsubscribe} - ссылка на отписку от рассылки к данной статье
-'text'=>'Здравствуйте, сообщаем вам о новом комментарии к новости - {title}
-
-<b>Ссылка на комментарий:</b> {url}
-<b>Автор комменария:</b> {author}
-<b>Текст комментария:</b> {text}
-
-Новые уведомления о комментариях к данной новости НЕ будут отправлены вам пока вы не просмотрите уже существующие комментарии по ссылке выше!
-
-Это письмо вам было отправлено как подписчику на комментарии к новости {title}.
-<b><font color="orange">Вы в любой момент можете отказаться от рассылки, для этого перейдите по следующей ссылке:</font></b>
-{unsubscribe}'
-);
+include('config/config_csubcom.php');
 
 function csub_send ($in) {
 global $conf,$prefix,$db,$subscribe,$user;
-if ($subscribe['mods'][$in['mod']]['send']==1) {
+if ($subscribe['mods'][$in['mod']]['send']==1 && ($subscribe['useronly']!=1 || is_user())) {
 list($title)=$db->sql_fetchrow($db->sql_query(str_replace(array('{prefix}','{id}'),array($prefix,$in['id']),$subscribe['mods'][$in['mod']]['sql'])));
 if ($title!=null) {
 $author=(is_user())?"<a href='".rtrim($conf['homeurl'],'/')."/index.php?name=account&op=info&uname=".$user[1]."' title='"._CSUB_2."'>".$user[1]."</a>":"<b>".$in['author']."</b>";
@@ -81,7 +49,7 @@ if ($subscribe['type']==1) $db->sql_query("UPDATE ".$prefix."_com_subscribe SET 
 }}}}}
 
 function generate_code($length=8) { $num = range(0, 9); $alf = range('a', 'z'); $symbols = array_merge($num, $alf); shuffle($symbols); $code_array = array_slice($symbols, 0, (int)$length); $code = implode("", $code_array); return $code; }
-function subscribe_encode ($a) { global $subscribe; if ($subscribe['charset']=='windows-1251') { header('Content-type: text/html; charset='.$thanks['charset']); foreach ($a as $b=>$c) $d[]='"'.$b.'":"'.addcslashes(str_replace(array("\r","\n"),"",$c), '"').'"'; return '{'.implode(',',$d).'}'; } else return json_encode($a); }
+function subscribe_encode ($a) { global $subscribe; if ($subscribe['charset']=='windows-1251') { header('Content-type: text/html; charset='.$subscribe['charset']); foreach ($a as $b=>$c) $d[]='"'.$b.'":"'.addcslashes(str_replace(array("\r","\n"),"",$c), '"').'"'; return '{'.implode(',',$d).'}'; } else return json_encode($a); }
 
 function comments_sub () {
 global $user,$db,$prefix,$subscribe;
@@ -163,15 +131,16 @@ echo "<div id='subscribe_comm'><a href='#' class='button blue medium' id='subche
 echo '<form id="sub_del" name="sub_del" action="index.php?name=account&op=subscribe_account" method="post">';
 echo "<table width='100%' border='0' cellpadding='2' cellspacing='1' class='sort' id='sort_id'><tr><th>"._CSUB_15."</th><th>"._CSUB_16."</th><th>"._CSUB_17."</th><th>"._CSUB_18."</th><th>"._CSUB_19."</th></tr>";
 while (list($id,$mod,$iid,$date,$hash,$status) = $db->sql_fetchrow($result)) {
-$status=($status==0)?'<font color="red"><i>'._CSUB_20.'</i></font>':'<font color="green"><i>'._CSUB_21.'</i></font>';
+$status=($subscribe['type']==1 && $status==0)?'<font color="red"><i>'._CSUB_20.'</i></font>':'<font color="green"><i>'._CSUB_21.'</i></font>';
 $url=str_replace(array('{mod}','{id}'),array($mod,$iid),$subscribe['mods'][$mod]['url']);
 $arr[$mod][]=$iid;
 $i++;
+$d=explode(' ',$date);
 $out .="<tr class='bgcolor1'>"
 ."<td style='width:35px;' align='center'>$i</td>"
 ."<td><a href='$url' title='{".$mod."-$iid}'>{".$mod."-$iid}</a></td>"
-."<td>$date</td>"
-."<td>$status</td>"
+."<td>".$d[0]."</td>"
+."<td align='center'>$status</td>"
 .'<td><input type="checkbox" class="checkbox subscribes" name="delete[]" value="'.$id.'"></td></tr>';
 }
 foreach ($arr as $a=>$b) {
