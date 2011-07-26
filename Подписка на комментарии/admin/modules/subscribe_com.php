@@ -43,7 +43,7 @@ foot();
 
 function subcom () {
 global $prefix, $db, $admin_file;
-if (!isset($subscribe)) include_once('config/config_csubcom.php');
+include('config/config_csubcom.php');
 $num['get']=$sql['where']='';
 $num['num']=10;
 $num['page'] = isset($_GET['num']) ? intval($_GET['num']) : "1";
