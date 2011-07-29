@@ -11,7 +11,7 @@ if (is_user() && $msq['off']['mu']['status']==1 && intval($_COOKIE['mushow'])==1
 if (count($out['message'])>0 && $msq['status']==1 && intval($stop)!=1) {
 if (is_user()) $a='mu';
 else $a='mg';
-if ($msq['loop']==1 || count($out['message'])>intval($msq['cookie'][$a]['count'])+1) {
+if ($msq['loop']==1 || !isset($msq['cookie'][$a]['count']) || count($out['message'])>intval($msq['cookie'][$a]['count'])+1) {
 if (count($out['message'])<=intval($msq['cookie'][$a]['count'])+1 || !isset($msq['cookie'][$a]['count'])) $next=0;
 else $next=intval($msq['cookie'][$a]['count'])+1;
 if (in_array($next,$out['types']['oneonly'])) $type=' личное';
