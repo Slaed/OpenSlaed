@@ -4,6 +4,11 @@
 
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
+$out[] = "/$1/date/$3/page-$5.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?cal_date=([0-9-]+)&(amp;)?num=(\d+)'";
+$out[] = "/$1/date/$3.html";
+$in[] = "'(?<!/)index.php\?name=(news|files)&(amp;)?cal_date=([0-9-]+)'";
+
 $out[] = "rss-\\1-\\3-num-\\5.html";
 $in[] = "'(?<!/)rss.php\?name=([a-zA-Z0-9_]*)&(amp;)?cat=([0-9]*)&(amp;)?num=([0-9]*)'";
 $out[] = "rss-\\1-\\3.html";

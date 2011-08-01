@@ -24,6 +24,9 @@ RewriteBase /
 # Index
 RewriteRule ^index.html											index.php [NC]
 
+RewriteRule ^(news|files)/date/([0-9-]+)/page-(\d+).html$             index.php?name=$1&cal_date=$2&num=$3 [NC]
+RewriteRule ^(news|files)/date/([0-9-]+).html$                        index.php?name=$1&cal_date=$2 [NC]
+
 # All standart moduls and RSS
 RewriteRule ^rss-num-([0-9]*).html$								rss.php?num=$1 [NC]
 RewriteRule ^rss-([a-zA-Z0-9_]+)-num-([0-9]*).html$					rss.php?name=$1&num=$2 [NC]

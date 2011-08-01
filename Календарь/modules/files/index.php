@@ -60,6 +60,15 @@ function files() {
 		$files_logo = ""._FILES."";
 		$pagetitle = "".$conf['defis']." $files_logo";
 	}
+	if (isset($_GET['cal_date']) && gdate_check($_GET['cal_date'],'y-m-d,y-m,y')) {
+	$caton=0;
+	$cal_date=text_filter($_GET['cal_date']);
+	$field = "cal_date=$cal_date&";
+	$order = "WHERE date <= now() AND status!='0' AND date LIKE '$cal_date%' ORDER BY date DESC";
+	$ordernum = "date <= now() AND status!='0' AND date LIKE '$cal_date%'";
+	$files_logo = _FILES;
+	$pagetitle = $conf['defis']." $files_logo";
+	}
 	head();
 	if (!$home) {
 		if ($fcat) {

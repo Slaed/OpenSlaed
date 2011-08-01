@@ -60,6 +60,15 @@ function news() {
 		$news_logo = ""._NEWS."";
 		$pagetitle = "".$conf['defis']." $news_logo";
 	}
+	if (isset($_GET['cal_date']) && gdate_check($_GET['cal_date'],'y-m-d,y-m,y')) {
+	$caton=0;
+	$cal_date=text_filter($_GET['cal_date']);
+	$field = "cal_date=$cal_date&";
+	$order = "WHERE time <= now() AND status!='0' AND time LIKE '$cal_date%' ORDER BY time DESC";
+	$ordernum = "time <= now() AND status!='0' AND time LIKE '$cal_date%'";
+	$news_logo = NEWS;
+	$pagetitle = $conf['defis']." $news_logo";
+	}
 	head();
 	if (!$home) {
 		if ($scat) {
