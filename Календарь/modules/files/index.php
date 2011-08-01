@@ -60,7 +60,7 @@ function files() {
 		$files_logo = ""._FILES."";
 		$pagetitle = "".$conf['defis']." $files_logo";
 	}
-	if (isset($_GET['cal_date']) && gdate_check($_GET['cal_date'],'y-m-d,y-m,y')) {
+	if (isset($_GET['cal_date']) && gdate_check('y-m-d,y-m,y',$_GET['cal_date'])) {
 	$caton=0;
 	$cal_date=text_filter($_GET['cal_date']);
 	$field = "cal_date=$cal_date&";
