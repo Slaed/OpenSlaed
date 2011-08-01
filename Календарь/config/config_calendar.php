@@ -158,7 +158,7 @@ $mass=explode(',', $cal['modules']);
 $menu ='<ul class="menu" id="menu" title="Выбрать модуль"><li><a href="#" id="show_mmd" class="menulink info">'.$cal['lang'][$cal['default']][1].'<span></span></a>';
 if (count($mass)>1) {
 $menu .='<ul id="cliplayer">';
-foreach ($mass as $element) {unset($img);$img=img_find("all/".$element);if (!file_exists($img)) $img=img_find("misc/navi");if($element!=$cal['default']) $menu .='<li><a class="menulink-hover" href="#" onclick="javascript:navigate('.$month.','.$year2.',\''.$element.'&cal=2\');return false;">'.$cal['lang'][$element][1].'<span style="background-image:url('.$img.');"></span></a></li>';}
+foreach ($mass as $element) {unset($img);$img=img_find("all/".$element);if (!file_exists($img)) $img=img_find("misc/navi");if($element!=$cal['default']) $menu .='<li><a class="menulink-hover" href="#" onclick="javascript:navigate('.$month.','.$year2.',\''.$element.'\');return false;">'.$cal['lang'][$element][1].'<span style="background-image:url('.$img.');"></span></a></li>';}
 $menu .='</ul>';
 }
 $menu .='</li></ul>';
