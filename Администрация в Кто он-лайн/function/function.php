@@ -335,12 +335,16 @@ function user_geo_ip($ip, $id) {
 function user_sinfo() {
 	global $prefix, $db, $conf;
 	if ($conf['session']) {
-		$who_online = ""; $m = 0; $b = 0; $u = 0; $i = 0;
+		$who_online = ""; $m = 0; $b = 0; $u = 0; $i = 0; $a = 0;
 		$result = $db->sql_query("SELECT uname, UNIX_TIMESTAMP(now())-time AS time, host_addr, guest, module FROM ".$prefix."_session ORDER BY uname");
 		while (list($uname, $time, $host, $guest, $module) = $db->sql_fetchrow($result)) {
+		if ($guest==3 && $module=='') $module='Админка';
 			$strip = cutstr($uname, 10);
 			$linkstrip = str_replace("_", " ", cutstr($module, 7));
-			if ($guest == 2) {
+			if ($guest == 3) {
+				$who_online .= "<tr><td>".user_geo_ip($host, 3)."</td><td><font color='orange' title='Администратор'><b>$strip</b></font></td><td align=\"right\">$linkstrip</td></tr>";
+				$a++;
+			} elseif ($guest == 2) {
 				$who_online .= "<tr><td>".user_geo_ip($host, 3)."</td><td><a href=\"index.php?name=account&op=info&uname=$uname\" title=\"".display_time($time)."\">$strip</a></td><td align=\"right\">$linkstrip</td></tr>";
 				$m++;
 			} elseif ($guest == 1 && $conf['botsact']) {
@@ -353,6 +357,7 @@ function user_sinfo() {
 			$i++;
 		}
 		$content = "<hr><table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"1\">"
+		."<tr><td><img src=\"".img_find("all/admin")."\" title=\""._ADMINS."\" alt=\""._ADMINS."\"></td><td>"._ADMINS.":</td><td align=\"right\">$a</td></tr>";
 		."<tr><td><img src=\"".img_find("all/member")."\" title=\""._BMEM."\" alt=\""._BMEM."\"></td><td>"._BMEM.":</td><td align=\"right\">$m</td></tr>";
 		if ($conf['botsact']) $content .= "<tr><td><img src=\"".img_find("all/bots")."\" title=\""._BOTS."\" alt=\""._BOTS."\"></td><td>"._BOTS.":</td><td align=\"right\">$b</td></tr>";
 		$content .= "<tr><td><img src=\"".img_find("all/anony")."\" title=\""._BVIS."\" alt=\""._BVIS."\"></td><td>"._BVIS.":</td><td align=\"right\">$u</td></tr></table>";
