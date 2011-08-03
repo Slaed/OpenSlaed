@@ -22,7 +22,7 @@ if (msg_chk_cookie($a,$out['message'])) {
 if (intval($msq['cookie'][$a]['time'])+$msq['time']<time()) {
 msg_cookie($a,intval($msq['cookie'][$a]['count'])+1);
 $text=$out['message'][intval($msq['cookie'][$a]['count'])+1];
-}} else {msg_cookie($a,0);$text=$out['message'][0];}}}
+}} elseif ($msq['loop']!=1 || intval($msq['cookie'][$a]['time'])+$msq['time']<time()) {msg_cookie($a,0);$text=$out['message'][0];}}}
 unset($out,$next);
 $position=explode(',',$msq['position']);
 array_walk($position, create_function('&$val', '$val = "\"".trim($val)."\"";'));
