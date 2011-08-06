@@ -71,7 +71,8 @@ function AddMoz(txtarea, Open, Close) {
 }
 function InsertCode(code, info, type, error, area) {
 	if ((ClientVer >= 4) && IsIE && IsWin) {
-		if (code == 'name') {
+      if (code == 'elfinder') AddIE(info,'\n');
+      else if (code == 'name') {
 			AddIE('[b]' + info + '[/b]', ', ');
 		} else if (code == 'url' || code == 'mail') {
 			if (code == 'url') var url = prompt(info, 'http://');
@@ -107,7 +108,8 @@ function InsertCode(code, info, type, error, area) {
 		}
 	} else {
 		var txtarea = document.getElementById(area);
-		if (code == 'name') {
+      if (code == 'elfinder') AddMoz(txtarea,info,'\n');
+      else if (code == 'name') {
 			AddMoz(txtarea, '[b]' + info + '[/b]', ', ');
 		} else if (code == 'url' || code == 'mail') {
 			if (code == 'url') var url = prompt(info, 'http://');

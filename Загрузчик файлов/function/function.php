@@ -2078,6 +2078,10 @@ function textarea($id, $name, $var, $mod, $rows) {
 	$con = explode("|", $confup[strtolower($mod)]);
 	$style = (defined("ADMIN_FILE")) ? "admin" : strtolower($mod);
 	if ((defined("ADMIN_FILE") && $conf['redaktor'] == 1) || (!defined("ADMIN_FILE"))) {
+		include_once('config/config_elfinder.php');
+		include('config/config_elf_set.php');
+    $out=elfinder_user($id);
+    if ($elf['stand']=='1') $con[9]=$con[8]=0;
 		$code = "<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/insert_code.js\"></script>"
 		."<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr><td><div class=\"editor\">"
 		."<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"RowsTextarea('".$id."', 1)\"><img src=\"".img_find("editor/plus")."\" title=\""._EPLUS."\"></div>"
@@ -2101,6 +2105,7 @@ function textarea($id, $name, $var, $mod, $rows) {
 		."</div>"
 		."<textarea id=\"".$id."\" name=\"".$name."\" cols=\"65\" rows=\"".$rows."\" class=\"".$style."\" OnKeyPress=\"TransliteFeld(this, event)\" OnSelect=\"FieldName(this, this.name)\" OnClick=\"FieldName(this, this.name)\" OnKeyUp=\"FieldName(this, this.name)\">".replace_break($desc)."</textarea>"
 		."<div class=\"editor\">";
+		$code .=$out['button'];
 		if ((defined("ADMIN_FILE") && $con[8] == 1) || (is_user() && $con[8] == 1) || (!is_user() && $con[9] == 1)) $code .= "<div id=\"af".$id."-title\" class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><img title=\""._EUPLOAD."\" src=\"".img_find("editor/upload")."\"></div>";
 		if (!$conf['smilies']) $code .= "<div id=\"sm".$id."-title\" class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\"><img src=\"".img_find("editor/smilie")."\" title=\""._ESMILIE."\"></div>";
 		$code .= "<div class=\"editorbutton\" OnMouseOver=\"this.className='editorbuttonover';\" OnMouseOut=\"this.className='editorbutton';\" OnClick=\"InsertCode('quote', '', '', '', '".$id."')\"><img src=\"".img_find("editor/quote")."\" title=\""._EQUOTE."\"></div>";
@@ -2155,6 +2160,8 @@ function textarea($id, $name, $var, $mod, $rows) {
 			closedir($dir);
 			$code .= "</div>";
 		}
+		$code .=$out['head'];
+		$code .=$out['script'];
 		if ((defined("ADMIN_FILE") && $con[8] == 1) || (is_user() && $con[8] == 1) || (!is_user() && $con[9] == 1)) {
 			$code .= "<div id=\"af".$id."\" class=\"smilies\">";
 			if ($id != 2) {

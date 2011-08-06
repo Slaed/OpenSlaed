@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS `{pref}_elfinder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(1) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `ip` varchar(39) NOT NULL,
+  `date` datetime NOT NULL,
+  `cmd` varchar(20) NOT NULL,
+  `info` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `type` (`type`),
+  KEY `uid` (`uid`),
+  KEY `cmd` (`cmd`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
