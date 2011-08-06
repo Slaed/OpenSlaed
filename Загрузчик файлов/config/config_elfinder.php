@@ -79,6 +79,7 @@ $().ready(function() {
 var elf = $('#elfinder').elfinder({
 // Язык
 lang: 'ru',
+requestType: 'post',
 // Путь к коннектору
 url : '/config.connector.php',
 uiOptions : {
@@ -250,6 +251,7 @@ fm = $('<div/>').dialogelfinder({
 destroyOnClose : false,
 url : '/config.connector.php',
 lang : 'ru',
+requestType: 'post',
 width : 900,
 title: 'Менеджер файлов',
 getFileCallback : function(files, fm) {

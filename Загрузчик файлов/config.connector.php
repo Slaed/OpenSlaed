@@ -410,7 +410,7 @@ if (is_array($save)) {
 foreach ($save as $a) {
 if (is_array($a) && (!file_exists($dir.'/'.$uid.'/'.$a['filename']) || $a['rewrite']==true)) elf_create($dir.'/'.$uid.'/'.$a['filename'],$a['text'],$a['chmod'],$a['chown']);
 if (is_array($a['attributes']) && count($a['attributes'])>0) {
-$a['attributes']['pattern']="/^".preg_quote(DIRECTORY_SEPARATOR.$a['filename'])."$/";
+$a['attributes']['pattern']="#^".preg_quote(DIRECTORY_SEPARATOR.$a['filename'])."$#";
 $options['users']['roots'][0]['attributes'][]=$a['attributes'];
 }
 }
