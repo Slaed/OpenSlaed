@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2005 - 2009 SLAED
+# Copyright ¬© 2005 - 2009 SLAED
 # Website: http://www.slaed.net
 
 if (!defined("MODULE_FILE") && !defined("ADMIN_FILE")) die("Illegal File Access");
@@ -224,7 +224,7 @@ function gender($gender, $id) {
 # Format attach
 function encode_attach($sourse, $mod) {
 	include("config/config_uploads.php");
-	$match_count = preg_match_all("#\[attach=([a-zA-Z‡-ˇ¿-ﬂ0-9\_\-\. ]+) align=([a-zA-Z‡-ˇ¿-ﬂ0-9\_\-\.\"\ ]+) title=([a-zA-Z‡-ˇ¿-ﬂ0-9\_\-\.\"\ ]+)\]#si", $sourse, $date);
+	$match_count = preg_match_all("#\[attach=([a-zA-Z–∞-—è–ê-–Ø0-9\_\-\. ]+) align=([a-zA-Z–∞-—è–ê-–Ø0-9\_\-\.\"\ ]+) title=([a-zA-Z–∞-—è–ê-–Ø0-9\_\-\.\"\ ]+)\]#si", $sourse, $date);
 	$con = explode("|", $confup[$mod]);
 	$file = "";
 	for ($i = 0; $i < $match_count; $i++) {
@@ -623,7 +623,7 @@ function letter($mod) {
 	foreach(range(0, 9) as $num) $content .= " | <a href=\"index.php?name=$mod&op=liste&let=$num\" title=\"$num\">$num</a>";
 	if (substr(""._LOCALE."", 0, 2) == "ru") {
 		$content .= "</div><div class=\"letter\"><a href=\"index.php?name=".$mod."&op=liste\" title=\""._ALL."\">"._ALL."</a> ";
-		foreach(range("¿", "ﬂ") as $rus) {
+		foreach(range("–ê", "–Ø") as $rus) {
 			$rus = iconv("cp1251", "utf-8", $rus);
 			$content .= " | <a href=\"index.php?name=$mod&op=liste&let=".urlencode($rus)."\" title=\"$rus\">$rus</a>";
 		}
@@ -1616,20 +1616,17 @@ function rewrite() {
 	$rewrite = preg_replace($in, $out, $contents);
 	echo $rewrite;
 }
-function use_html ($str) {return htmlspecialchars_decode(replace_break($str[1]), ENT_QUOTES);}
+
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
-		$sourse = preg_replace(array('#Ü|á#si','#\[usehtml\]#si','#\[/usehtml\]#si'),array('','Ü','á'),$sourse);
-    $sourse = preg_replace_callback("#Ü([^Ü]+)á#si", "use_html", $sourse);
-    while (preg_match("#Ü(.*?)á#si", $sourse)) $sourse = preg_replace_callback("#Ü(.*)á#si", "use_html", $sourse);
 		$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i";
 		$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
 		$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\2\" title=\"\\2\">";
-		$bb[] = "#\[img\ alt=([a-zA-Z‡-ˇ¿-ﬂ0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+		$bb[] = "#\[img\ alt=([a-zA-Z–∞-—è–ê-–Ø0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\2\" align=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
-		$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-Z‡-ˇ¿-ﬂ0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
+		$bb[] = "#\[img=([a-zA-Z]+) alt=([a-zA-Z–∞-—è–ê-–Ø0-9\_\-\. ]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
 		$html[] = "<img src=\"\\3\" align=\"\\1\" border=\"0\" alt=\"\\2\" title=\"\\2\">";
 		$bb[] = "#\[url\]([\w]+?://([\w\#$%&~/.\-;:=,?@\]+]+|\[(?!url=))*?)\[/url\]#is";
 		$html[] = "<a href=\"\\1\" target=\"_blank\" title=\"\\1\">\\1</a>";
