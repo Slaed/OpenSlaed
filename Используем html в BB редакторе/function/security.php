@@ -396,7 +396,7 @@ function get_exit($msg, $typ) {
 # HTML and word filter
 function text_filter($message, $type="") {
 	global $conf;
-
+	if (!is_admin()) $message=preg_replace('#\[(usehtml|/usehtml)\]#si','',$message);
 	$message = is_array($message) ? fields_save($message) : $message;
 	if (intval($type) == 2) {
 		$message = htmlspecialchars(trim($message), ENT_QUOTES);

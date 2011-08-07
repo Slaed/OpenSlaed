@@ -1616,10 +1616,13 @@ function rewrite() {
 	$rewrite = preg_replace($in, $out, $contents);
 	echo $rewrite;
 }
-
+function use_html ($str) {return htmlspecialchars_decode(replace_break($str[1]), ENT_QUOTES);}
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
+		$sourse = preg_replace(array('#†|‡#si','#\[usehtml\]#si','#\[/usehtml\]#si'),array('','†','‡'),$sourse);
+    $sourse = preg_replace_callback("#†([^†]+)‡#si", "use_html", $sourse);
+    while (preg_match("#†(.*?)‡#si", $sourse)) $sourse = preg_replace_callback("#†(.*)‡#si", "use_html", $sourse);
 		$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i";
 		$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
 		$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
