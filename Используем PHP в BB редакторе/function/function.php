@@ -1617,7 +1617,7 @@ function rewrite() {
 	echo $rewrite;
 }
 
-function use_php ($str) {global $conf;ob_start();if ($conf['gzip']==1) {ob_implicit_flush(0);}eval(str_replace('&#092;','\\',htmlspecialchars_decode(replace_break($str[1]), ENT_QUOTES)));$a=ob_get_contents();ob_end_clean();return $a;}
+function use_php ($str) {global $conf;ob_start();if ($conf['gzip']==1) {ob_implicit_flush(0);}eval(htmlspecialchars_decode(replace_break(str_replace('&#092;','\\',$str[1])), ENT_QUOTES));$a=ob_get_contents();ob_end_clean();return $a;}
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {

@@ -1616,7 +1616,7 @@ function rewrite() {
 	$rewrite = preg_replace($in, $out, $contents);
 	echo $rewrite;
 }
-function use_html ($str) {return str_replace('&#092;','\\',htmlspecialchars_decode(replace_break($str[1]), ENT_QUOTES));}
+function use_html ($str) {return htmlspecialchars_decode(replace_break(str_replace('&#092;','\\',$str[1])), ENT_QUOTES);}
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
