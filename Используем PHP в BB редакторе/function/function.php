@@ -1621,10 +1621,9 @@ function use_php ($str) {global $conf;ob_start();if ($conf['gzip']==1) {ob_impli
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
-    $use['php']=array('open'=>iconv('windows-1251','UTF-8','‰'),'close'=>iconv('windows-1251','UTF-8','¬'));
-    $sourse = preg_replace(array('#'.$use['php']['open'].'|'.$use['php']['close'].'#si','#\[usephp\]#si','#\[/usephp\]#si'),array('',$use['php']['open'],$use['php']['close']),$sourse);
-    $sourse = preg_replace_callback("#".$use['php']['open']."([^".$use['php']['open']."]+)".$use['php']['close']."#si", "use_php", $sourse);
-    while (preg_match("#".$use['php']['open']."(.*?)".$use['php']['close']."#si", $sourse)) $sourse = preg_replace_callback("#".$use['php']['open']."(.*)".$use['php']['close']."#si", "use_php", $sourse);
+    $sourse = preg_replace(array('#‰|¬#si','#\[usephp\]#si','#\[/usephp\]#si'),array('','‰','¬'),$sourse);
+    $sourse = preg_replace_callback("#‰([^‰]+)¬#si", "use_php", $sourse);
+    while (preg_match("#‰(.*?)¬#si", $sourse)) $sourse = preg_replace_callback("#‰(.*)¬#si", "use_php", $sourse);
 		$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i";
 		$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
 		$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";

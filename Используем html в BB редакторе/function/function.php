@@ -1620,10 +1620,9 @@ function use_html ($str) {return str_replace('&#092;','\\',htmlspecialchars_deco
 # Decode BB
 function bb_decode($sourse, $mod) {
 	if (!preg_match("#\[php\](.*)\[/php\]|\[code\](.*)\[/code\]#si", $sourse)) {
-    $use['html']=array('open'=>iconv('windows-1251','UTF-8','†'),'close'=>iconv('windows-1251','UTF-8','‡'));
-    $sourse = preg_replace(array('#'.$use['html']['open'].'|'.$use['html']['close'].'#si','#\[usehtml\]#si','#\[/usehtml\]#si'),array('',$use['html']['open'],$use['html']['close']),$sourse);
-    $sourse = preg_replace_callback("#".$use['html']['open']."([^".$use['html']['open']."]+)".$use['html']['close']."#si", "use_html", $sourse);
-    while (preg_match("#".$use['html']['open']."(.*?)".$use['html']['close']."#si", $sourse)) $sourse = preg_replace_callback("#".$use['html']['open']."(.*)".$use['html']['close']."#si", "use_html", $sourse);
+		$sourse = preg_replace(array('#†|‡#si','#\[usehtml\]#si','#\[/usehtml\]#si'),array('','†','‡'),$sourse);
+    $sourse = preg_replace_callback("#†([^†]+)‡#si", "use_html", $sourse);
+    while (preg_match("#†(.*?)‡#si", $sourse)) $sourse = preg_replace_callback("#†(.*)‡#si", "use_html", $sourse);
 		$bb[] = "#\[img\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#i";
 		$html[] = "<img src=\"\\1\" border=\"0\" alt=\"\\1\" title=\"\\1\">";
 		$bb[] = "#\[img=([a-zA-Z]+)\]([^?](?:[^\[]+|\[(?!url))*?)\[/img\]#is";
