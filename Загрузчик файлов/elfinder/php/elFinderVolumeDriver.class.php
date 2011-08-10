@@ -2173,6 +2173,7 @@ abstract class elFinderVolumeDriver {
 	 * @author Dmitry (dio) Levashov
 	 **/
 	protected function tmbname($path) {
+	$path=str_replace('\\','/',$path);
 		return md5($path).'.png';
 	}
 	
