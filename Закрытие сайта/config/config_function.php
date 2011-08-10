@@ -1,4 +1,4 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
-function open_offline () { global $conf; include_once ('config/config_offline.php'); if ($offline['status']=='1' && $offline['type']=='1') {if (!is_admin()) get_exit(_CLOSE_TEXT, 0);} elseif (!is_admin() && $offline['status']=='1' && strtotime($offline['close'])<=time() && ($offline['autorun']=='0' || $offline['autorun']=='1' && strtotime($offline['open'])>time())) { $url='index.php?name=offline'; if ($conf['rewrite']==1) {include("config/config_rewrite.php"); $url=preg_replace($in,$out,$url);} Header("Location: ".$url); exit; } }
+function open_offline () { global $conf; include_once ('config/config_offline.php'); if ($offline['status']=='1' && $offline['type']=='1') {if (!is_admin()) get_exit(_CLOSE_TEXT, 0);} elseif (!is_admin() && $offline['status']=='1' && strtotime($offline['close'])<=time() && ($offline['autorun']=='0' || $offline['autorun']=='1' && strtotime($offline['open'])>time())) { $url='index.php?name=offline'; if ($conf['rewrite']==1) {include("config/config_rewrite.php"); $url=preg_replace($in,$out,$url);} Header("Location: /".$url); exit; } }
 ?>
