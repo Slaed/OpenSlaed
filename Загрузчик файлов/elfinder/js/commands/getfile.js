@@ -71,6 +71,7 @@ elFinder.prototype.commands.getfile = function() {
 			if (file.tmb && file.tmb != 1) {
 				file.tmb = tmb + file.tmb;
 			}
+			/*
 			if (file.dim) {
 				dim = file.dim.split('x');
 				file.width = dim[0];
@@ -89,6 +90,7 @@ elFinder.prototype.commands.getfile = function() {
 					this.dim = data.dim
 				}, files[i])));
 			}
+			*/
 		}
 		
 		if (req.length) {
