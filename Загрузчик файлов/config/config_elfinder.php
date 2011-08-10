@@ -224,6 +224,7 @@ pastes['images']=new Array();
 pastes['urls']=new Array();
 pastes['i']=0;
 for(i=0;i<files.length;i++) {
+files[i]['url']=files[i]['url'].replace(/^\//g,'');
 pastes['urls'][i]='[url='+files[i]['url']+']'+files[i]['name']+'[/url]';
 //var mime=files[i]['mime'].split('/');
 if (files[i]['mime'].indexOf('image') !== -1) {pastes['images'][i]='[img]'+files[i]['url']+'[/img]';pastes['i']=1;}

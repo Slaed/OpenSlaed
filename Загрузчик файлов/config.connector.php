@@ -222,7 +222,8 @@ array(
 # [array()] Список отключенных команд: array('rename','edit','upload','mkfile','mkdir','rm','cut','copy','duplicate','paste','extract','archive')
 'disabled' => array(),
 # [''] Адрес сайта, отдаваемый клиенту (если пусто путь до файла будет закодирован)
-'URL' => rtrim($conf['homeurl'],'/'),
+#'URL' => rtrim($conf['homeurl'],'/'),
+'URL' => '/',
 # [''] Алиас (название) для корневой директории
 'alias' => 'Корневая директория',
 # [0755] Права по умолчанию на создаваемые папки
