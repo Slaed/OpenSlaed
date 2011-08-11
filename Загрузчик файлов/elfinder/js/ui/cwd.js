@@ -448,7 +448,7 @@ $.fn.elfindercwd = function(fm) {
 
 						(function(node, tmb) {
 							$('<img/>')
-								.load(function() { node.find('.elfinder-cwd-icon').css('background', "url('"+tmb+"') center center no-repeat"); })
+								.load(function() { node.find('.elfinder-cwd-icon').css('background', "url('"+tmb+"') center center no-repeat").css('background-size', "100%"); })
 								.attr('src', tmb);
 						})(node, url+tmb);
 					} else {

@@ -2275,7 +2275,7 @@ abstract class elFinderVolumeDriver {
 		if (($s = @getimagesize($path)) == false) {
 			return false;
 		}
-
+    if ($s[0]>$width) {$height = round($s[1]/($s[0]/$width));} return $path;
 		$result = false;
 
 		list($x, $y, $size_w, $size_h) = $this->getResizeCropDimensions($s[0], $s[1], $width, $height, $crop, $exactfit);
