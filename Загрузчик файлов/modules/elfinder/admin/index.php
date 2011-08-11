@@ -45,7 +45,7 @@ Header("Location: ".$admin_file.".php?op=elfinder_conf");
 }
 
 function elfinder_log() {
-global $prefix, $db, $admin_file;
+global $prefix, $db, $admin_file, $conf;
 $num['get']=$sql['where']='';
 $num['num']=100;
 $num['page'] = isset($_GET['num']) ? intval($_GET['num']) : "1";
@@ -101,8 +101,11 @@ else $fix='added';
 $name=$arr[$fix][0]['name'];
 $inf['dir']="<font color='green'><b>Папка:</b></font> <font color='green'>".$arr[$fix][0]['hash']."</font>";
 if ($arr[$fix][0]['mime']=='directory') $inf['mime']="<font color='green'><b>Тип:</b></font> <font color='green'>Директория</font>";
-else $inf['mime']="<font color='green'><b>Тип:</b></font> <font color='green'>".$arr[$fix][0]['mime']."</font>";
-$inf['size']="<font color='green'><b>Размер:</b></font> <font color='green'>".$arr[$fix][0]['size']." Кб</font>";
+else {
+$name='<a href="'.rtrim($conf['homeurl'],'/').'/'.rtrim(preg_replace('#^'.$_SERVER['DOCUMENT_ROOT'].'#si','',$arr[$fix][0]['hash']),'/').'/'.$name.'" target="_blank">'.$name.'</a>';
+$inf['mime']="<font color='green'><b>Тип:</b></font> <font color='green'>".$arr[$fix][0]['mime']."</font>";
+}
+$inf['size']="<font color='green'><b>Размер:</b></font> <font color='green'>".files_size($arr[$fix][0]['size'])."</font>";
 if (isset($arr[$fix][0]['tmb'])) $inf['preview']="<font color='green'><b>Миниатюра:</b></font> <font color='green'>Да</font>";
 if ($cmd=='duplicate') $inf['dubl']="<font color='green'><b>Дубликат:</b></font> <font color='green'>".$arr['src']['name']."</font>";
 if ($cmd=='rename') $inf['renamed']="<font color='green'><b>Первоначальное имя:</b></font> <font color='green'>".$arr['removedDetails'][0]['name']."</font>";
