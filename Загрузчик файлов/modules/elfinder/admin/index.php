@@ -47,7 +47,7 @@ Header("Location: ".$admin_file.".php?op=elfinder_conf");
 function elfinder_log() {
 global $prefix, $db, $admin_file;
 $num['get']=$sql['where']='';
-$num['num']=10;
+$num['num']=100;
 $num['page'] = isset($_GET['num']) ? intval($_GET['num']) : "1";
 $num['from'] = ($num['page']-1) * $num['num'];
 if (isset($_GET['val'])) $val=text_filter($_GET['val']);
