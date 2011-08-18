@@ -72,9 +72,10 @@ function news() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $newnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
+	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.bodytext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
 	if ($db->sql_numrows($result) > 0) {
-		while (list($sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($sid, $catid, $uname, $stitle, $formatted, $hometext, $bodytext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
+			$hometext = $hometext.texttospoiler($bodytext);
 			$time = date(""._DATESTRING."", $formatted);
 			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">".$stitle."</a> ".new_graphic($formatted)."";
 			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">"._READMORE."</a>";
