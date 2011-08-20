@@ -84,6 +84,7 @@ function themeheader($head) {
 	$startseite = "<a href=\"#\" OnClick=\"this.style.behavior='url(#default#homepage)'; this.setHomePage('$homeurl');\" title=\"$s_startseite\">";
 	$head .= "<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/tool_box.js\"></script>";
 	$thefile = "\$r_file=\"".addslashes($head)."\";";
+	$thefile = str_replace('\\\\$','\$',$thefile);
 	eval($thefile);
 	echo "".stripslashes($r_file)."";
 }
@@ -214,6 +215,7 @@ function themefooter($foot) {
 	$farg = array(_HOME, _NEWS, _FORUM, _ACCOUNT, _S_FAVORITEN, _S_STARTSEITE, _ALBUM, _FAQ, _PAGES, _FEEDBACK, _RECOMMEND);
 	$s_home = $farg[0]; $s_news = $farg[1]; $s_forum = $farg[2]; $s_profil = $farg[3]; $s_favoriten = $farg[4]; $s_startseite = $farg[5]; $s_album = $farg[6]; $s_faq = $farg[7]; $s_pages = $farg[8]; $s_feed = $farg[9]; $s_recomm = $farg[10];
 	$thefile = "\$r_file=\"".addslashes($foot)."\";";
+	$thefile = str_replace('\\\\$','\$',$thefile);
 	eval($thefile);
 	echo stripslashes($r_file);
 }

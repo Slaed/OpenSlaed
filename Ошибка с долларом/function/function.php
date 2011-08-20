@@ -1831,6 +1831,7 @@ function addblocks($str) {
 			$blk[1][$i] = ob_get_contents();
 			ob_end_clean();
 		}
+		$blk[1][$i]=str_replace('$','\\\$',$blk[1][$i]);
 	}
 	return preg_replace($blk[0], $blk[1], $str);
 }
