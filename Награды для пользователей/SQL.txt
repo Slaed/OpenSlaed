@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS `{pref}_awarded` (
+  `id` int(11) NOT NULL auto_increment,
+  `uid` int(11) NOT NULL,
+  `cid` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `comment` varchar(200) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `uid` (`uid`,`cid`)
+) ENGINE=MyISAM ;
+
+CREATE TABLE IF NOT EXISTS `{pref}_awards` (
+  `id` int(11) NOT NULL auto_increment,
+  `title` varchar(100) NOT NULL,
+  `img` varchar(200) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
