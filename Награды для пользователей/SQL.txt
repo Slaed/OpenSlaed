@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS `{pref}_awards` (
   `id` int(11) NOT NULL auto_increment,
   `title` varchar(100) NOT NULL,
   `img` varchar(200) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `img` (`img`)
 ) ENGINE=MyISAM;
