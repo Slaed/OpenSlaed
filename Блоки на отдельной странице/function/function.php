@@ -1839,6 +1839,7 @@ function addblocks($str) {
 function blocks($side, $fly="") {
 	global $prefix, $db, $conf, $currentlang, $name, $home, $pos, $b_id, $blockfile;
 	static $barr;
+	if (!function_exists('unique_blocku')) include('config/config_uniqblockurl.php');
 	$querylang = ($conf['multilingual'] == 1) ? "AND (blanguage='$currentlang' OR blanguage='')" : "";
 	$pos = strtolower($side[0]);
 	$side = $pos;
@@ -1898,7 +1899,7 @@ function blocks($side, $fly="") {
 			} else {
 				$flag_where = 1;
 			}
-			if ($barr[$i][11]!= '') { $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY); if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;else $flag_where = 0; }
+			if ($barr[$i][11]!= '') $flag_where = unique_blocku ($barr[$i][11]);
 			if ($flag_where == 1) {
 				if ($view == 0) {
 					return render_blocks($side, $blockfile, $title, $content, $bid, $url);
@@ -1941,7 +1942,7 @@ function blocks($side, $fly="") {
 				break;
 			}
 			if (in_array("otricanie", $where_mas)) $flag_where = ($flag_where) ? 0 : 1;
-			if ($barr[$i][11]!= '') { $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY); if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;else $flag_where = 0; }
+			if ($barr[$i][11]!= '') $flag_where = unique_blocku ($barr[$i][11]);
 			if ($flag_where == 1) {
 				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
 				$b_id = $bid;
