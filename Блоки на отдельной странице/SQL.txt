@@ -1,0 +1,1 @@
+ALTER TABLE `{pref}_blocks` ADD `uniq` TEXT NOT NULL AFTER `which`
