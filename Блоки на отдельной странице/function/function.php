@@ -1901,7 +1901,7 @@ function blocks($side, $fly="") {
 			
 if ($barr[$i][11]!= '') { $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY); if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;else $flag_where = 0; }
 				
-				if ($flag_where == 1) {
+		if ($flag_where == 1) {
 				if ($view == 0) {
 					return render_blocks($side, $blockfile, $title, $content, $bid, $url);
 				} elseif ($view == 1 && is_user() || is_moder()) {
@@ -1946,7 +1946,7 @@ if ($barr[$i][11]!= '') { $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, P
 			
 if ($barr[$i][11]!= '') { $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY); if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;else $flag_where = 0; }
 				
-				if ($flag_where == 1) {
+		if ($flag_where == 1) {
 				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
 				$b_id = $bid;
 				if ($expire && $expire < time()) {
