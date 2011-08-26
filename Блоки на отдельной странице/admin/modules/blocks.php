@@ -1,5 +1,5 @@
 <?php
-# Copyright © 2005 - 2008 SLAED
+# Copyright Â© 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
 if (!defined("ADMIN_FILE") || !is_admin_god()) die("Illegal File Access");
