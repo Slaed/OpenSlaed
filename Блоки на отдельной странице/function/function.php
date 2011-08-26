@@ -1843,12 +1843,12 @@ function blocks($side, $fly="") {
 	$pos = strtolower($side[0]);
 	$side = $pos;
 	if (!isset($barr)) {
-		$result = $db->sql_query("SELECT bid, bkey, title, content, url, blockfile, view, expire, action, bposition, which FROM ".$prefix."_blocks WHERE active='1' $querylang ORDER BY weight ASC");
-		while(list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $which) = $db->sql_fetchrow($result)) {
+		$result = $db->sql_query("SELECT bid, bkey, title, content, url, blockfile, view, expire, action, bposition, which, uniq FROM ".$prefix."_blocks WHERE active='1' $querylang ORDER BY weight ASC");
+		while(list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $which, $uniq) = $db->sql_fetchrow($result)) {
 			$bid = intval($bid);
 			$view = intval($view);
 			$where_mas = explode(",", $which);
-			$barr[] = array($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas);
+			$barr[] = array($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas, $uniq);
 		}
 	}
 	if ($fly != "") {
@@ -1863,7 +1863,7 @@ function blocks($side, $fly="") {
 		$ci = sizeof($barr);
 		for ($i = 0; $i < $ci; $i++) {
 			if (($b_id != 0 && $barr[$i][0] == $b_id) || ($blockfile != "" && $barr[$i][5] == $blockfile)) {
-				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
+				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas, $uniq) = $barr[$i];
 				$b_id = $bid;
 				$flag = 1;
 				break;
@@ -1898,7 +1898,12 @@ function blocks($side, $fly="") {
 			} else {
 				$flag_where = 1;
 			}
-			if ($flag_where == 1) {
+if ($barr[$i][11]!= '') {
+$uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY);
+if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;			
+else $flag_where = 0;
+}
+				if ($flag_where == 1) {
 				if ($view == 0) {
 					return render_blocks($side, $blockfile, $title, $content, $bid, $url);
 				} elseif ($view == 1 && is_user() || is_moder()) {
@@ -1940,7 +1945,12 @@ function blocks($side, $fly="") {
 				break;
 			}
 			if (in_array("otricanie", $where_mas)) $flag_where = ($flag_where) ? 0 : 1;
-			if ($flag_where == 1) {
+	if ($barr[$i][11]!= '') {
+  $uniq_url = preg_split("/\r?\n/", $barr[$i][11], -1, PREG_SPLIT_NO_EMPTY);
+	if (is_array($uniq_url) && in_array(ltrim(getenv("REQUEST_URI"),'/'),$uniq_url)) $flag_where = 1;			
+	else $flag_where = 0;
+	}
+				if ($flag_where == 1) {
 				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
 				$b_id = $bid;
 				if ($expire && $expire < time()) {

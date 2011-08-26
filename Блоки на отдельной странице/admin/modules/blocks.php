@@ -141,6 +141,7 @@ function blocks_new() {
 	echo "</tr><tr><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"all\"></td><td><b>"._BLOCK_ALL."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"home\"></td><td><b>"._INHOME."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"infly\"></td><td><b>"._INFLY."</b></td></tr>"
 	."<tr><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"otricanie\" $oel></td><td><b>"._DENYING."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"flyfix\" $xel></td><td colspan=\"3\"><b>"._FLY_FIX."</b></td></table>"
 	."</div>";
+	echo "<div class=\"left\">Отображать блок только на этих страницах:<br /><b><small>Каждая страница вводится с новой строчки (без адреса сайта)<br /><br />Пример:</b><br />pages-view-79.html<br />index.php?name=news&op=view&id=32<br />files.html</small></div><div class=\"center\"><textarea name=\"uniq\" cols=\"65\" rows=\"15\" class=\"admin\"></textarea></div>";
 	if ($conf['multilingual'] == 1) echo "<div class=\"left\">"._LANGUAGE.":</div><div class=\"center\"><select name=\"blanguage\" class=\"admin\">".language()."</select></div>";
 	echo "<div class=\"left\">"._ACTIVATE2."</div><div class=\"center\"><input type=\"radio\" name=\"active\" value=\"1\" checked>"._YES." &nbsp;&nbsp; <input type=\"radio\" name=\"active\" value=\"0\">"._NO."</div>"
 	."<div class=\"left\">"._EXPIRATION.":</div><div class=\"center\"><input type=\"text\" name=\"expire\" maxlength=\"3\" value=\"0\" size=\"65\" class=\"admin\"></div>"
@@ -238,6 +239,7 @@ function blocks_add() {
 	global $prefix, $db, $admin_file;
 	$title = $_POST['title'];
 	$content = $_POST['content'];
+	$uniq = $_POST['uniq'];
 	$url = $_POST['url'];
 	$bposition = $_POST['bposition'];
 	$active = $_POST['active'];
@@ -279,7 +281,7 @@ function blocks_add() {
 			$which = (in_array("home", $blockwhere)) ? "home" : $which;
 			if ($which == "") $which = implode(",", $blockwhere);
 		}
-		$db->sql_query("INSERT INTO ".$prefix."_blocks VALUES (NULL, '$bkey', '$title', '$content', '$url', '$bposition', '$weight', '$active', '$refresh', '$btime', '$blanguage', '$blockfile', '$view', '$expire', '$action', '$which')");
+		$db->sql_query("INSERT INTO ".$prefix."_blocks VALUES (NULL, '$bkey', '$title', '$content', '$url', '$bposition', '$weight', '$active', '$refresh', '$btime', '$blanguage', '$blockfile', '$view', '$expire', '$action', '$which', '$uniq')");
 		Header("Location: ".$admin_file.".php?op=blocks_admin");
 	}
 }
@@ -354,7 +356,7 @@ function blocks_edit() {
 	head();
 	blocks_navi();
 	$bid = intval($_GET['bid']);
-	list($bkey, $title, $content, $url, $bposition, $weight, $active, $refresh, $blanguage, $blockfile, $view, $expire, $action, $which) = $db->sql_fetchrow($db->sql_query("SELECT bkey, title, content, url, bposition, weight, active, refresh, blanguage, blockfile, view, expire, action, which FROM ".$prefix."_blocks WHERE bid='$bid'"));
+	list($bkey, $title, $content, $url, $bposition, $weight, $active, $refresh, $blanguage, $blockfile, $view, $expire, $action, $which, $uniq) = $db->sql_fetchrow($db->sql_query("SELECT bkey, title, content, url, bposition, weight, active, refresh, blanguage, blockfile, view, expire, action, which, uniq FROM ".$prefix."_blocks WHERE bid='$bid'"));
 	if ($url != "") {
 		$type = "("._BLOCKRSS.")";
 	} elseif ($blockfile != "") {
@@ -461,6 +463,7 @@ function blocks_edit() {
 	echo "</tr><tr><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"all\" $cel></td><td><b>"._BLOCK_ALL."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"home\" $hel></td><td><b>"._INHOME."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"infly\" $fel></td><td><b>"._INFLY."</b></td></tr>"
 	."<tr><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"otricanie\" $oel></td><td><b>"._DENYING."</b></td><td><input type=\"checkbox\" name=\"blockwhere[]\" value=\"flyfix\" $xel></td><td colspan=\"2\"><b>"._FLY_FIX."</b></td></table>"
 	."</div>";
+	echo "<div class=\"left\">Отображать блок только на этих страницах:<br /><b><small>Каждая страница вводится с новой строчки (без адреса сайта)<br /><br />Пример:</b><br />pages-view-79.html<br />index.php?name=news&op=view&id=32<br />files.html</small></div><div class=\"center\"><textarea name=\"uniq\" cols=\"65\" rows=\"15\" class=\"admin\">$uniq</textarea></div>";
 	if ($conf['multilingual'] == 1) echo "<div class=\"left\">"._LANGUAGE.":</div><div class=\"center\"><select name=\"blanguage\" class=\"admin\">".language($blanguage)."</select></div>";
 	$sel1 = ($active == 1) ? "checked" : "";
 	$sel2 = ($active == 0) ? "checked" : "";
@@ -509,6 +512,7 @@ function blocks_edit_save() {
 	$bkey = $_POST['bkey'];
 	$title = $_POST['title'];
 	$content = $_POST['content'];
+	$uniq = $_POST['uniq'];
 	$url = $_POST['url'];
 	$oldposition = $_POST['oldposition'];
 	$bposition = $_POST['bposition'];
@@ -562,12 +566,12 @@ function blocks_edit_save() {
 			list($lastw) = $db->sql_fetchrow($db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bposition='$bposition' ORDER BY weight DESC LIMIT 0,1"));
 			if ($lastw <= $fweight) {
 				$lastw++;
-				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$lastw', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view' WHERE bid='$bid'");
+				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$lastw', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', uniq='$uniq' WHERE bid='$bid'");
 			} else {
-				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$fweight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view' WHERE bid='$bid'");
+				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$fweight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', uniq='$uniq' WHERE bid='$bid'");
 			}
 		} else {
-			$db->sql_query("UPDATE ".$prefix."_blocks SET bkey='$bkey', title='$title', content='$content', url='$url', bposition='$bposition', weight='$weight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view' WHERE bid='$bid'");
+			$db->sql_query("UPDATE ".$prefix."_blocks SET bkey='$bkey', title='$title', content='$content', url='$url', bposition='$bposition', weight='$weight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', uniq='$uniq' WHERE bid='$bid'");
 		}
 		Header("Location: ".$admin_file.".php?op=blocks_admin");
 	} else {
@@ -587,14 +591,14 @@ function blocks_edit_save() {
 			list($lastw) = $db->sql_fetchrow($db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bposition='$bposition' ORDER BY weight DESC LIMIT 0,1"));
 			if ($lastw <= $fweight) {
 				$lastw++;
-				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$lastw', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view' WHERE bid='$bid'");
+				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$lastw', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', uniq='$uniq' WHERE bid='$bid'");
 			} else {
-				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$fweight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view' WHERE bid='$bid'");
+				$db->sql_query("UPDATE ".$prefix."_blocks SET title='$title', content='$content', bposition='$bposition', weight='$fweight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', uniq='$uniq' WHERE bid='$bid'");
 			}
 		} else {
 			if ($expire == "") $expire = 0;
 			if ($newexpire == 1 && $expire != 0) $expire = time() + ($expire * 86400);
-			$result8 = $db->sql_query("UPDATE ".$prefix."_blocks SET bkey='$bkey', title='$title', content='$content', url='$url', bposition='$bposition', weight='$weight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', expire='$expire', action='$action' WHERE bid='$bid'");
+			$result8 = $db->sql_query("UPDATE ".$prefix."_blocks SET bkey='$bkey', title='$title', content='$content', url='$url', bposition='$bposition', weight='$weight', active='$active', refresh='$refresh', blanguage='$blanguage', blockfile='$blockfile', view='$view', expire='$expire', action='$action', uniq='$uniq' WHERE bid='$bid'");
 		}
 		Header("Location: ".$admin_file.".php?op=blocks_admin");
 	}
