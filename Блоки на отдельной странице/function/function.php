@@ -1838,7 +1838,7 @@ function addblocks($str) {
 # Format block
 function blocks($side, $fly="") {
 	global $prefix, $db, $conf, $currentlang, $name, $home, $pos, $b_id, $blockfile;
-	static $barr;
+	static $barr, $uu;
 	if (!function_exists('unique_blocku')) include('config/config_uniqblockurl.php');
 	$querylang = ($conf['multilingual'] == 1) ? "AND (blanguage='$currentlang' OR blanguage='')" : "";
 	$pos = strtolower($side[0]);
@@ -1849,7 +1849,8 @@ function blocks($side, $fly="") {
 			$bid = intval($bid);
 			$view = intval($view);
 			$where_mas = explode(",", $which);
-			$barr[] = array($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas, $uniq);
+			$barr[] = array($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas);
+			$uu[$bid] = $uniq;
 		}
 	}
 	if ($fly != "") {
@@ -1864,7 +1865,7 @@ function blocks($side, $fly="") {
 		$ci = sizeof($barr);
 		for ($i = 0; $i < $ci; $i++) {
 			if (($b_id != 0 && $barr[$i][0] == $b_id) || ($blockfile != "" && $barr[$i][5] == $blockfile)) {
-				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas, $uniq) = $barr[$i];
+				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
 				$b_id = $bid;
 				$flag = 1;
 				break;
@@ -1899,7 +1900,7 @@ function blocks($side, $fly="") {
 			} else {
 				$flag_where = 1;
 			}
-			if ($barr[$i][11]!= '') $flag_where = unique_blocku ($barr[$i][11]);
+			if ($uu[$barr[$i][0]]!= '') $flag_where = unique_blocku ($uu[$barr[$i][0]]);
 			if ($flag_where == 1) {
 				if ($view == 0) {
 					return render_blocks($side, $blockfile, $title, $content, $bid, $url);
@@ -1942,7 +1943,7 @@ function blocks($side, $fly="") {
 				break;
 			}
 			if (in_array("otricanie", $where_mas)) $flag_where = ($flag_where) ? 0 : 1;
-			if ($barr[$i][11]!= '') $flag_where = unique_blocku ($barr[$i][11]);
+			if ($uu[$barr[$i][0]]!= '') $flag_where = unique_blocku ($uu[$barr[$i][0]]);
 			if ($flag_where == 1) {
 				list($bid, $bkey, $title, $content, $url, $blockfile, $view, $expire, $action, $bposition, $where_mas) = $barr[$i];
 				$b_id = $bid;
