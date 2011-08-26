@@ -197,6 +197,7 @@ function show_com($cid) {
 			}
 			$user_name = ($user_name) ? $user_name : (($com_name) ? $com_name : $confu['anonym']);
 			$avatar = ($user_avatar && file_exists("".$confu['adirectory']."/".$user_avatar."")) ? "<img src=\"".$confu['adirectory']."/".$user_avatar."\" align=\"left\" alt=\"$user_name\" title=\"$user_name\">" : "<img src=\"".$confu['adirectory']."/00.gif\" align=\"left\" alt=\"$user_name\" title=\"$user_name\">";
+			if (!defined("ADMIN_FILE")) $avatar .= user_awards ($user_id,3);
 			preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $user_regdate, $datetime);
 			$user_regdate = ($user_regdate) ? "".$datetime[3].".".$datetime[2].".".$datetime[1]."" : "<i>"._NO_INFO."</i>";
 			$text = ($user_sig) ? "".bb_decode($com_text, $conf['name'])."<hr>".bb_decode($user_sig, $conf['name'])."" : "".bb_decode($com_text, $conf['name'])."";

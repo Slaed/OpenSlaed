@@ -901,6 +901,7 @@ function get_info() {
 	$mail = ((is_moder($conf['name']) || $info[11]) && $info[2]) ? (($info[35]) ? anti_spam($info[2]) : $info[2]) : "<i>"._NO_INFO."</i>";
 	$site = ($info[3]) ? domain($info[3]) : "<i>"._NO_INFO."</i>";
 	$avatar = ($info[4] && file_exists("".$confu['adirectory']."/".$info[4]."")) ? "<img src=\"".$confu['adirectory']."/".$info[4]."\" alt=\"".$info[1]."\" title=\"".$info[1]."\">" : "<img src=\"".$confu['adirectory']."/00.gif\" alt=\"".$info[1]."\" title=\"".$info[1]."\">";
+	if (!defined("ADMIN_FILE")) $avatar .= user_awards ($info[0],3);
 	$regdate = ($info[5]) ? $info[5] : "<i>"._NO_INFO."</i>";
 	$icq = ($info[6]) ? $info[6] : "<i>"._NO_INFO."</i>";
 	$occup = ($info[7]) ? $info[7] : "<i>"._NO_INFO."</i>";
