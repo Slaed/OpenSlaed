@@ -67,7 +67,6 @@ $out = "
 <script src='/elfinder/js/commands/search.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/commands/view.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/commands/resize.js' type='text/javascript' charset='utf-8'></script>
-<script src='/elfinder/js/i18n/elfinder.ar.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/i18n/elfinder.en.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/i18n/elfinder.ru.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/proxy/elFinderSupportVer1.js' type='text/javascript' charset='utf-8'></script>
@@ -186,7 +185,6 @@ $out['head'] = "
 <script src='/elfinder/js/commands/search.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/commands/view.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/commands/resize.js' type='text/javascript' charset='utf-8'></script>
-<script src='/elfinder/js/i18n/elfinder.ar.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/i18n/elfinder.en.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/i18n/elfinder.ru.js' type='text/javascript' charset='utf-8'></script>
 <script src='/elfinder/js/proxy/elFinderSupportVer1.js' type='text/javascript' charset='utf-8'></script>
