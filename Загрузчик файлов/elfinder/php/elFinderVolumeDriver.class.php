@@ -209,7 +209,7 @@ abstract class elFinderVolumeDriver {
 		// list of commands disabled on this root
 		'disabled'        => array(),      
 		// regexp or function name to validate new file name
-		'acceptedName'    => '/^\w[\w\s\.\-]*$/u',
+		'acceptedName'    => '/^\w[\w\s\.\-\(\)\[\]]*$/u',
 		// function/class method to control files permissions
 		'accessControl' => null,
 		// some data required by access control
@@ -1549,8 +1549,20 @@ abstract class elFinderVolumeDriver {
 	 **/
 	public function resize($hash, $width, $height, $crop = false) {
 		$path = $this->decode($hash);
-		
-		return $this->resizeImg($path, $width, $height, $crop, false, $this->options['imgLib']) ? $this->stat($path) : false;
+		$file = $this->file($hash);
+		if (!$file) {
+			return $this->setError(elFinder::ERROR_FILE_NOT_FOUND);
+		}
+
+		if (!$this->canResize($path, $file['mime'])) {
+			return $this->setError(elFinder::ERROR_UNSUPPORT_TYPE);
+		}
+
+		if (!$file['write']) {
+			return $this->setError(elFinder::ERROR_PERM_DENIED);
+		}
+
+		return $this->resizeImg($path, $width, $height, $crop, false, $this->imgLib) ? $this->stat($path) : false;
 	}
 	/**
 	 * Remove file/dir
@@ -2024,7 +2036,7 @@ abstract class elFinderVolumeDriver {
 			
 			$name = $this->_basename($p);
 
-			if (strpos($name, $q) !== false) {
+			if ($this->stripos($name, $q) !== false) {
 				$stat = $this->stat($p);
 
 				$stat['path'] = $this->_path($p);
@@ -2215,8 +2227,21 @@ abstract class elFinderVolumeDriver {
 			&& strpos($mime, 'image') === 0 
 			&& ($this->imgLib == 'gd' ? $mime == 'image/jpeg' || $mime == 'image/png' || $mime == 'image/gif' : true);
 	}
-	
+
 	/**
+	 * Return true if required file can be resized.
+	 * By default - the same as canCreateTmb
+	 *
+	 * @param  string  $path  thumnbnail path 
+	 * @param  string  $mime  file mimetype
+	 * @return string|bool
+	 * @author Dmitry (dio) Levashov
+	 **/
+	protected function canResize($path, $mime) {
+		return $this->canCreateTmb($path, $mime);
+	}
+	
+		/**
 	 * Create thumnbnail and return it's URL on success
 	 *
 	 * @param  string  $path  file path
@@ -2251,7 +2276,7 @@ abstract class elFinderVolumeDriver {
 		$result = false;
 		$tmbSize = $this->tmbSize;
 		
-		$result = $this->resizeImg($tmb, $tmbSize, $tmbSize, $this->options['tmbCrop'], true, $this->options['imgLib'], $this->options['tmbBgColor'], 'png');
+		$result = $this->resizeImg($tmb, $tmbSize, $tmbSize, $this->options['tmbCrop'], true, $this->imgLib, $this->options['tmbBgColor'], 'png');
 
 		return $result ? $name : false;
 	}
@@ -2521,7 +2546,24 @@ abstract class elFinderVolumeDriver {
 		return date($this->options['dateFormat'], $ts);
 	}
 
-
+  /**
+   * Find position of first occurrence of string in a string with multibyte support
+   *
+   * @param  string  $haystack  The string being checked.
+   * @param  string  $needle    The string to find in haystack.
+   * @param  int     $offset    The search offset. If it is not specified, 0 is used.
+   * @return int|bool
+   * @author Alexey Sukhotin
+   **/
+  protected function stripos($haystack , $needle , $offset = 0) {
+          if (function_exists('mb_stripos')) {
+                  return mb_stripos($haystack , $needle , $offset);
+          } else if (function_exists('mb_strtolower') && function_exists('mb_strpos')) {
+                  return mb_strpos(mb_strtolower($haystack), mb_strtolower($needle), $offset);
+          } else {
+                  return stripos($haystack , $needle , $offset);
+          }
+  }
 	/**==================================* abstract methods *====================================**/
 	
 	/*********************** paths/urls *************************/
