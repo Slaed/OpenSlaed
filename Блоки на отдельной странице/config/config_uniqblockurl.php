@@ -1,7 +1,7 @@
 <?php
 if (!defined("FUNC_FILE")) die("Illegal File Access");
 
-function uniq_block_url ($a) {$b = explode(' ', $a);if ($b[0] != '[regexp]') $a = preg_quote($a); else $a = $b[1]; return ltrim($a,'/');}
+function uniq_block_url ($a) {$b = explode(' ', $a);if ($b[0] != '[regexp]') $a = preg_quote($a); else $a = $b[1]; return ltrim(trim($a),'/');}
 function unique_blocku ($uniq) {
 $flag_where = 0;
 $uniq_url = preg_split("/\r?\n/", $uniq, -1, PREG_SPLIT_NO_EMPTY);
