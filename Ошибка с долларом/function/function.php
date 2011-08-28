@@ -1182,7 +1182,7 @@ function url_filter($url) {
 # Format head
 function head() {
 	global $prefix, $db, $home, $index, $conf, $confs, $user, $admin, $name, $bodytext, $hometext, $pagetitle, $key_words;
-	$pagetitle = str_replace('$','\\\$',$pagetitle);
+	$pagetitle = str_replace('$','&#036;',$pagetitle);
 	unset($_SESSION[$conf['user_c']]);
 	$_SESSION[$conf['user_c']] = $conf['user_c'];
 	if (!defined("ADMIN_FILE") && $conf['close']) {
