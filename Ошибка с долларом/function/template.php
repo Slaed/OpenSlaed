@@ -13,7 +13,7 @@ function warning() {
 	$type = $warg[3];
 	$type = ($type == 1) ? "warning" : "info";
 	if ($redirect || intval($time)) $toredirect = "<meta http-equiv=\"refresh\" content=\"".$time."; url=index.php".$redirect."\">";
-	$thefile = "\$r_file=\"".addslashes(file_get_contents(get_theme_file("warning")))."\";";
+	$thefile = "\$r_file='".addslashes(file_get_contents(get_theme_file("warning")))."';";
 	eval($thefile);
 	echo stripslashes($r_file);
 }
@@ -29,14 +29,14 @@ function prints() {
 	$homeurl = $conf['homeurl'];
 	$site_logo = $conf['site_logo'];
 	$charset = ""._CHARSET."";
-	$thefile = "\$r_file=\"".addslashes(file_get_contents(get_theme_file("prints")))."\";";
+	$thefile = "\$r_file='".addslashes(file_get_contents(get_theme_file("prints")))."';";
 	eval($thefile);
 	echo stripslashes($r_file);
 }
 
 function title($text) {
 	global $BlockGlob, $ThemeSel, $conf;
-	$thefile = "\$r_file=\"".addslashes(file_get_contents(get_theme_file("title")))."\";";
+	$thefile = "\$r_file='".addslashes(file_get_contents(get_theme_file("title")))."';";
 	eval($thefile);
 	echo stripslashes($r_file);
 }
@@ -48,7 +48,7 @@ function search() {
 	$mod = $sarg[1];
 	$navi = $sarg[2];
 	$s_search = ""._SEARCH."";
-	$thefile = "\$r_file=\"".addslashes(file_get_contents(get_theme_file("search")))."\";";
+	$thefile = "\$r_file='".addslashes(file_get_contents(get_theme_file("search")))."';";
 	eval($thefile);
 	echo stripslashes($r_file);
 }
@@ -83,7 +83,7 @@ function themeheader($head) {
 	$s_home = $harg[0]; $s_news = $harg[1]; $s_forum = $harg[2]; $s_profil = $harg[3]; $s_favoriten = $harg[4]; $s_startseite = $harg[5]; $s_album = $harg[6]; $s_faq = $harg[7]; $s_pages = $harg[8]; $s_feed = $harg[9]; $s_recomm = $harg[10];
 	$startseite = "<a href=\"#\" OnClick=\"this.style.behavior='url(#default#homepage)'; this.setHomePage('$homeurl');\" title=\"$s_startseite\">";
 	$head .= "<script language=\"JavaScript\" type=\"text/javascript\" src=\"ajax/tool_box.js\"></script>";
-	$thefile = "\$r_file=\"".addslashes($head)."\";";
+	$thefile = "\$r_file='".addslashes($head)."';";
 	$thefile = str_replace('\\\\$','\$',$thefile);
 	eval($thefile);
 	echo "".stripslashes($r_file)."";
@@ -214,7 +214,7 @@ function themefooter($foot) {
 	global $BlockGlob, $ThemeSel, $conf;
 	$farg = array(_HOME, _NEWS, _FORUM, _ACCOUNT, _S_FAVORITEN, _S_STARTSEITE, _ALBUM, _FAQ, _PAGES, _FEEDBACK, _RECOMMEND);
 	$s_home = $farg[0]; $s_news = $farg[1]; $s_forum = $farg[2]; $s_profil = $farg[3]; $s_favoriten = $farg[4]; $s_startseite = $farg[5]; $s_album = $farg[6]; $s_faq = $farg[7]; $s_pages = $farg[8]; $s_feed = $farg[9]; $s_recomm = $farg[10];
-	$thefile = "\$r_file=\"".addslashes($foot)."\";";
+	$thefile = "\$r_file='".addslashes($foot)."';";
 	$thefile = str_replace('\\\\$','\$',$thefile);
 	eval($thefile);
 	echo stripslashes($r_file);
