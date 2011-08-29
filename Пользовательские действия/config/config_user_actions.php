@@ -46,7 +46,7 @@ $query = $db->sql_query("SELECT c.id, t.url, t.title, c.pid, c.date FROM `".$pre
 if ($db->sql_numrows($query) > 0) {
 while($rows = $db->sql_fetchrow($query)) {
 $time = strtotime($rows['date']);
-$usations[] = array ('strtotime' => $time, 'date' => date('Y-m-d', $time), 'time' => date('H:i', $time), 'text' => (($rows['pid']!=0)?'Ответил на комментарий к топику':'Добавил комментарий к топику').': <a href="index.php?name=blogs&topic='.$rows['url'].'#'.$rows['id'].'" target="_blank">'.$rows['title'].'</a>');
+$usations[] = array ('strtotime' => $time, 'date' => date('Y-m-d', $time), 'time' => date('H:i', $time), 'text' => (($rows['pid']!=0)?'Ответил на комментарий к топику':'Добавил комментарий к топику').': <a href="index.php?name=blogs&topic='.$rows['url'].'#comment-'.$rows['id'].'" target="_blank">'.$rows['title'].'</a>');
 }
 }
 unset($query,$rows,$time);
