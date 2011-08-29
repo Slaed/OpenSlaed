@@ -47,6 +47,7 @@ if (is_user()) {
 	$content = "<center><img src=\"".$confu['adirectory']."/".$user_avatar."\"><br>"
 	."<b>"._BWEL.",<br><span style=\"font-size: 16px;color: green;\"><h10>$uname</h10></b></span></center><hr>"
 	."<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\"><tr valign=\"middle\"><td><a href=\"index.php?name=account&op=logout\" title=\""._LOGOUT."\"><img src=\"".img_find("all/exit")."\" border=\"0\" alt=\""._LOGOUT."\"></td><td><a href=\"index.php?name=account&op=logout\" title=\""._LOGOUT."\">"._LOGOUT."</a></td></tr></table>";
+  $content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=account&op=info&uname=$uname\"><img src=\"images/all/about.png\" border=\"0\" title=\"Персональная информация\" hspace=\"4\" alt=\"\"></a></td><td><a href=\"index.php?name=account&op=info&uname=$uname\" title=\"Персональная информация\"> Персональная информация</a></td></tr></table>";
 } else {
 	
 	$content = "<center><img src=\"".$confu['adirectory']."/0.gif\"><br>"
