@@ -12,6 +12,7 @@ $act['status'] = array (
 'new_rating' => 1,     #Новый рейтинг (http://os.mymobilka.net.ru/topic/hak-rejting-1-dlya-openslaed.html)
 'rating' =>     1,     #Стандартный рейтинг
 'com_blogs' =>  1,     #Комментарии в блогах
+'rat_blogs' =>  1,     #Рейтинг в блогах (комментарии/опросы/топики)
 );
 
 ###################---Стандартные комментарии
@@ -50,6 +51,22 @@ $usations[] = array ('strtotime' => $time, 'date' => date('Y-m-d', $time), 'time
 }
 }
 unset($query,$rows,$time);
+}
+###
+
+###################---Рейтинг в блогах
+if ($act['status']['rat_blogs'] == 1) {
+$query = $db->sql_query("SELECT r.iid, t.url, t.title, r.type, r.date FROM `".$prefix."_blogs_vote` AS r LEFT JOIN `".$prefix."_blogs_comment` AS c ON (c.id=r.iid AND r.type='comment') LEFT JOIN `".$prefix."_blogs_topics` AS t ON (c.tid=t.id AND r.type='comment' OR r.iid=t.id AND r.type!='comment') WHERE r.uid='$uid' ORDER BY r.date DESC");
+if ($db->sql_numrows($query) > 0) {
+while($rows = $db->sql_fetchrow($query)) {
+$time = strtotime($rows['date']);
+if ($rows['type']=='comment') $text = 'Оценил комментарий к топику: <a href="index.php?name=blogs&topic='.$rows['url'].'#comment-'.$rows['iid'].'" target="_blank">'.$rows['title'].'</a>';
+elseif ($rows['type']=='voting') $text = 'Принял участие в опросе в топике: <a href="index.php?name=blogs&topic='.$rows['url'].'" target="_blank">'.$rows['title'].'</a>';
+else $text = 'Оценил топик: <a href="index.php?name=blogs&topic='.$rows['url'].'" target="_blank">'.$rows['title'].'</a>';
+$usations[] = array ('strtotime' => $time, 'date' => date('Y-m-d', $time), 'time' => date('H:i', $time), 'text' => $text);
+}
+}
+unset($query,$rows,$time,$text);
 }
 ###
 
