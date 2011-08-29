@@ -1,7 +1,7 @@
 <?php
 /*
 ===================================================================
-   Copyright © 2007 by Francisco Burzi
+   Copyright В© 2007 by Francisco Burzi
    http://phpnuke.org
 
    AntiSlaed CMS based on:
@@ -47,7 +47,6 @@ if (is_user()) {
 	$content = "<center><img src=\"".$confu['adirectory']."/".$user_avatar."\"><br>"
 	."<b>"._BWEL.",<br><span style=\"font-size: 16px;color: green;\"><h10>$uname</h10></b></span></center><hr>"
 	."<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\"><tr valign=\"middle\"><td><a href=\"index.php?name=account&op=logout\" title=\""._LOGOUT."\"><img src=\"".img_find("all/exit")."\" border=\"0\" alt=\""._LOGOUT."\"></td><td><a href=\"index.php?name=account&op=logout\" title=\""._LOGOUT."\">"._LOGOUT."</a></td></tr></table>";
-  $content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=account&op=info&uname=$uname\"><img src=\"images/all/about.png\" border=\"0\" title=\"Персональная информация\" hspace=\"4\" alt=\"\"></a></td><td><a href=\"index.php?name=account&op=info&uname=$uname\" title=\"Персональная информация\"> Персональная информация</a></td></tr></table>";
 } else {
 	
 	$content = "<center><img src=\"".$confu['adirectory']."/0.gif\"><br>"
@@ -59,12 +58,12 @@ if (is_user()) {
 	."<tr><td>"._NICKNAME.":</td><td><input type=\"text\" name=\"user_name\" size=\"10\" maxlength=\"25\" class=\"binput\"></td></tr>"
 	."<tr><td>"._PASSWORD.":</td><td><input type=\"password\" name=\"user_password\" size=\"10\" maxlength=\"25\" class=\"binput\"></td></tr>";
 	if (extension_loaded("gd") && ($conf['gfx_chk'] == 2 || $conf['gfx_chk'] == 4 || $conf['gfx_chk'] == 5 || $conf['gfx_chk'] == 7)) {
-		$content .= "<tr><td>"._CODE.":</td><td><img src=\"captcha.php\" onclick=\"if(!this.adress)this.adress = this.src; this.src=adress+'?rand='+Math.random();\" border=\"1\" title=\"Нажмите, чтобы обновить картинку\" style=\"cursor:pointer;\" alt=\""._SECURITYCODE."\"></td></tr>"
+		$content .= "<tr><td>"._CODE.":</td><td><img src=\"captcha.php\" onclick=\"if(!this.adress)this.adress = this.src; this.src=adress+'?rand='+Math.random();\" border=\"1\" title=\"РќР°Р¶РјРёС‚Рµ, С‡С‚РѕР±С‹ РѕР±РЅРѕРІРёС‚СЊ РєР°СЂС‚РёРЅРєСѓ\" style=\"cursor:pointer;\" alt=\""._SECURITYCODE."\"></td></tr>"
 		."<tr><td>"._TYPESECCODE.":</td><td><input type=\"text\" name=\"check\" size=\"10\" maxlength=\"6\" style=\"width: 75px;\" class=\"binput\"></td></tr>";
 	}
 	$content .= "<tr><td colspan=\"2\" align=\"center\"><input type=\"hidden\" name=\"op\" value=\"login\"><input type=\"submit\" value=\""._LOGIN."\" class=\"fbutton\"></td></tr></form></table>";
 $content .= "<br><span style=\"font-size: 12px;margin:4px; padding:4px; border: outset #FFCF4C;background-color: #FFCF4C;;color: green;cursor: help;\"><img src=\"images/loginza_widget.gif\"><script src=\"ajax/loginza.js\" type=\"text/javascript\"></script>
- <a href=\"https://loginza.ru/api/widget?token_url=http://news.maximuma.net/index.php?name=loginza\" class=\"loginza\">Войти через OpenID</a></span>";
+ <a href=\"https://loginza.ru/api/widget?token_url=http://news.maximuma.net/index.php?name=loginza\" class=\"loginza\">Р’РѕР№С‚Рё С‡РµСЂРµР· OpenID</a></span>";
 
 }
 
@@ -73,9 +72,9 @@ if (is_user()) {
 
 	$newpms = $db->sql_numrows($db->sql_query("SELECT id, t_user FROM ".$prefix."_private WHERE t_user = '$uname' AND status !='1' AND status !='3'AND status !='4' "));
      if ($newpms != 0) {
-	$content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=private\"><img src=\"images/private/pm.gif\" border=\"0\" title=\""._BUNREAD."\" hspace=\"4\" alt=\"\"></a></td><td><a href=\"index.php?name=private\" title=\""._BUNREAD."\"> Cообщения</a> : $newpms</td></tr></table>";
+	$content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=private\"><img src=\"images/private/pm.gif\" border=\"0\" title=\""._BUNREAD."\" hspace=\"4\" alt=\"\"></a></td><td><a href=\"index.php?name=private\" title=\""._BUNREAD."\"> CРѕРѕР±С‰РµРЅРёСЏ</a> : $newpms</td></tr></table>";
      } else {
-	$content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=private\"><img src=\"".img_find("all/private")."\" border=\"0\" title=\"Нет новых сообщений\" alt=\"\"></a></td><td><a href=\"index.php?name=private\" title=\"Нет новых сообщений\">Cообщения</a> : $newpms</td></tr></table>";
+	$content .= "<table border=\"0\"><tr valign=\"middle\"><td><a href=\"index.php?name=private\"><img src=\"".img_find("all/private")."\" border=\"0\" title=\"РќРµС‚ РЅРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№\" alt=\"\"></a></td><td><a href=\"index.php?name=private\" title=\"РќРµС‚ РЅРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№\">CРѕРѕР±С‰РµРЅРёСЏ</a> : $newpms</td></tr></table>";
      }}
 if ($conf['session']) $content .= "<div id=\"repsinfo\">".user_sinfo(1)."</div>";
 
@@ -130,7 +129,7 @@ $sql = "UPDATE ".$prefix."_countomat SET $cmheute='0', heute='$cmheute'";
 $result = $db->sql_query($sql,$db);
 }} else { $db->sql_query("INSERT INTO ".$prefix."_countomat VALUES (0,0,0,0,0,0,0,0,0,'$cmheute')");}
 
-# Lцschen nach x Minuten
+# LС†schen nach x Minuten
 $sql = "DELETE FROM ".$prefix."_countomat_ip WHERE Zeit<".($cmzeit-($cmreload*60));
 $result = $db->sql_query($sql,$db);
 
@@ -151,7 +150,7 @@ $cmupdate="";
 $sql = "UPDATE ".$prefix."_countomat SET $cmheute=$cmheute+1, gesamt=gesamt+1".$cmupdate;
 $result = $db->sql_query($sql,$db);
 } }
-$content.='<div id="cont" OnClick="SwitchMenu(\'privADD2\')" style="cursor:pointer;"><br/> <center><img src=\"images/all/strelka.gif\">  <span style=\"font-size: 12px;color: red;\"><h13><b><u>»»Посещаемость««</u></b><h/13></span></center> </div>';
+$content.='<div id="cont" OnClick="SwitchMenu(\'privADD2\')" style="cursor:pointer;"><br/> <center><img src=\"images/all/strelka.gif\">  <span style=\"font-size: 12px;color: red;\"><h13><b><u>В»В»РџРѕСЃРµС‰Р°РµРјРѕСЃС‚СЊВ«В«</u></b><h/13></span></center> </div>';
     
     $content.='<div id="privADD2" style="display:none;">';
 # Anzeige wenn $cmanzeige
@@ -163,17 +162,17 @@ if ($dat["heute"]==$cmheute)
 $cmc[$cmheute]=$bgcolor2;
 $dat[$cmheute]="<span style=\"font-size: 12px;color: blue;\"><b>".$dat[$cmheute]."</b></span>";
 $content .= "<table border=0 width=\"100%\" cellspacing=1 cellpadding=1 align=\"center\">
-<tr><td><font class=\"content\"><b><i>Понедельник</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Monday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i>Вторник</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Tuesday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i>Среда</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Wednesday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i>Четверг</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Thursday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i>Пятница</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Friday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i><u> Суббота</u></i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Saturday"]."</font></td></tr>
-<tr><td><font class=\"content\"><b><i><u> Воскресенье</u></i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Sunday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i>РџРѕРЅРµРґРµР»СЊРЅРёРє</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Monday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i>Р’С‚РѕСЂРЅРёРє</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Tuesday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i>РЎСЂРµРґР°</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Wednesday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i>Р§РµС‚РІРµСЂРі</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Thursday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i>РџСЏС‚РЅРёС†Р°</i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Friday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i><u> РЎСѓР±Р±РѕС‚Р°</u></i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Saturday"]."</font></td></tr>
+<tr><td><font class=\"content\"><b><i><u> Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ</u></i></b></font></td><td align=\"right\"><font class=\"content\">".$dat["Sunday"]."</font></td></tr>
 
-<tr><td align=\"right\"><font class=\"content\"><b>Было всего:</b></font></td><td align=\"right\"><font class=\"content\"><span style=\"font-size: 12px;color: green;\"><b>".$dat["gesamt"]."</b></span></font></td></tr>
+<tr><td align=\"right\"><font class=\"content\"><b>Р‘С‹Р»Рѕ РІСЃРµРіРѕ:</b></font></td><td align=\"right\"><font class=\"content\"><span style=\"font-size: 12px;color: green;\"><b>".$dat["gesamt"]."</b></span></font></td></tr>
 
-<tr><td align=\"right\"><font class=\"content\"><b>Рекорд:</b></font></td><td align=\"right\" bgcolor=\"$bgcolor2\"><font class=\"content\"><span style=\"font-size: 12px;color: red;\"><b>".$dat["rekord"]."</b></span></font></td></tr>
+<tr><td align=\"right\"><font class=\"content\"><b>Р РµРєРѕСЂРґ:</b></font></td><td align=\"right\" bgcolor=\"$bgcolor2\"><font class=\"content\"><span style=\"font-size: 12px;color: red;\"><b>".$dat["rekord"]."</b></span></font></td></tr>
 </table>";$content.='</div>';
 }}
 
