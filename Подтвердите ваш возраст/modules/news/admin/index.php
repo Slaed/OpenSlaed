@@ -191,7 +191,7 @@ function news_conf_save() {
 	."\$confn['newrate'] = \"".$_POST['newrate']."\";\n"
 	."\$confn['newletter'] = \"".$_POST['newletter']."\";\n"
 	."\$confn['newassoc'] = \"".$_POST['newassoc']."\";\n"
-	."\$confn['strawberry-2'] = ".intval($_POST['strawberry-2']).";\n"
+	."\$confn['strawberry-1'] = ".intval($_POST['strawberry-1']).";\n"
 	."\$confn['newcatdesc'] = \"".$_POST['newcatdesc']."\";\n";
 	save_conf("config/config_news.php", $content);
 	Header("Location: ".$admin_file.".php?op=news_conf");
