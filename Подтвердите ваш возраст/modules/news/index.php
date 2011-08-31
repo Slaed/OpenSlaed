@@ -76,18 +76,18 @@ function news() {
 	if ($db->sql_numrows($result) > 0) {
 		while (list($xxx, $sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
 			$time = date(""._DATESTRING."", $formatted);
-			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">".$stitle."</a> ".new_graphic($formatted)."";
-			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._READMORE."</a>";
+			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,$conf['name'],$xxx).">".$stitle."</a> ".new_graphic($formatted)."";
+			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,$conf['name'],$xxx).">"._READMORE."</a>";
 			$post = ($user_name) ? " "._POSTEDBY.": ".user_info($user_name, 1)."" : (($uname) ? " "._POSTEDBY.": ".$uname."" : " "._POSTEDBY.": ".$confu['anonym']."");
 			$ndate = ($confn['newdate']) ? " "._DATE.": ".$time."" : "";
 			$reads = ($confn['newread']) ? " "._READS.": ".$counter."" : "";
 			if (!$acomm) {
 				if ($comments == 0) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENTS."</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,$conf['name'],$xxx).">"._COMMENTS."</a>";
 				} elseif ($comments == 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENT.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,$conf['name'],$xxx).">"._COMMENT.": $comments</a>";
 				} elseif ($comments > 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENTS.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,$conf['name'],$xxx).">"._COMMENTS.": $comments</a>";
 				}
 			} else {
 				$comm = "";
@@ -135,7 +135,7 @@ function liste() {
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			echo "<tr class=\"bgcolor1\">"
 			."<td align=\"center\">".$sid."</td>"
-			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"".$stitle."\"".strawberry($sid,'news',$xxx).">".cutstr($stitle, 35)."</a></td>"
+			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"".$stitle."\"".strawberry($sid,$conf['name'],$xxx).">".cutstr($stitle, 35)."</a></td>"
 			."<td align=\"center\">".$ctitle."</td>"
 			."<td align=\"center\">".format_time($time)."</td>"
 			."<td align=\"center\">".$post."</td></tr>";
