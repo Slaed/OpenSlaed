@@ -1,1 +1,1 @@
-ALTER TABLE `{pref}_stories` ADD `xxx` TINYINT NOT NULL DEFAULT '0' AFTER `status`
+ALTER TABLE `{pref}_stories` ADD `xxx` INT( 1 ) NOT NULL DEFAULT '0' AFTER `status`
