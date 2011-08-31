@@ -2,6 +2,9 @@
 # Copyright © 2005 - 2008 SLAED
 # Website: http://www.slaed.net
 
+define ("_STRAWBERRY_1",'Установить 18+ ограничение');
+define ("_STRAWBERRY_2",'Разрешить устанавливать 18+ ограничение пользователям при добавлении публикации');
+
 define("_ACCESSDENIED","Доступ запрещен");
 define("_ACCOUNT","Профиль");
 define("_ACT","Активирован");

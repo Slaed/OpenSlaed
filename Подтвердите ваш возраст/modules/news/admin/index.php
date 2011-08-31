@@ -59,8 +59,8 @@ function news_add() {
 	global $prefix, $db, $admin_file, $confu, $stop;
 	if (isset($_REQUEST['id'])) {
 		$sid = intval($_REQUEST['id']);
-		$result = $db->sql_query("SELECT s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.ihome, s.acomm, s.associated, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE sid='$sid'");
-		list($cat, $uname, $subject, $time, $hometext, $bodytext, $field, $ihome, $acomm, $associated, $user_name) = $db->sql_fetchrow($result);
+		$result = $db->sql_query("SELECT s.xxx, s.catid, s.name, s.title, s.time, s.hometext, s.bodytext, s.field, s.ihome, s.acomm, s.associated, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) WHERE sid='$sid'");
+		list($xxx, $cat, $uname, $subject, $time, $hometext, $bodytext, $field, $ihome, $acomm, $associated, $user_name) = $db->sql_fetchrow($result);
 		$associated = explode("-", $associated);
 		$postname = ($user_name) ? $user_name : (($uname) ? $uname : $confu['anonym']);
 	} else {
@@ -74,6 +74,7 @@ function news_add() {
 		$field = fields_save($_POST['field']);
 		$ihome = $_POST['ihome'];
 		$acomm = $_POST['acomm'];
+		$xxx = intval($_POST['xxx']);
 	}
 	head();
 	news_navi();
@@ -104,6 +105,7 @@ function news_add() {
 	."<div class=\"left\">"._CHNGSTORY.":</div><div class=\"center\" style=\"white-space: nowrap;\">".datetime(1, $time)."</div>"
 	."<div class=\"left\">"._PUBHOME."</div><div class=\"center\">".radio_form($ihome, "ihome", 1)."</div>"
 	."<div class=\"left\">"._C_16."</div><div class=\"center\">".radio_form($acomm, "acomm", 1)."</div>"
+	."<div class=\"left\">"._STRAWBERRY_1.":</div><div class=\"center\">".radio_form($xxx, "xxx", 0)."</div>"
 	."<div class=\"button\"><select name=\"posttype\">"
 	."<option value=\"preview\">"._PREVIEW."</option>"
 	."<option value=\"save\">"._SEND."</option></select>"
@@ -134,10 +136,10 @@ function news_save() {
 		$postid = (is_user_id($postname)) ? is_user_id($postname) : "";
 		$postname = (!is_user_id($postname)) ? text_filter(substr($postname, 0, 25)) : "";
 		if ($sid) {
-			$db->sql_query("UPDATE ".$prefix."_stories SET catid='$cat', uid='$postid', name='$postname', title='$subject', time='$time', hometext='$hometext', bodytext='$bodytext', field='$field', ihome='$ihome', acomm='$acomm', associated='$associated', status='1' WHERE sid='$sid'");
+			$db->sql_query("UPDATE ".$prefix."_stories SET catid='$cat', uid='$postid', name='$postname', title='$subject', time='$time', hometext='$hometext', bodytext='$bodytext', field='$field', ihome='$ihome', acomm='$acomm', associated='$associated', status='1', xxx='".intval($_POST['xxx'])."' WHERE sid='$sid'");
 		} else {
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status) VALUES (NULL, '$cat', '$postid', '$postname', '$subject', '$time', '$hometext', '$bodytext', '$field', '0', '0', '$ihome', '$acomm', '0', '0', '$associated', '$ip', '1')");
+			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status, xxx) VALUES (NULL, '$cat', '$postid', '$postname', '$subject', '$time', '$hometext', '$bodytext', '$field', '0', '0', '$ihome', '$acomm', '0', '0', '$associated', '$ip', '1', '".intval($_POST['xxx'])."')");
 		}
 		Header("Location: ".$admin_file.".php?op=news");
 	} else {
@@ -168,6 +170,7 @@ function news_conf() {
 	."<div class=\"left\">"._C_20."</div><div class=\"center\">".radio_form($confn['newletter'], "newletter")."</div>"
 	."<div class=\"left\">"._C_23."</div><div class=\"center\">".radio_form($confn['newassoc'], "newassoc")."</div>"
 	."<div class=\"left\">"._C_32."</div><div class=\"center\">".radio_form($confn['newcatdesc'], "newcatdesc")."</div>"
+	."<div class=\"left\">"._STRAWBERRY_2."</div><div class=\"center\">".radio_form($confn['strawberry-1'], "strawberry-1")."</div>"
 	."<div class=\"button\"><input type='hidden' name='op' value='news_conf_save'><input type='submit' value='"._SAVECHANGES."' class=\"fbutton\"></div></form>";
 	close();
 	foot();
@@ -188,6 +191,7 @@ function news_conf_save() {
 	."\$confn['newrate'] = \"".$_POST['newrate']."\";\n"
 	."\$confn['newletter'] = \"".$_POST['newletter']."\";\n"
 	."\$confn['newassoc'] = \"".$_POST['newassoc']."\";\n"
+	."\$confn['strawberry-2'] = ".intval($_POST['strawberry-2']).";\n"
 	."\$confn['newcatdesc'] = \"".$_POST['newcatdesc']."\";\n";
 	save_conf("config/config_news.php", $content);
 	Header("Location: ".$admin_file.".php?op=news_conf");

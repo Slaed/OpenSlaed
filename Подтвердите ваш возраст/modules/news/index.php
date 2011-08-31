@@ -72,22 +72,22 @@ function news() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $newnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
+	$result = $db->sql_query("SELECT s.xxx, s.sid, s.catid, s.name, s.title, UNIX_TIMESTAMP(s.time) as formatted, s.hometext, s.comments, s.counter, s.acomm, s.score, s.ratings, c.id, c.title, c.description, c.img, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." LIMIT $offset, $newnum");
 	if ($db->sql_numrows($result) > 0) {
-		while (list($sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($xxx, $sid, $catid, $uname, $stitle, $formatted, $hometext, $comments, $counter, $acomm, $score, $ratings, $cid, $ctitle, $cdescription, $cimg, $user_name) = $db->sql_fetchrow($result)) {
 			$time = date(""._DATESTRING."", $formatted);
-			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">".$stitle."</a> ".new_graphic($formatted)."";
-			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\">"._READMORE."</a>";
+			$title = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">".$stitle."</a> ".new_graphic($formatted)."";
+			$read = "<a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._READMORE."</a>";
 			$post = ($user_name) ? " "._POSTEDBY.": ".user_info($user_name, 1)."" : (($uname) ? " "._POSTEDBY.": ".$uname."" : " "._POSTEDBY.": ".$confu['anonym']."");
 			$ndate = ($confn['newdate']) ? " "._DATE.": ".$time."" : "";
 			$reads = ($confn['newread']) ? " "._READS.": ".$counter."" : "";
 			if (!$acomm) {
 				if ($comments == 0) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENTS."</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENTS."</a>";
 				} elseif ($comments == 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENT.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENT.": $comments</a>";
 				} elseif ($comments > 1) {
-					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\">"._COMMENTS.": $comments</a>";
+					$comm = " <a href=\"index.php?name=".$conf['name']."&op=view&id=$sid#$sid\" title=\"$stitle\"".strawberry($sid,'news',$xxx).">"._COMMENTS.": $comments</a>";
 				}
 			} else {
 				$comm = "";
@@ -122,7 +122,7 @@ function liste() {
 	$num = isset($_GET['num']) ? intval($_GET['num']) : "1";
 	$offset = ($num-1) * $newlistnum;
 	$offset = intval($offset);
-	$result = $db->sql_query("SELECT s.sid, s.catid, s.name, s.title, s.time, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." ".$lang." ORDER BY time DESC LIMIT $offset, $newlistnum");
+	$result = $db->sql_query("SELECT s.xxx, s.sid, s.catid, s.name, s.title, s.time, c.id, c.title, u.user_name FROM ".$prefix."_stories AS s LEFT JOIN ".$prefix."_categories AS c ON (s.catid=c.id) LEFT JOIN ".$prefix."_users AS u ON (s.uid=u.user_id) ".$order." ".$lang." ORDER BY time DESC LIMIT $offset, $newlistnum");
 	head();
 	menu(""._LIST."");
 	if ($db->sql_numrows($result) > 0) {
@@ -130,12 +130,12 @@ function liste() {
 		if ($confn['newletter']) letter($conf['name']);
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"1\" class=\"sort\" id=\"sort_id\"><tr>"
 		."<th>"._ID."</th><th>"._TITLE."</th><th>"._CATEGORY."</th><th>"._DATE."</th><th>"._POSTEDBY."</th></tr>";
-		while (list($sid, $catid, $uname, $stitle, $time, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
+		while (list($xxx, $sid, $catid, $uname, $stitle, $time, $cid, $ctitle, $user_name) = $db->sql_fetchrow($result)) {
 			$ctitle = (!$ctitle) ? ""._NO."" : "<a href=\"index.php?name=".$conf['name']."&cat=$cid\" title=\"".$ctitle."\">".cutstr($ctitle, 10)."</a>";
 			$post = ($user_name) ? user_info($user_name, 1) : (($uname) ? $uname : $confu['anonym']);
 			echo "<tr class=\"bgcolor1\">"
 			."<td align=\"center\">".$sid."</td>"
-			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"".$stitle."\">".cutstr($stitle, 35)."</a></td>"
+			."<td><a href=\"index.php?name=".$conf['name']."&op=view&id=$sid\" title=\"".$stitle."\"".strawberry($sid,'news',$xxx).">".cutstr($stitle, 35)."</a></td>"
 			."<td align=\"center\">".$ctitle."</td>"
 			."<td align=\"center\">".format_time($time)."</td>"
 			."<td align=\"center\">".$post."</td></tr>";
@@ -260,6 +260,7 @@ function add() {
 		."<div class=\"left\">"._ENDTEXT.":</div><div class=\"center\">".textarea("2", "bodytext", $bodytext, $conf['name'], "15")."</div>"
 		."".fields_in($field, $conf['name']).""
 		."".captcha_random().""
+		.(($confn['strawberry-1']==1)?"<div class='left'>"._STRAWBERRY_1.":</div><div class='center'>".radio_form(intval($_POST["strawberry-1"]), "strawberry-1")."</div>":'')
 		."<div class=\"button\"><select name=\"posttype\">"
 		."<option value=\"preview\">"._PREVIEW."</option>"
 		."<option value=\"save\">"._SEND."</option></select>"
@@ -281,6 +282,7 @@ function send() {
 		$bodytext = save_text($_POST['bodytext']);
 		$field = fields_save($_POST['field']);
 		$catid = intval($_POST['catid']);
+		$xxx = (($confn['strawberry-1']==1)?intval($_POST["strawberry-1"]):0);
 		if (!$subject) $stop = ""._CERROR."";
 		if (!$hometext) $stop = ""._CERROR1."";
 		if (!$postname && !is_user()) $stop = ""._CERROR3."";
@@ -289,7 +291,7 @@ function send() {
 			$postid = (is_user()) ? intval($user[0]) : "";
 			$postname = (!is_user()) ? $postname : "";
 			$ip = getip();
-			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status) VALUES (NULL, '$catid', '$postid', '$postname', '$subject', now(), '$hometext', '$bodytext', '$field', '0', '0', '0', '0', '0', '0', '0', '$ip', '0')");
+			$db->sql_query("INSERT INTO ".$prefix."_stories (sid, catid, uid, name, title, time, hometext, bodytext, field, comments, counter, ihome, acomm, score, ratings, associated, ip_sender, status, xxx) VALUES (NULL, '$catid', '$postid', '$postname', '$subject', now(), '$hometext', '$bodytext', '$field', '0', '0', '0', '0', '0', '0', '0', '$ip', '0', '$xxx')");
 			update_points(31);
 			head();
 			menu(""._ADD."");
